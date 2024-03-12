@@ -1,28 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   ft_lstiter_bonus.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/12 17:10:07 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/03/12 17:15:46 by vvaalant         ###   ########.fr       */
+/*   Created: 2023/11/19 17:49:37 by vvaalant          #+#    #+#             */
+/*   Updated: 2024/03/12 16:19:57 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_H
-# define MINISHELL_H
+#include "../../inc/libft.h"
 
-# include <stdlib.h>
-# include <unistd.h>
-# include <stdio.h>
-# include <sys/wait.h>
-# include <fcntl.h>
-# include "../libft/inc/libft.h"
-# include "../libft/inc/ft_printf.h"
-# include "../libft/inc/get_next_line.h"
-# include "../libft/inc/libft.h"
+/*
+- Iterates thru list and runs given function to each node.
+* @param lst Pointer first node in list.
+* @param *f any given function to run to node.
+*/
+void	ft_lstiter(t_list *lst, void (*f)(void *))
+{
+	t_list	*temp;
 
-/* Functions here */
-
-#endif
+	if (!lst || !f)
+		return ;
+	temp = lst;
+	if (lst != NULL || f != NULL)
+	{
+		while (temp)
+		{
+			f(temp->content);
+			temp = temp->next;
+		}
+	}
+}

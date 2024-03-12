@@ -1,28 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   ft_lstadd_back_bonus.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/12 17:10:07 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/03/12 17:15:46 by vvaalant         ###   ########.fr       */
+/*   Created: 2023/11/19 17:47:43 by vvaalant          #+#    #+#             */
+/*   Updated: 2024/03/12 16:09:01 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_H
-# define MINISHELL_H
+#include "../../inc/libft.h"
 
-# include <stdlib.h>
-# include <unistd.h>
-# include <stdio.h>
-# include <sys/wait.h>
-# include <fcntl.h>
-# include "../libft/inc/libft.h"
-# include "../libft/inc/ft_printf.h"
-# include "../libft/inc/get_next_line.h"
-# include "../libft/inc/libft.h"
+/*
+- Adds node to back of the single linked list
+* @param lst Pointer to list array.
+* @param new new node to add to the list.
+*/
+void	ft_lstadd_back(t_list **lst, t_list *new)
+{
+	t_list	*temp;
 
-/* Functions here */
-
-#endif
+	if (*lst == NULL)
+	{
+		new->next = *lst;
+		*lst = new;
+	}
+	else
+	{
+		temp = *lst;
+		while (temp->next != NULL)
+			temp = temp->next;
+		temp->next = new;
+	}
+}

@@ -1,28 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   ft_lstsize_bonus.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/12 17:10:07 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/03/12 17:15:46 by vvaalant         ###   ########.fr       */
+/*   Created: 2023/11/19 17:51:08 by vvaalant          #+#    #+#             */
+/*   Updated: 2024/03/12 16:25:26 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_H
-# define MINISHELL_H
+#include "../../inc/libft.h"
 
-# include <stdlib.h>
-# include <unistd.h>
-# include <stdio.h>
-# include <sys/wait.h>
-# include <fcntl.h>
-# include "../libft/inc/libft.h"
-# include "../libft/inc/ft_printf.h"
-# include "../libft/inc/get_next_line.h"
-# include "../libft/inc/libft.h"
+/*
+- Counts list size.
+* @param lst Pointer to first node of list.
+*/
+int	ft_lstsize(t_list *lst)
+{
+	int		count;
+	t_list	*temp;
 
-/* Functions here */
-
-#endif
+	count = 0;
+	temp = lst;
+	while (temp)
+	{
+		temp = temp->next;
+		count++;
+	}
+	return (count);
+}

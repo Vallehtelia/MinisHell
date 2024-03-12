@@ -1,28 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   ft_striteri.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/12 17:10:07 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/03/12 17:15:46 by vvaalant         ###   ########.fr       */
+/*   Created: 2023/11/10 17:29:26 by vvaalant          #+#    #+#             */
+/*   Updated: 2024/03/12 16:50:10 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_H
-# define MINISHELL_H
+#include <stdlib.h>
 
-# include <stdlib.h>
-# include <unistd.h>
-# include <stdio.h>
-# include <sys/wait.h>
-# include <fcntl.h>
-# include "../libft/inc/libft.h"
-# include "../libft/inc/ft_printf.h"
-# include "../libft/inc/get_next_line.h"
-# include "../libft/inc/libft.h"
+/*
+- applies a function to each character of a string,
+	providing the index and a pointer to the character.
+* @param *s A pointer to the string to be iterated over.
+* @param *f The function to be applied to each character.
+*/
+void	ft_striteri(char *s, void (*f)(unsigned int, char*))
+{
+	int		len;
 
-/* Functions here */
-
-#endif
+	if (!s)
+		return ;
+	len = 0;
+	while (s[len] && f)
+	{
+		f(len, &s[len]);
+		len++;
+	}
+}

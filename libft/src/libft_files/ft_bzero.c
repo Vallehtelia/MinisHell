@@ -1,28 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   ft_bzero.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/12 17:10:07 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/03/12 17:15:46 by vvaalant         ###   ########.fr       */
+/*   Created: 2023/10/25 17:29:46 by vvaalant          #+#    #+#             */
+/*   Updated: 2024/03/12 15:55:45 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_H
-# define MINISHELL_H
+#include <stdlib.h>
 
-# include <stdlib.h>
-# include <unistd.h>
-# include <stdio.h>
-# include <sys/wait.h>
-# include <fcntl.h>
-# include "../libft/inc/libft.h"
-# include "../libft/inc/ft_printf.h"
-# include "../libft/inc/get_next_line.h"
-# include "../libft/inc/libft.h"
+/*
+- Function places n zero-valued bytes in the area pointed to by s.
+*/
+void	ft_bzero(void *s, size_t n)
+{
+	size_t			i;
+	unsigned char	*value;
 
-/* Functions here */
-
-#endif
+	i = 0;
+	value = s;
+	while (n > i)
+	{
+		value[i++] = '\0';
+	}
+}
