@@ -16,7 +16,7 @@ all: $(LIBFT)/libft.a $(NAME)
 
 $(NAME): $(OBJ)
 	@echo "\033[0;32m" -------Building minishell------ "\033[0m"
-	@$(CC) $(OBJ) -o $(NAME) -L$(LIBFT) -lft
+	@$(CC) $(OBJ) -o $(NAME) -L$(LIBFT) -lft -lreadline
 
 $(LIBFT)/libft.a:
 	@make -C $(LIBFT)
