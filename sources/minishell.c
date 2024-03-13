@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 13:47:58 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/03/13 19:56:34 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/03/13 21:04:25 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	main(void)
 
 	while (1)
 	{
-		input = readline(CYAN"Shrek_is_love, Shrek_is_life> "DEFAULT);
+		input = readline(GREEN"Shrek is love, Shrek is life--> "DEFAULT);
 		if (!input)
 			break ;
 		if (ft_strncmp(input, "exit", 5) == 0)
