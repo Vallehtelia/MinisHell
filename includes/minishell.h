@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 17:10:07 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/03/13 19:34:47 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/03/22 15:26:44 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,15 @@
 # define CYAN "\033[0;36m"
 # define DEFAULT "\033[0m"
 
+typedef struct s_minishell
+{
+	char	**cmd;
+	int		num_of_pipes;
+}	t_minishell;
+
 /* Functions here */
-int	main(void);
-void useinput(char * str);
+int		main(void);
+// void	useinput(char *str);
+void	parse_command(t_minishell *mshell);
 
 #endif

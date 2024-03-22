@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 13:47:58 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/03/13 21:04:25 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/03/22 15:32:00 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,10 @@ int	global_signal = 0;
 
 int	main(void)
 {
-	char	*input;
+	char		*input;
+	t_minishell	mshell;
 
+	mshell.num_of_pipes = 1;
 	while (1)
 	{
 		input = readline(GREEN"Shrek is love, Shrek is life--> "DEFAULT);
@@ -28,6 +30,8 @@ int	main(void)
 			free(input);
 			break ;
 		}
+		// useinput(&mshell);
+		parse_command(&mshell);
 		add_history(input);
 		free(input);
 	}
