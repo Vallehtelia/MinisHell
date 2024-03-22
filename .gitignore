@@ -1,3 +1,9 @@
 .DS_store
 
 *.o
+
+# .bonus
+
+# libft.a
+
+# minishell
