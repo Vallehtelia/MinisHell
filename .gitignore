@@ -2,8 +2,8 @@
 
 *.o
 
-# .bonus
+.bonus
 
-# libft.a
+libft.a
 
-# minishell
+minishell
