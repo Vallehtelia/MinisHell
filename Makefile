@@ -6,7 +6,7 @@ CFLAGS = -Wall -Wextra -Werror
 SRC_DIR = ./sources/
 
 # source files here
-SRC_FILES = minishell.c
+SRC_FILES = minishell.c valle.c matti.c
 
 SRC = $(addprefix $(SRC_DIR), $(SRC_FILES))
 

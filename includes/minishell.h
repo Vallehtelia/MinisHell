@@ -23,6 +23,7 @@
 # include <fcntl.h>
 # include <readline/readline.h>
 # include <readline/history.h>
+# include <dirent.h>
 
 # define GREEN "\033[0;32m"
 # define CYAN "\033[0;36m"
@@ -30,5 +31,6 @@
 
 /* Functions here */
 int	main(void);
+void useinput(char * str);
 
 #endif
