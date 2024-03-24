@@ -41,13 +41,16 @@ typedef struct s_minishell
 	t_commands	**cmd;
 	char		*input_cmd;
 	int			num_of_pipes;
+	char 		working_directory[100];
 }	t_minishell;
 
 /* Functions here */
 int		main(void);
 // void	useinput(char *str);
 void	parse_command(t_minishell *mshell);
-void	 matti(t_minishell *mshell);
-void	 valle(t_minishell *mshell);
+void	matti(t_minishell *mshell);
+void	matti_set(t_minishell *mshell);
+void	valle(t_minishell *mshell);
+void	valle_set(t_minishell *mshell);
 
 #endif

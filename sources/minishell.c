@@ -20,6 +20,8 @@ int	main(void)
 	t_minishell	mshell;
 
 	mshell.num_of_pipes = 1;
+	//valle_set(&mshell);
+	matti_set(&mshell);
 	while (1)
 	{
 		input = readline(GREEN"Shrek is love, Shrek is life--> "DEFAULT);
