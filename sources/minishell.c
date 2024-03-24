@@ -24,12 +24,14 @@ int	main(void)
 	matti_set(&mshell);
 	while (1)
 	{
-		input = readline(GREEN"Shrek is love, Shrek is life--> "DEFAULT);
+		printf("\033[1;32mC:%s\\> \033[0m",mshell.working_directory);
+		input = readline("");//(const char *)
 		if (!input)
 			break ;
 		if (ft_strncmp(input, "exit", 5) == 0)
 		{
 			free(input);
+			exit_and_free(&mshell, 0);
 			break ;
 		}
 		mshell.input_cmd = input;
