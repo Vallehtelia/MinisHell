@@ -40,10 +40,10 @@ typedef struct s_commands
 typedef struct s_minishell
 {
 	t_commands	**cmd;
-	char		*input_cmd;
+	char		*input_cmd; 		// prompt text
 	int			num_of_pipes;
 	int			num_of_cmds;
-	char		*working_directory;
+	char		*working_directory;	//current working directory
 }	t_minishell;
 
 /* Functions here */
@@ -55,6 +55,7 @@ void	matti_set(t_minishell *mshell);
 void	valle(t_minishell *mshell);
 void	valle_set(t_minishell *mshell);
 
-void exit_and_free(t_minishell *mshell, int errno);
+void 	exit_and_free(t_minishell *mshell, int errno);
+void 	free_workingdir(t_minishell *mshell);
 
 #endif

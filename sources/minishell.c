@@ -19,15 +19,15 @@ int	main(void)
 	char		*input;
 	t_minishell	mshell;
 
-	mshell.num_of_pipes = 1;
-	//valle_set(&mshell);
+	mshell = (t_minishell){};
+	printf("\033[2J\033[H"); // clears screen
 	while (1)
 	{
 		matti_set(&mshell);
-		printf("\033[1;32mC:%s\\> \033[0m",mshell.working_directory);
-		input = readline("");//(const char *)
+		input = readline(mshell.input_cmd);
 		if (!input)
 			break ;
+		free_workingdir(&mshell);
 		if (ft_strncmp(input, "exit", 5) == 0)
 		{
 			free(input);
@@ -36,9 +36,6 @@ int	main(void)
 		}
 		mshell.input_cmd = input;
 		valle(&mshell);
-		matti(&mshell);
-		// useinput(&mshell);
-		//parse_command(&mshell);
 		add_history(input);
 		free(input);
 	}
