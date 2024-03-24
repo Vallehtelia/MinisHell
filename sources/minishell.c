@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 13:47:58 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/03/22 15:32:00 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/03/24 16:30:08 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ int	main(void)
 			free(input);
 			break ;
 		}
+		mshell.input_cmd = input;
 		valle(&mshell);
 		matti(&mshell);
 		// useinput(&mshell);

@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 17:10:07 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/03/24 16:23:18 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/03/24 16:30:30 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ typedef struct s_commands
 typedef struct s_minishell
 {
 	t_commands	**cmd;
+	char		*input_cmd;
 	int			num_of_pipes;
 }	t_minishell;
 
@@ -46,7 +47,7 @@ typedef struct s_minishell
 int		main(void);
 // void	useinput(char *str);
 void	parse_command(t_minishell *mshell);
-void matti();
-void valle();
+void	 matti(t_minishell *mshell);
+void	 valle(t_minishell *mshell);
 
 #endif
