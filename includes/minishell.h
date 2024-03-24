@@ -42,7 +42,7 @@ typedef struct s_minishell
 	char		*input_cmd;
 	int			num_of_pipes;
 	int			num_of_cmds;
-	char		working_directory[100];
+	char		*working_directory;
 }	t_minishell;
 
 /* Functions here */
@@ -53,5 +53,7 @@ void	matti(t_minishell *mshell);
 void	matti_set(t_minishell *mshell);
 void	valle(t_minishell *mshell);
 void	valle_set(t_minishell *mshell);
+
+void exit_and_free(t_minishell *mshell, int errno);
 
 #endif
