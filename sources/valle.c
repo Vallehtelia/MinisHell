@@ -6,18 +6,11 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 15:23:49 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/03/24 18:29:20 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/03/24 19:38:01 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
-static char	*skip_spaces(char *str)
-{
-	while (*str == ' ')
-		str++;
-	return (str);
-}
 
 int	cmd_lenght(char *input_cmd)
 {
@@ -26,6 +19,8 @@ int	cmd_lenght(char *input_cmd)
 
 	len = 0;
 	i = 0;
+	while (input_cmd[i] == ' ')
+		i++;
 	while (input_cmd[i] && input_cmd[i] != '|')
 	{
 		len++;
@@ -42,25 +37,26 @@ int	cmd_lenght(char *input_cmd)
 
 void	parse_command(t_minishell *mshell)
 {
-	t_commands	**cmd;
+	t_commands	*cmd;
 	int			i;
 	int			y;
 	// int			x;
 
 	i = 0;
-	cmd = mshell->cmd;
-	cmd = malloc(sizeof(t_commands) * mshell->num_of_cmds);
-	if (!cmd)
+	mshell->cmd = malloc(sizeof(t_commands) * mshell->num_of_cmds);
+	if (!mshell->cmd)
 		return ;
-	if (mshell->input_cmd)
+	if (mshell->input_cmd != NULL)
 	{
-		skip_spaces(mshell->input_cmd);
+		while (*mshell->input_cmd == ' ')
+			mshell->input_cmd++;
 		y = 0;
-		printf("%i\n", cmd_lenght(mshell->input_cmd));
-		// while (y < mshell->num_of_cmds)
-		// {
+		cmd->cmd_lenght = cmd_lenght(mshell->input_cmd);
+		//printf("%i\n", cmd->cmd_lenght);
+		while (y < mshell->num_of_cmds)
+		{
 
-		// }
+		}
 	}
 }
 
