@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 17:10:07 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/03/24 16:30:30 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/03/24 18:28:05 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@
 
 typedef struct s_commands
 {
-	char	**cmd;
+	char	*cmd;
 	bool	output_to_pipe;
 }	t_commands;
 
@@ -41,7 +41,8 @@ typedef struct s_minishell
 	t_commands	**cmd;
 	char		*input_cmd;
 	int			num_of_pipes;
-	char 		*working_directory;
+	int			num_of_cmds;
+	char		working_directory[100];
 }	t_minishell;
 
 /* Functions here */
@@ -52,6 +53,5 @@ void	matti(t_minishell *mshell);
 void	matti_set(t_minishell *mshell);
 void	valle(t_minishell *mshell);
 void	valle_set(t_minishell *mshell);
-void 	exit_and_free(t_minishell *mshell, int errno);
 
 #endif
