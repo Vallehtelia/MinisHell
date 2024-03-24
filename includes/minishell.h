@@ -34,6 +34,7 @@ typedef struct s_commands
 {
 	char	*cmd;
 	bool	output_to_pipe;
+	int 	cmd_lenght;
 }	t_commands;
 
 typedef struct s_minishell

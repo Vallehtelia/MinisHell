@@ -21,9 +21,9 @@ int	main(void)
 
 	mshell.num_of_pipes = 1;
 	//valle_set(&mshell);
-	matti_set(&mshell);
 	while (1)
 	{
+		matti_set(&mshell);
 		printf("\033[1;32mC:%s\\> \033[0m",mshell.working_directory);
 		input = readline("");//(const char *)
 		if (!input)
