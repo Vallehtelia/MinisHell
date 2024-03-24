@@ -17,3 +17,8 @@ void	parse_command(t_minishell *mshell)
 	printf("%i\n", mshell->num_of_pipes);
 	mshell->num_of_pipes++;
 }
+
+void valle(t_minishell *mshell)
+{
+	parse_command(mshell);
+}

@@ -30,8 +30,10 @@ int	main(void)
 			free(input);
 			break ;
 		}
+		valle(&mshell);
+		matti(&mshell);
 		// useinput(&mshell);
-		parse_command(&mshell);
+		//parse_command(&mshell);
 		add_history(input);
 		free(input);
 	}

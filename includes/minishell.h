@@ -46,5 +46,7 @@ typedef struct s_minishell
 int		main(void);
 // void	useinput(char *str);
 void	parse_command(t_minishell *mshell);
+void matti();
+void valle();
 
 #endif
