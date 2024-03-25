@@ -57,5 +57,7 @@ void	valle_set(t_minishell *mshell);
 
 void 	exit_and_free(t_minishell *mshell, int errno);
 void 	free_workingdir(t_minishell *mshell);
+void 	change_working_directory(t_minishell *mshell, char *path);
+
 
 #endif

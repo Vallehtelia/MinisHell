@@ -35,6 +35,7 @@ int	main(void)
 			break ;
 		}
 		mshell.input_cmd = input;
+		matti(&mshell);
 		valle(&mshell);
 		add_history(input);
 		free(input);

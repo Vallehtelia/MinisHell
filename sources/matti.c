@@ -4,9 +4,28 @@
 
 void matti(t_minishell *mshell)
 {
-	(void)mshell;
+	if(mshell->input_cmd[0] == 'c' && mshell->input_cmd[1] == 'd' && mshell->input_cmd[2] == ' ')
+	{
+		change_working_directory(mshell, mshell->input_cmd + 3);
+	}
+	else
+	{
+		printf("mshell: %s: command not found\n", mshell->input_cmd);
+	}
 }
-
+void change_working_directory(t_minishell *mshell, char *path)
+{
+	(void)mshell;
+	if(chdir(path) == -1)
+	{
+		printf("cd:  No such file or directory %s:\n", path);
+	}
+	// else
+	// {
+	// 	free_workingdir(mshell);
+	// 	matti_set(mshell);
+	// }
+}
 void free_workingdir(t_minishell *mshell)
 {
 	if(mshell->input_cmd)
