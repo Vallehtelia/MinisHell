@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 17:10:07 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/03/24 18:29:01 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/03/28 01:22:42 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@
 
 typedef struct s_commands
 {
-	char	*cmd;
+	char	**cmd;
 	bool	output_to_pipe;
 	int 	cmd_lenght;
 }	t_commands;
@@ -58,6 +58,7 @@ void	valle_set(t_minishell *mshell);
 void 	exit_and_free(t_minishell *mshell, int errno);
 void 	free_workingdir(t_minishell *mshell);
 void 	change_working_directory(t_minishell *mshell, char *path);
+void	free_commands(t_minishell);
 
 
 #endif
