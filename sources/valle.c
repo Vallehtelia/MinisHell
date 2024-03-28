@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 15:23:49 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/03/28 08:07:08 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/03/28 20:21:17 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,8 @@ static void	count_pipes(t_minishell *mshell)
 void	valle(t_minishell *mshell)
 {
 	mshell->num_of_pipes = 0;
+	if (mshell->input_cmd[0] == '\0')
+		return ;
 	count_pipes(mshell);
 	if (parse_command(mshell) == 1)
 	{
