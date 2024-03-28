@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 15:23:49 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/03/28 04:24:30 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/03/28 05:23:13 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,19 +35,15 @@
 // 	return (len);
 // }
 
-static char	**split_by_cmds(char *input, int num_of_cmds)
+static char	**split_by_cmds(char *input, int num_of_cmds, int l, int k)
 {
 	char	**arr;
 	int		cmdlen;
 	int		i;
-	int		l;
-	int		k;
 
 	arr = malloc(sizeof(char *) * num_of_cmds + 1);
 	if (!arr)
 		return (NULL);
-	l = 0;
-	k = 0;
 	while (input[l] && k < num_of_cmds)
 	{
 		i = 0;
@@ -74,7 +70,7 @@ int	parse_command(t_minishell *mshell)
 	int			i;
 
 	i = 0;
-	temp_commands = split_by_cmds(mshell->input_cmd, mshell->num_of_cmds);
+	temp_commands = split_by_cmds(mshell->input_cmd, mshell->num_of_cmds, 0, 0);
 	if (!temp_commands)
 		return (1);
 	mshell->cmds = malloc(sizeof(t_commands *) * (mshell->num_of_cmds + 1));
@@ -129,11 +125,6 @@ void	valle(t_minishell *mshell)
 		printf("\n");
 	}
 	free_commands(mshell);
-}
-
-void	valle_set(t_minishell *mshell)
-{
-	mshell->num_of_pipes = 0;
 }
 
 void	free_commands(t_minishell *mshell)

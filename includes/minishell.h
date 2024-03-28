@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 17:10:07 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/03/28 04:35:23 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/03/28 05:22:45 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,6 @@ int		parse_command(t_minishell *mshell);
 void	matti(t_minishell *mshell);
 void	matti_set(t_minishell *mshell);
 void	valle(t_minishell *mshell);
-void	valle_set(t_minishell *mshell);
 
 void	exit_and_free(t_minishell *mshell, int errno);
 void	free_workingdir(t_minishell *mshell);
