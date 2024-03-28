@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 17:10:07 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/03/28 01:27:24 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/03/28 04:35:23 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@
 # define CYAN "\033[0;36m"
 # define DEFAULT "\033[0m"
 
+# define MAX_ARGS 10
+
 typedef struct s_commands
 {
 	char	**cmd;
@@ -40,6 +42,7 @@ typedef struct s_commands
 typedef struct s_minishell
 {
 	t_commands	**cmds;
+	char		*cmd_to_split;
 	char		*input_cmd; 		// prompt text
 	int			num_of_pipes;
 	int			num_of_cmds;
@@ -49,16 +52,16 @@ typedef struct s_minishell
 /* Functions here */
 int		main(void);
 // void	useinput(char *str);
-void	parse_command(t_minishell *mshell);
+int		parse_command(t_minishell *mshell);
 void	matti(t_minishell *mshell);
 void	matti_set(t_minishell *mshell);
 void	valle(t_minishell *mshell);
 void	valle_set(t_minishell *mshell);
 
-void 	exit_and_free(t_minishell *mshell, int errno);
-void 	free_workingdir(t_minishell *mshell);
-void 	change_working_directory(t_minishell *mshell, char *path);
+void	exit_and_free(t_minishell *mshell, int errno);
+void	free_workingdir(t_minishell *mshell);
+void	change_working_directory(t_minishell *mshell, char *path);
 void	free_commands(t_minishell *mshell);
-
+char	**get_cmd(const char *cmd);
 
 #endif
