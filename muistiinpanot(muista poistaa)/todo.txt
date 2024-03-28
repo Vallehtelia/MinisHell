@@ -1,10 +1,9 @@
 Valle:
 
-Display a prompt when waiting for a new command.
+✅Display a prompt when waiting for a new command.
 exit with no options // melkein done //
-Have a working history.
-Implement pipes (| character). The output of each command in the pipeline is
-connected to the input of the next command via a pipe.
+✅Have a working history.
+Implement pipes (| character). The output of each command in the pipeline is connected to the input of the next command via a pipe.
 Handle ’ (single quote) which should prevent the shell from interpreting the metacharacters in the quoted sequence.
  Handle " (double quote) which should prevent the shell from interpreting the metacharacters in the quoted sequence except for $ (dollar sign).
  Implement redirections:

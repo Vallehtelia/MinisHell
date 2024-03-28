@@ -6,34 +6,11 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 15:23:49 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/03/28 05:23:13 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/03/28 08:07:08 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
-// static int	cmd_lenght(char *input_cmd)
-// {
-// 	int	len;
-// 	int	i;
-
-// 	len = 0;
-// 	i = 0;
-// 	while (input_cmd[i] == ' ' || input_cmd[i] == '|')
-// 		i++;
-// 	while (input_cmd[i] && input_cmd[i] != '|')
-// 	{
-// 		len++;
-// 		i++;
-// 	}
-// 	i--;
-// 	while (input_cmd[i] == ' ')
-// 	{
-// 		len--;
-// 		i--;
-// 	}
-// 	return (len);
-// }
 
 static char	**split_by_cmds(char *input, int num_of_cmds, int l, int k)
 {
@@ -118,12 +95,16 @@ void	valle(t_minishell *mshell)
 	{
 		free_commands(mshell);
 	}
-	for (int i = 0; mshell->cmds[i]; i++)
-	{
-		for (int l = 0; mshell->cmds[i]->cmd[l]; l++)
-			printf("cmd %i--%i = %s\n", i + 1, l + 1, mshell->cmds[i]->cmd[l]);
-		printf("\n");
-	}
+	// for (int i = 0; mshell->cmds[i]; i++)
+	// {
+	// 	for (int l = 0; mshell->cmds[i]->cmd[l]; l++)
+	// 		printf("cmd %i--%i = %s\n", i + 1, l + 1, mshell->cmds[i]->cmd[l]);
+	// 	printf("\n");
+	// }
+	// for (int i = 0; mshell->env[i]; i++)
+	// {
+	// 	printf("key: %s value: %s\n\n", mshell->env[i]->key, mshell->env[i]->value);
+	// }
 	free_commands(mshell);
 }
 

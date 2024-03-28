@@ -35,7 +35,8 @@ FTLIBFT = $(SRC_DIR)libft_files/ft_isalpha.c \
 					$(SRC_DIR)libft_files/ft_putchar_fd.c \
 					$(SRC_DIR)libft_files/ft_putstr_fd.c \
 					$(SRC_DIR)libft_files/ft_putendl_fd.c \
-					$(SRC_DIR)libft_files/ft_putnbr_fd.c
+					$(SRC_DIR)libft_files/ft_putnbr_fd.c \
+					$(SRC_DIR)libft_files/ft_strndub.c
 
 FTLIBFTBONUS = $(SRC_DIR)libft_files/ft_lstnew_bonus.c \
 					$(SRC_DIR)libft_files/ft_lstadd_front_bonus.c \

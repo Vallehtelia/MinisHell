@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 13:47:58 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/03/26 16:27:07 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/03/28 07:54:27 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,16 @@
 
 int	global_signal = 0;
 
-int	main(void)
+int	main(int ac, char **av, char **envp)
 {
 	char		*input;
 	t_minishell	mshell;
 
 	mshell = (t_minishell){};
+	av = NULL;
+	ac = 0;
 	printf("\033[2J\033[H"); // clears screen
+	mshell.env = parse_env(envp, -1, 0);
 	while (1)
 	{
 		matti_set(&mshell);
