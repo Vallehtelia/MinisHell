@@ -35,7 +35,6 @@ int	main(int ac, char **av, char **envp)
 		{
 			free(input);
 			exit_and_free(&mshell, 0);
-			break ;
 		}
 		mshell.input_cmd = input;
 		matti(&mshell);

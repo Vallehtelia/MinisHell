@@ -2,7 +2,8 @@
 
 void matti(t_minishell *mshell)
 {
-	(void)mshell;
+	mshell->prompt_text = NULL;
+	mshell->working_directory = NULL;
 	//if (mshell->input_cmd[0] == 'c' && mshell->input_cmd[1] == 'd' && mshell->input_cmd[2] == ' ')
 	//{
 	//	change_working_directory(mshell, mshell->input_cmd + 3);
