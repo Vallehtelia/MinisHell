@@ -27,7 +27,7 @@ int	main(int ac, char **av, char **envp)
 	while (1)
 	{
 		matti_set(&mshell);
-		input = readline(mshell.input_cmd);
+		input = readline(mshell.prompt_text);
 		if (!input)
 			break ;
 		free_workingdir(&mshell);
@@ -40,6 +40,7 @@ int	main(int ac, char **av, char **envp)
 		mshell.input_cmd = input;
 		matti(&mshell);
 		valle(&mshell);
+		//printf("KUMMAN VIKA!!!\n");
 		add_history(input);
 		free(input);
 	}

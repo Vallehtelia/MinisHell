@@ -53,6 +53,7 @@ typedef struct s_minishell
 	int			ac;
 	char		*cmd_to_split;
 	char		*input_cmd; 		// prompt text
+	char		*prompt_text;
 	int			num_of_pipes;
 	int			num_of_cmds;
 	char		*working_directory;	//current working directory
