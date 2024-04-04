@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 15:23:49 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/03/28 20:21:17 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/04/04 14:07:19 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,7 @@ void	valle(t_minishell *mshell)
 	{
 		free_commands(mshell);
 	}
+	run_commands(mshell);
 	// for (int i = 0; mshell->cmds[i]; i++)
 	// {
 	// 	for (int l = 0; mshell->cmds[i]->cmd[l]; l++)
@@ -131,4 +132,135 @@ void	free_commands(t_minishell *mshell)
 		i++;
 	}
 	free(mshell->cmds);
+}
+
+void	run_commands(t_minishell *mshell)
+{
+	int		i;
+	int		pipefd[2];
+	int		fd_in;
+	int		fd_out;
+
+	i = 0;
+	fd_in = 0;
+	fd_out = 1;
+	while (mshell->cmds[i])
+	{
+		pipe(pipefd);
+		if (fork() == 0)
+		{
+			if (fd_in != 0)
+			{
+				dup2(fd_in, 0);
+				close(fd_in);
+			}
+			if (mshell->cmds[i + 1])
+				dup2(pipefd[1], 1);
+			close(pipefd[0]);
+			execute_cmd(mshell->cmds[i]->cmd, mshell->env);
+		}
+		else
+		{
+			wait(NULL);
+			close(pipefd[1]);
+			fd_in = pipefd[0];
+			i++;
+		}
+	}
+}
+
+void	execute_cmd(char **cmd, t_env **env)
+{
+	char	*path;
+	int		i;
+
+	i = 0;
+	path = find_path(cmd[0], env, 0);
+	if (!path)
+	{
+		if (access(cmd[0], X_OK) == 0)
+			path = cmd[0];
+		else
+		{
+			while (cmd[i])
+				free(cmd[i++]);
+			free(cmd);
+			error_str(cmd[0], 1);
+			exit (127);
+		}
+	}
+	if (execve(path, cmd, env_to_char_array(env)) == -1)
+		exit(1);
+}
+
+void	error_str(char *av, int n)
+{
+	if (n == 1)
+	{
+		ft_putstr_fd("minisHell: ", 2);
+		ft_putstr_fd(av, 2);
+		ft_putstr_fd(": command not found\n", 2);
+	}
+}
+
+char	*find_path(char *cmd, t_env **env, int i)
+{
+	char	**paths;
+	char	*part_path;
+	char	*path;
+
+	paths = ft_split(get_env_value(env, "PATH"), ':');
+	if (!paths)
+		return (NULL);
+	while (paths[i])
+	{
+		part_path = ft_strjoin(paths[i], "/");
+		path = ft_strjoin(part_path, cmd);
+		free(part_path);
+		if (access(path, F_OK) == 0)
+			return (path);
+		free (path);
+		i++;
+	}
+	i = -1;
+	while (paths[++i])
+		free (paths[i]);
+	free(paths);
+	return (0);
+}
+
+char	**env_to_char_array(t_env **env)
+{
+	char	**envp;
+	int		i;
+
+	i = 0;
+	while (env[i])
+		i++;
+	envp = malloc(sizeof(char *) * (i + 1));
+	if (!envp)
+		return (NULL);
+	i = 0;
+	while (env[i])
+	{
+		envp[i] = ft_strjoin(env[i]->key, "=");
+		envp[i] = ft_strjoin(envp[i], env[i]->value);
+		i++;
+	}
+	envp[i] = NULL;
+	return (envp);
+}
+
+char	*get_env_value(t_env **env, char *key)
+{
+	int	i;
+
+	i = 0;
+	while (env[i])
+	{
+		if (ft_strncmp(env[i]->key, key, ft_strlen(key) + 1) == 0)
+			return (env[i]->value);
+		i++;
+	}
+	return (NULL);
 }
