@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 15:23:49 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/04/04 14:07:19 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/04/04 19:42:53 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,6 +172,7 @@ void	run_commands(t_minishell *mshell)
 void	execute_cmd(char **cmd, t_env **env)
 {
 	char	*path;
+	char 	**env_arr;
 	int		i;
 
 	i = 0;
@@ -186,11 +187,31 @@ void	execute_cmd(char **cmd, t_env **env)
 				free(cmd[i++]);
 			free(cmd);
 			error_str(cmd[0], 1);
-			exit (127);
+			global_signal = 127;
+			return ;
 		}
 	}
-	if (execve(path, cmd, env_to_char_array(env)) == -1)
-		exit(1);
+	env_arr = env_to_char_array(env);
+	if (execve(path, cmd, env_arr) == -1)
+		free_env_arr(env_arr, path, cmd);
+}
+
+void	free_env_arr(char **env_arr, char *path, char **cmd)
+{
+	int	i;
+
+	i = 0;
+	(void)path;
+	(void)cmd;
+	while (env_arr[i])
+		free(env_arr[i++]);
+	free(env_arr);
+	if (path != cmd[0])
+		free(path);
+	if (errno == EACCES)
+		global_signal = 126;
+	else
+		global_signal = 1;
 }
 
 void	error_str(char *av, int n)

@@ -15,12 +15,12 @@ static void	free_env(t_minishell *mshell)
 	free(mshell->env);
 }
 
-void	exit_and_free(t_minishell *mshell, int errno)
+void	exit_and_free(t_minishell *mshell, int errnum)
 {
 	free_workingdir(mshell);
 	if (mshell->env)
 		free_env(mshell);
-	if(errno > 0)
-		ft_printf("ERROR %i\n",errno);
-	exit(errno);
+	if (errnum > 0)
+		ft_printf("ERROR %i\n", errnum);
+	exit(errnum);
 }

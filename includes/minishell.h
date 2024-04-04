@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 17:10:07 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/04/04 14:06:51 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/04/04 18:39:50 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,15 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <dirent.h>
+# include <signal.h>
+# include <glob.h>
+# include <errno.h>
 
-# define GREEN "\033[0;32m"
+extern int	global_signal;
+
+# define GR "\033[0;32m"
 # define CYAN "\033[0;36m"
-# define DEFAULT "\033[0m"
+# define DF "\033[0m"
 
 # define MAX_ARGS 10
 
@@ -66,7 +71,7 @@ void	matti(t_minishell *mshell);
 void	matti_set(t_minishell *mshell);
 void	valle(t_minishell *mshell);
 
-void	exit_and_free(t_minishell *mshell, int errno);
+void	exit_and_free(t_minishell *mshell, int errnum);
 void	free_workingdir(t_minishell *mshell);
 void	change_working_directory(t_minishell *mshell, char *path);
 
@@ -85,5 +90,6 @@ char	*find_path(char *cmd, t_env **env, int i);
 char	**env_to_char_array(t_env **env);
 char	*get_env_value(t_env **env, char *key);
 void	error_str(char *av, int n);
+void	free_env_arr(char **env_arr, char *path, char **cmd);
 
 #endif
