@@ -60,9 +60,12 @@ int	main(int ac, char **av, char **envp)
 	char		*input;
 	t_minishell	mshell;
 
+	(void)ac;
+	(void)av;
 	mshell = (t_minishell){};
-	av = NULL;
-	ac = 0;
+
+	//av = NULL;
+	//ac = 0;
 	print_shrek();
 	mshell.env = parse_env(envp, -1, 0);
 	while (1)

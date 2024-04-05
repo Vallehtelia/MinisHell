@@ -139,11 +139,11 @@ void	run_commands(t_minishell *mshell)
 	int		i;
 	int		pipefd[2];
 	int		fd_in;
-	int		fd_out;
+	//int		fd_out; // not used
 
 	i = 0;
 	fd_in = 0;
-	fd_out = 1;
+	//fd_out = 1;
 	while (mshell->cmds[i])
 	{
 		pipe(pipefd);
