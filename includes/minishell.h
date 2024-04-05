@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 17:10:07 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/04/04 18:39:50 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/04/05 16:59:49 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ typedef struct s_minishell
 
 /* Functions here */
 int		main(int ac, char **av, char **envp);
+void	print_shrek(void);
 // void	useinput(char *str);
 void	matti(t_minishell *mshell);
 void	matti_set(t_minishell *mshell);
@@ -91,5 +92,6 @@ char	**env_to_char_array(t_env **env);
 char	*get_env_value(t_env **env, char *key);
 void	error_str(char *av, int n);
 void	free_env_arr(char **env_arr, char *path, char **cmd);
+int		check_cmd(t_minishell *mshell);
 
 #endif

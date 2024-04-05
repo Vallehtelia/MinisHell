@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 01:45:22 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/03/28 01:50:41 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/04/05 17:46:19 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ char	**get_cmd(const char *cmd)
 	int			i;
 	const char	*next_cmd;
 
-	args = malloc(MAX_ARGS * sizeof(char *));
+	args = malloc(MAX_ARGS * sizeof(char *) + 1);
 	if (!args)
 		return (NULL);
 	i = 0;

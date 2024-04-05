@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 13:47:58 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/04/04 18:46:16 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/04/05 16:48:32 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,23 +14,23 @@
 
 int	global_signal = 0;
 
-int	hardcode(t_minishell *mshell, char *input)
-{
-	if (ft_strncmp(input, "exit", ft_strlen(input) + 1) == 0)
-	{
-		free(input);
-		exit_and_free(mshell, 0);
-	}
-	if (ft_strncmp(input, "$?", 3) == 0)
-	{
-		add_history(input);
-		free(input);
-		printf("minisHell: %d: command not found\n", global_signal);
-		global_signal = 127;
-		return (1);
-	}
-	return (0);
-}
+// int	hardcode(t_minishell *mshell, char *input)
+// {
+// 	if (ft_strncmp(input, "exit", ft_strlen(input) + 1) == 0)
+// 	{
+// 		free(input);
+// 		exit_and_free(mshell, 0);
+// 	}
+// 	if (ft_strncmp(input, "$?", 3) == 0)
+// 	{
+// 		add_history(input);
+// 		free(input);
+// 		printf("minisHell: %d: command not found\n", global_signal);
+// 		global_signal = 127;
+// 		return (1);
+// 	}
+// 	return (0);
+// }
 
 void	print_shrek(void)
 {
@@ -75,9 +75,8 @@ int	main(int ac, char **av, char **envp)
 		if (!input)
 			break ;
 		free_workingdir(&mshell);
-		if(hardcode(&mshell, input))
-			continue ;
-		global_signal = 0;
+		// if(hardcode(&mshell, input))
+		// 	continue ;
 		mshell.input_cmd = input;
 		matti(&mshell);
 		valle(&mshell);

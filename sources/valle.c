@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 15:23:49 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/04/04 19:42:53 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/04/05 18:03:24 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,9 @@ void	valle(t_minishell *mshell)
 	{
 		free_commands(mshell);
 	}
+	if (check_cmd(mshell))
+		return ;
+	global_signal = 0;
 	run_commands(mshell);
 	// for (int i = 0; mshell->cmds[i]; i++)
 	// {
@@ -139,11 +142,9 @@ void	run_commands(t_minishell *mshell)
 	int		i;
 	int		pipefd[2];
 	int		fd_in;
-	//int		fd_out; // not used
 
 	i = 0;
 	fd_in = 0;
-	//fd_out = 1;
 	while (mshell->cmds[i])
 	{
 		pipe(pipefd);
@@ -172,10 +173,8 @@ void	run_commands(t_minishell *mshell)
 void	execute_cmd(char **cmd, t_env **env)
 {
 	char	*path;
-	char 	**env_arr;
-	int		i;
+	char	**env_arr;
 
-	i = 0;
 	path = find_path(cmd[0], env, 0);
 	if (!path)
 	{
@@ -183,12 +182,9 @@ void	execute_cmd(char **cmd, t_env **env)
 			path = cmd[0];
 		else
 		{
-			while (cmd[i])
-				free(cmd[i++]);
-			free(cmd);
 			error_str(cmd[0], 1);
 			global_signal = 127;
-			return ;
+			exit (127);
 		}
 	}
 	env_arr = env_to_char_array(env);
@@ -198,11 +194,12 @@ void	execute_cmd(char **cmd, t_env **env)
 
 void	free_env_arr(char **env_arr, char *path, char **cmd)
 {
+	// printf("errno: %d\n", errno);
 	int	i;
 
 	i = 0;
-	(void)path;
-	(void)cmd;
+	// (void)path;
+	// (void)cmd;
 	while (env_arr[i])
 		free(env_arr[i++]);
 	free(env_arr);
@@ -219,8 +216,9 @@ void	error_str(char *av, int n)
 	if (n == 1)
 	{
 		ft_putstr_fd("minisHell: ", 2);
+		ft_putstr_fd("command not found: ", 2);
 		ft_putstr_fd(av, 2);
-		ft_putstr_fd(": command not found\n", 2);
+		ft_putstr_fd("\n", 2);
 	}
 }
 
@@ -247,7 +245,7 @@ char	*find_path(char *cmd, t_env **env, int i)
 	while (paths[++i])
 		free (paths[i]);
 	free(paths);
-	return (0);
+	return (NULL);
 }
 
 char	**env_to_char_array(t_env **env)
