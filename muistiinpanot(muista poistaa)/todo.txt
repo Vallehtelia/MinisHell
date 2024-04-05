@@ -28,7 +28,7 @@ ctrl-C displays a new prompt on a new line. // blokkaa singnaalit!!!!!!!!!
 ctrl-D exits the shell.
 ctrl-\ does nothing.
 
-echo with option -n
+✅echo with option -n
 
 //////////////////////////////////////////////////
 

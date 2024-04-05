@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/05 15:50:13 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/04/05 16:54:13 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/04/05 19:55:33 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,17 +20,26 @@ int	check_cmd(t_minishell *mshell)
 		exit_and_free(mshell, 0);
 		return (1);
 	}
-	if ((ft_strncmp(mshell->cmds[0]->cmd[0], "exit", 5) == 0)
+	else if ((ft_strncmp(mshell->cmds[0]->cmd[0], "exit", 5) == 0)
 		&& mshell->cmds[0]->cmd[1] != NULL)
 	{
 		ft_printf("minisHell: exit: too many arguments\n");
 		global_signal = 1;
 		return (1);
 	}
-	if (ft_strncmp(mshell->cmds[0]->cmd[0], "$?", 3) == 0)
+	else if (ft_strncmp(mshell->cmds[0]->cmd[0], "$?", 3) == 0)
 	{
 		ft_printf("minisHell: %d: command not found\n", global_signal);
 		global_signal = 127;
+		return (1);
+	}
+	else if (ft_strncmp(mshell->cmds[0]->cmd[0], "echo", 5) == 0
+		&& mshell->env[0] == NULL)
+	{
+		if (ft_strncmp(mshell->cmds[0]->cmd[1], "-n", 3) == 0)
+			ft_printf("%s", mshell->cmds[0]->cmd[2]);
+		else
+			ft_printf("%s\n", mshell->cmds[0]->cmd[1]);
 		return (1);
 	}
 	return (0);

@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 17:10:07 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/04/05 16:59:49 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/04/05 20:17:54 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,5 +93,6 @@ char	*get_env_value(t_env **env, char *key);
 void	error_str(char *av, int n);
 void	free_env_arr(char **env_arr, char *path, char **cmd);
 int		check_cmd(t_minishell *mshell);
+void	check_exit_code(char **cmd);
 
 #endif

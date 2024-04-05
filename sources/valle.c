@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 15:23:49 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/04/05 18:03:24 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/04/05 20:29:13 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,18 +99,8 @@ void	valle(t_minishell *mshell)
 	}
 	if (check_cmd(mshell))
 		return ;
-	global_signal = 0;
+	// global_signal = 0;
 	run_commands(mshell);
-	// for (int i = 0; mshell->cmds[i]; i++)
-	// {
-	// 	for (int l = 0; mshell->cmds[i]->cmd[l]; l++)
-	// 		printf("cmd %i--%i = %s\n", i + 1, l + 1, mshell->cmds[i]->cmd[l]);
-	// 	printf("\n");
-	// }
-	// for (int i = 0; mshell->env[i]; i++)
-	// {
-	// 	printf("key: %s value: %s\n\n", mshell->env[i]->key, mshell->env[i]->value);
-	// }
 	free_commands(mshell);
 }
 
@@ -147,6 +137,7 @@ void	run_commands(t_minishell *mshell)
 	fd_in = 0;
 	while (mshell->cmds[i])
 	{
+		check_exit_code(mshell->cmds[i]->cmd);
 		pipe(pipefd);
 		if (fork() == 0)
 		{
@@ -282,4 +273,24 @@ char	*get_env_value(t_env **env, char *key)
 		i++;
 	}
 	return (NULL);
+}
+
+void	check_exit_code(char **cmd)
+{
+	int	i;
+
+	i = 0;
+	while (cmd[i])
+	{
+		if (ft_strncmp(cmd[i], "$?", 3) == 0)
+		{
+			free(cmd[i]);
+			cmd[i] = malloc(sizeof(char) * 4);
+			if (!cmd[i])
+				return ;
+			cmd[i] = ft_itoa(global_signal);
+			return ;
+		}
+		i++;
+	}
 }
