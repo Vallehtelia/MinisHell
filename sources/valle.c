@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 15:23:49 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/04/05 20:29:13 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/04/08 16:33:14 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,20 +69,29 @@ int	parse_command(t_minishell *mshell)
 	return (0);
 }
 
-
 /*
 - Counts number of pipes and saves result to struct.
 */
-static void	count_pipes(t_minishell *mshell)
+void	count_pipes(t_minishell *mshell, char *input_cmd)
 {
 	int	i;
 
 	i = 0;
-	while (mshell->input_cmd[i])
+	while (input_cmd[i])
 	{
-		if (mshell->input_cmd[i] == '|')
+		if (input_cmd[i] == '|')
 			mshell->num_of_pipes++;
 		i++;
+	}
+	if (mshell->num_of_pipes > 0)
+	{
+		i--;
+		while (input_cmd[i] == ' ')
+			i--;
+		if (input_cmd[i] == '|')
+		{
+			mshell->ends_with_pipe = true;
+		}
 	}
 	mshell->num_of_cmds = mshell->num_of_pipes + 1;
 }
@@ -92,7 +101,6 @@ void	valle(t_minishell *mshell)
 	mshell->num_of_pipes = 0;
 	if (mshell->input_cmd[0] == '\0')
 		return ;
-	count_pipes(mshell);
 	if (parse_command(mshell) == 1)
 	{
 		free_commands(mshell);

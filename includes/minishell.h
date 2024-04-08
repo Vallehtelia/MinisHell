@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 17:10:07 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/04/05 20:17:54 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/04/08 16:25:13 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ typedef struct s_minishell
 	char		*prompt_text;
 	int			num_of_pipes;
 	int			num_of_cmds;
+	bool		ends_with_pipe;
 	char		*working_directory;	//current working directory
 }	t_minishell;
 
@@ -94,6 +95,9 @@ void	error_str(char *av, int n);
 void	free_env_arr(char **env_arr, char *path, char **cmd);
 int		check_cmd(t_minishell *mshell);
 void	check_exit_code(char **cmd);
+void	count_pipes(t_minishell *mshell, char *input_cmd);
+int		ft_cmdlen(char *str);
+void	handle_pipe_end(t_minishell *mshell, char *input);
 
 void	print_shrek(void);
 

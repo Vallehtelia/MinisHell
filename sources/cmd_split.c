@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 01:45:22 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/04/05 17:46:19 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/04/08 16:29:53 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,4 +79,43 @@ char	**get_cmd(const char *cmd)
 	}
 	args[i] = NULL;
 	return (args);
+}
+
+void	handle_pipe_end(t_minishell *mshell, char *input)
+{
+	char	*temp;
+
+	temp = NULL;
+	while (temp == NULL)
+	{
+		temp = readline("> ");
+		if (ft_cmdlen(temp) == 0)
+		{
+			free(temp);
+			temp = NULL;
+		}
+	}
+	temp = ft_strjoin(" ", temp);
+	input = ft_strjoin(input, temp);
+	free(temp);
+	mshell->ends_with_pipe = false;
+	mshell->input_cmd = input;
+}
+
+int	ft_cmdlen(char *str)
+{
+	int	i;
+
+	i = 0;
+	if (*str)
+	{
+		while (*str == ' ')
+			str++;
+		while (*str)
+		{
+			str++;
+			i++;
+		}
+	}
+	return (i);
 }
