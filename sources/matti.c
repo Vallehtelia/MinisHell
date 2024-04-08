@@ -16,7 +16,23 @@ void matti(t_minishell *mshell)
 void change_working_directory(t_minishell *mshell, char *path)
 {
 	(void)mshell;
-	if (chdir(path) == -1)
+	if(path == NULL)
+	{
+		path = getenv("HOME");
+		if(!path)
+		{
+			printf("cd:  No such file or directory %s:\n", path);
+			return ;
+		}
+		printf("path: %s\n", path);
+		if (chdir(path) == -1)
+		{
+			printf("cd:  No such file or directory %s:\n", path);
+		}
+		//free(path);
+		//path = NULL;
+	}
+	else if (chdir(path) == -1)
 	{
 		printf("cd:  No such file or directory %s:\n", path);
 	}

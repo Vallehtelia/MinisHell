@@ -14,6 +14,25 @@
 
 int	check_cmd(t_minishell *mshell)
 {
+	//int i = 0;
+	//int x;
+	//while(mshell->cmds[i] != NULL)
+	//{
+	//	x = 1;
+	//	printf("cmd: %s\n", mshell->cmds[i]->cmd[0]);
+	//	while(mshell->cmds[i]->cmd[x] != NULL)
+	//	{
+	//		printf("arg: %s\n", mshell->cmds[i]->cmd[x]);
+	//		x++;
+	//	}
+	//	i++;
+	//}
+	if ((ft_strncmp(mshell->cmds[0]->cmd[0], "cd", 3) == 0))
+	{
+		//if(mshell->cmds[0]->cmd[1] != NULL)
+		change_working_directory(mshell, mshell->cmds[0]->cmd[1]);
+		return (1);
+	}
 	if ((ft_strncmp(mshell->cmds[0]->cmd[0], "exit", 5) == 0)
 		&& mshell->cmds[0]->cmd[1] == NULL)
 	{
