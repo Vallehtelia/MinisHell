@@ -95,4 +95,6 @@ void	free_env_arr(char **env_arr, char *path, char **cmd);
 int		check_cmd(t_minishell *mshell);
 void	check_exit_code(char **cmd);
 
+void	print_shrek(void);
+
 #endif
