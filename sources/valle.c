@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 15:23:49 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/04/08 16:33:14 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/04/08 19:21:03 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,7 +157,7 @@ void	run_commands(t_minishell *mshell)
 			if (mshell->cmds[i + 1])
 				dup2(pipefd[1], 1);
 			close(pipefd[0]);
-			execute_cmd(mshell->cmds[i]->cmd, mshell->env);
+			execute_cmd(mshell, mshell->cmds[i]->cmd, mshell->env);
 		}
 		else
 		{
@@ -169,11 +169,13 @@ void	run_commands(t_minishell *mshell)
 	}
 }
 
-void	execute_cmd(char **cmd, t_env **env)
+void	execute_cmd(t_minishell *mshell, char **cmd, t_env **env)
 {
 	char	*path;
 	char	**env_arr;
 
+	if (check_builtins(mshell, cmd))
+		exit (global_signal);
 	path = find_path(cmd[0], env, 0);
 	if (!path)
 	{
@@ -214,8 +216,25 @@ void	error_str(char *av, int n)
 {
 	if (n == 1)
 	{
+		ft_putstr_fd("minisHell: command not found: ", 2);
+		ft_putstr_fd(av, 2);
+		ft_putstr_fd("\n", 2);
+	}
+	else if (n == 2)
+	{
 		ft_putstr_fd("minisHell: ", 2);
-		ft_putstr_fd("command not found: ", 2);
+		ft_putstr_fd(av, 2);
+		ft_putstr_fd(": is a directory\n", 2);
+	}
+	else if (n == 3)
+	{
+		ft_putstr_fd("minisHell: permission denied: ", 2);
+		ft_putstr_fd(av, 2);
+		ft_putstr_fd("\n", 2);
+	}
+	else if (n == 4)
+	{
+		ft_putstr_fd("minisHell: undefined variable: ", 2);
 		ft_putstr_fd(av, 2);
 		ft_putstr_fd("\n", 2);
 	}

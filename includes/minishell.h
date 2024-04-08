@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 17:10:07 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/04/08 16:25:13 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/04/08 19:08:39 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@
 # include <signal.h>
 # include <glob.h>
 # include <errno.h>
+# include <sys/stat.h>
 
 extern int	global_signal;
 
@@ -68,6 +69,7 @@ typedef struct s_minishell
 /* Functions here */
 int		main(int ac, char **av, char **envp);
 void	print_shrek(void);
+
 // void	useinput(char *str);
 void	matti(t_minishell *mshell);
 void	matti_set(t_minishell *mshell);
@@ -85,9 +87,13 @@ void	free_commands(t_minishell *mshell);
 /* environment init */
 t_env	**parse_env(char **envp, int i, int keylen);
 
+/* Builtins */
+int		check_builtins(t_minishell *mshell, char **cmd);
+void	run_exit(t_minishell *mshell, char **cmd);
+
 /* command execution */
 void	run_commands(t_minishell *mshell);
-void	execute_cmd(char **cmd, t_env **env);
+void	execute_cmd(t_minishell *mshell, char **cmd, t_env **env);
 char	*find_path(char *cmd, t_env **env, int i);
 char	**env_to_char_array(t_env **env);
 char	*get_env_value(t_env **env, char *key);
