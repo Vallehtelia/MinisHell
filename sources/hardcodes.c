@@ -6,11 +6,56 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/05 15:50:13 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/04/08 18:21:04 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/04/13 20:44:27 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+
+static int	syntax_error_check(t_minishell *mshell, int i, int x)
+{
+	if (mshell->cmds[i]->cmd[x + 1] == NULL && mshell->cmds[i + 1] != NULL)
+	{
+		printf("minishell: syntax error near unexpected token `|'\n");
+		return (1);
+	}
+	else if (mshell->cmds[i]->cmd[x + 1] == NULL)
+	{
+		printf("minishell: syntax error near unexpected token `newline'\n");
+		return (1);
+	}
+	return (0);
+}
+
+int	check_valid_redir(t_minishell *mshell)
+{
+	int	i;
+	int	x;
+
+	i = 0;
+	while (mshell->cmds[i])
+	{
+		x = 0;
+		while (mshell->cmds[i]->cmd[x])
+		{
+			if ((ft_strncmp(mshell->cmds[i]->cmd[x], "<", 2) == 0)
+				|| (ft_strncmp(mshell->cmds[i]->cmd[x], "<<", 3) == 0)
+				|| (ft_strncmp(mshell->cmds[i]->cmd[x], ">", 2) == 0)
+				|| (ft_strncmp(mshell->cmds[i]->cmd[x], ">>", 3) == 0))
+			{
+				if (syntax_error_check(mshell, i, x) == 1)
+				{
+					global_signal = 258;
+					free_commands(mshell);
+					return (1);
+				}
+			}
+			x++;
+		}
+		i++;
+	}
+	return (0);
+}
 
 int	check_cmd(t_minishell *mshell)
 {

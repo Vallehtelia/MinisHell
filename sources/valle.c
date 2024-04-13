@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 15:23:49 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/04/08 19:21:03 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/04/13 22:39:32 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,6 +107,8 @@ void	valle(t_minishell *mshell)
 	}
 	if (check_cmd(mshell))
 		return ;
+	if (check_valid_redir(mshell))
+		return ;
 	// global_signal = 0;
 	run_commands(mshell);
 	free_commands(mshell);
@@ -140,12 +142,13 @@ void	run_commands(t_minishell *mshell)
 	int		i;
 	int		pipefd[2];
 	int		fd_in;
+	int		status;
 
 	i = 0;
 	fd_in = 0;
 	while (mshell->cmds[i])
 	{
-		check_exit_code(mshell->cmds[i]->cmd);
+		// check_exit_code(mshell->cmds[i]->cmd);
 		pipe(pipefd);
 		if (fork() == 0)
 		{
@@ -161,7 +164,9 @@ void	run_commands(t_minishell *mshell)
 		}
 		else
 		{
-			wait(NULL);
+			wait(&status);
+			if (WIFEXITED(status))
+				global_signal = WEXITSTATUS(status);
 			close(pipefd[1]);
 			fd_in = pipefd[0];
 			i++;
@@ -176,6 +181,8 @@ void	execute_cmd(t_minishell *mshell, char **cmd, t_env **env)
 
 	if (check_builtins(mshell, cmd))
 		exit (global_signal);
+	if (check_redirections(cmd))
+		exit (global_signal);
 	path = find_path(cmd[0], env, 0);
 	if (!path)
 	{
@@ -185,12 +192,14 @@ void	execute_cmd(t_minishell *mshell, char **cmd, t_env **env)
 		{
 			error_str(cmd[0], 1);
 			global_signal = 127;
-			exit (127);
+			exit (global_signal);
 		}
 	}
+	global_signal = 0;
 	env_arr = env_to_char_array(env);
 	if (execve(path, cmd, env_arr) == -1)
 		free_env_arr(env_arr, path, cmd);
+	exit (global_signal);
 }
 
 void	free_env_arr(char **env_arr, char *path, char **cmd)
@@ -216,9 +225,9 @@ void	error_str(char *av, int n)
 {
 	if (n == 1)
 	{
-		ft_putstr_fd("minisHell: command not found: ", 2);
+		ft_putstr_fd("minisHell: ", 2);
 		ft_putstr_fd(av, 2);
-		ft_putstr_fd("\n", 2);
+		ft_putstr_fd(": command not found\n", 2);
 	}
 	else if (n == 2)
 	{
@@ -302,7 +311,7 @@ char	*get_env_value(t_env **env, char *key)
 	return (NULL);
 }
 
-void	check_exit_code(char **cmd)
+int	check_exit_code(char **cmd)
 {
 	int	i;
 
@@ -314,10 +323,11 @@ void	check_exit_code(char **cmd)
 			free(cmd[i]);
 			cmd[i] = malloc(sizeof(char) * 4);
 			if (!cmd[i])
-				return ;
+				return (1);
 			cmd[i] = ft_itoa(global_signal);
-			return ;
+			return (0);
 		}
 		i++;
 	}
+	return (0);
 }

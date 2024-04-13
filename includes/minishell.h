@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 17:10:07 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/04/08 19:08:39 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/04/13 20:44:30 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include <stdio.h>
+# include <string.h>
 # include <sys/wait.h>
 # include <stdbool.h>
 # include <fcntl.h>
@@ -60,6 +61,8 @@ typedef struct s_minishell
 	char		*cmd_to_split;
 	char		*input_cmd; 		// prompt text
 	char		*prompt_text;
+	char		*redir_input;
+	char		*redir_output;
 	int			num_of_pipes;
 	int			num_of_cmds;
 	bool		ends_with_pipe;
@@ -100,10 +103,14 @@ char	*get_env_value(t_env **env, char *key);
 void	error_str(char *av, int n);
 void	free_env_arr(char **env_arr, char *path, char **cmd);
 int		check_cmd(t_minishell *mshell);
-void	check_exit_code(char **cmd);
+int		check_exit_code(char **cmd);
 void	count_pipes(t_minishell *mshell, char *input_cmd);
 int		ft_cmdlen(char *str);
 void	handle_pipe_end(t_minishell *mshell, char *input);
+
+/* redirections */
+int		check_redirections(char **cmd);
+int		check_valid_redir(t_minishell *mshell);
 
 void	print_shrek(void);
 

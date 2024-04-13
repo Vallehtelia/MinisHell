@@ -7,7 +7,7 @@ SRC_DIR = ./sources/
 
 # source files here
 SRC_FILES = minishell.c valle.c matti.c exit_and_free.c cmd_split.c \
-			environment.c hardcodes.c builtins.c
+			environment.c hardcodes.c builtins.c redirections.c
 
 SRC = $(addprefix $(SRC_DIR), $(SRC_FILES))
 
