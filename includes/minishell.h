@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 17:10:07 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/04/13 20:44:30 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/04/14 20:10:03 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,6 @@ typedef struct s_minishell
 	char		*cmd_to_split;
 	char		*input_cmd; 		// prompt text
 	char		*prompt_text;
-	char		*redir_input;
 	char		*redir_output;
 	int			num_of_pipes;
 	int			num_of_cmds;

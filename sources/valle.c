@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 15:23:49 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/04/13 22:39:32 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/04/14 19:52:18 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -234,6 +234,7 @@ void	error_str(char *av, int n)
 		ft_putstr_fd("minisHell: ", 2);
 		ft_putstr_fd(av, 2);
 		ft_putstr_fd(": is a directory\n", 2);
+		global_signal = 126;
 	}
 	else if (n == 3)
 	{
