@@ -6,13 +6,13 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 17:25:47 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/04/14 20:16:01 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/04/14 20:39:40 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-static void	nullify_cmd(char **cmd, int i)
+void	nullify_cmd(char **cmd, int i)
 {
 	int	j;
 
@@ -104,10 +104,8 @@ int	check_redirections(char **cmd)
 			if ((cmd[j] == NULL && cmd[j - 1] == NULL) || (cmd[0] == NULL))
 				return (1);
 		}
-		// else if (ft_strncmp(cmd[j], ">", 2) == 0)
-		// 	handle_redir_output(mshell, cmd, i);
-		// else if (ft_strncmp(cmd[j], ">>", 3) == 0)
-		// 	handle_redir_output_append(mshell, cmd, i);
+		if (check_output_redirection(cmd, j))
+			return (1);
 		j++;
 	}
 	return (0);

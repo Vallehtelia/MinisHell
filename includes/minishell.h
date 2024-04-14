@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 17:10:07 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/04/14 20:10:03 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/04/14 21:32:15 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,6 @@ typedef struct s_minishell
 
 /* Functions here */
 int		main(int ac, char **av, char **envp);
-void	print_shrek(void);
 
 // void	useinput(char *str);
 void	matti(t_minishell *mshell);
@@ -110,6 +109,8 @@ void	handle_pipe_end(t_minishell *mshell, char *input);
 /* redirections */
 int		check_redirections(char **cmd);
 int		check_valid_redir(t_minishell *mshell);
+int		check_output_redirection(char **cmd, int j);
+void	nullify_cmd(char **cmd, int i);
 
 void	print_shrek(void);
 
