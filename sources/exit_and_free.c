@@ -23,4 +23,6 @@ void	exit_and_free(t_minishell *mshell, int errnum)
 	if (errnum > 0)
 		ft_printf("ERROR %i\n", errnum);
 	exit(errnum);
+	// if (mshell->cmds)
+	// 	free_commands(mshell);
 }

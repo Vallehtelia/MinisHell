@@ -22,25 +22,34 @@ void change_working_directory(t_minishell *mshell, char *path)
 		if(!path)
 		{
 			printf("cd:  No such file or directory %s:\n", path);
+			free_commands(mshell);
+			global_signal = 1;
 			return ;
 		}
 		printf("path: %s\n", path);
 		if (chdir(path) == -1)
 		{
 			printf("cd:  No such file or directory %s:\n", path);
+			global_signal = 1;
 		}
+		else
+			global_signal = 0;
 		//free(path);
 		//path = NULL;
 	}
 	else if (chdir(path) == -1)
 	{
 		printf("cd:  No such file or directory %s:\n", path);
+		global_signal = 1;
 	}
+	else
+		global_signal = 0;
 	// else
 	// {
 	// 	free_workingdir(mshell);
 	// 	matti_set(mshell);
 	// }
+	free_commands(mshell); //Lisäsin tän poistamaan leakit
 }
 void free_workingdir(t_minishell *mshell)
 {
