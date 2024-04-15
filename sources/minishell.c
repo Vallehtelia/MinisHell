@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 13:47:58 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/04/13 21:44:48 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/04/15 18:37:56 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,6 @@ int	main(int ac, char **av, char **envp)
 			mshell.input_cmd = input;
 		matti(&mshell);
 		valle(&mshell);
-		//printf("KUMMAN VIKA!!!\n");
 		add_history(mshell.input_cmd);
 		free(input);
 	}

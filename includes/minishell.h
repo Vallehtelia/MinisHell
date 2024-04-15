@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 17:10:07 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/04/15 14:23:29 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/04/15 17:03:55 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,6 @@ void	nullify_cmd(t_minishell *mshell, char **cmd, int i);
 
 void	signal_handler(t_minishell *mshell);
 void	handle_sigquit(int sig);
-
 
 void	print_shrek(void);
 
