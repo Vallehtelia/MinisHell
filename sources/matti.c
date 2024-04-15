@@ -15,7 +15,7 @@ void matti(t_minishell *mshell)
 }
 void change_working_directory(t_minishell *mshell, char *path)
 {
-	(void)mshell;
+	//(void)mshell;
 	if(path == NULL)
 	{
 		path = getenv("HOME");
@@ -23,27 +23,27 @@ void change_working_directory(t_minishell *mshell, char *path)
 		{
 			printf("cd:  No such file or directory %s:\n", path);
 			free_commands(mshell);
-			global_signal = 1;
+			mshell->exit_code  = 1;
 			return ;
 		}
 		printf("path: %s\n", path);
 		if (chdir(path) == -1)
 		{
 			printf("cd:  No such file or directory %s:\n", path);
-			global_signal = 1;
+			mshell->exit_code = 1;
 		}
 		else
-			global_signal = 0;
+			mshell->exit_code = 0;
 		//free(path);
 		//path = NULL;
 	}
 	else if (chdir(path) == -1)
 	{
 		printf("cd:  No such file or directory %s:\n", path);
-		global_signal = 1;
+		mshell->exit_code = 1;
 	}
 	else
-		global_signal = 0;
+		mshell->exit_code = 0;
 	// else
 	// {
 	// 	free_workingdir(mshell);
@@ -82,4 +82,27 @@ void matti_set(t_minishell *mshell)
 		exit_and_free(mshell, 1);
 	// mshell->input_cmd = mshell->working_directory;
 	// printf("\033[1;32mC:%s\\> \033[0m",mshell.working_directory);
+}
+//void print_prompt(t_minishell *mshell)
+//{
+//	printf("%s",mshell->prompt_text);
+//}
+
+void handle_sigint(int sig)
+{
+	(void)sig;
+	write(1, "\n", 1);
+}
+
+void handle_sigquit(int sig)
+{
+	(void)sig;
+	write(1, "exit\n", 5);
+}
+void signal_handler(t_minishell *mshell)
+{
+	(void)mshell;
+	signal(SIGINT, handle_sigint);
+	//signal(SIGQUIT, handle_sigquit);
+
 }

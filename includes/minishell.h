@@ -58,6 +58,7 @@ typedef struct s_minishell
 	t_env		**env;
 	char		**av;
 	int			ac;
+	int 		exit_code;
 	char		*cmd_to_split;
 	char		*input_cmd; 		// prompt text
 	char		*prompt_text;
@@ -67,6 +68,7 @@ typedef struct s_minishell
 	bool		ends_with_pipe;
 	char		*working_directory;	//current working directory
 }	t_minishell;
+
 
 /* Functions here */
 int		main(int ac, char **av, char **envp);
@@ -111,6 +113,10 @@ int		check_redirections(char **cmd);
 int		check_valid_redir(t_minishell *mshell);
 int		check_output_redirection(char **cmd, int j);
 void	nullify_cmd(char **cmd, int i);
+
+void 	signal_handler(t_minishell *mshell);
+void 	handle_sigquit(int sig);
+
 
 void	print_shrek(void);
 
