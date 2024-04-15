@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 17:25:47 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/04/15 16:22:15 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/04/15 16:55:31 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,8 +90,6 @@ int	check_redirections(t_minishell *mshell, char **cmd)
 	int	j;
 
 	j = 0;
-	for (int l = 0; cmd[l]; l++)
-		printf("cmd[%d]: %s\n", l, cmd[l]);
 	while (cmd[j])
 	{
 		if (ft_strncmp(cmd[j], "<", 2) == 0)
@@ -106,8 +104,6 @@ int	check_redirections(t_minishell *mshell, char **cmd)
 			if ((cmd[j] == NULL && cmd[j - 1] == NULL) || (cmd[0] == NULL))
 				return (1);
 		}
-		for (int l = 0; cmd[l]; l++)
-			printf("cmd[%d]: %s\n", l, cmd[l]);
 		if (cmd[j] != NULL)
 		{
 			if (check_output_redirection(mshell, cmd, j))
