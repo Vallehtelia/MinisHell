@@ -13,42 +13,84 @@ void matti(t_minishell *mshell)
 	//	printf("mshell: %s: command not found\n", mshell->input_cmd);
 	//}
 }
+
+void set_old_pwd(t_minishell *mshell)
+{
+	if(mshell->old_pwd)
+	{
+		free(mshell->old_pwd);
+		mshell->old_pwd = NULL;
+	}
+	char temp[1024];
+	getcwd(temp, sizeof(temp));
+	mshell->old_pwd = malloc(ft_strlen(temp) + 1);
+	if (!mshell->old_pwd)
+		exit_and_free(mshell, 1);
+	ft_strlcpy(mshell->old_pwd, temp, ft_strlen(temp) + 1);
+}
 void change_working_directory(t_minishell *mshell, char *path)
 {
-	//(void)mshell;
+	int i;
+	char *temp;
+
 	if(path == NULL)
 	{
 		path = getenv("HOME");
+		set_old_pwd(mshell);
 		if(!path)
 		{
-			printf("cd:  No such file or directory %s:\n", path);
+			printf("minisHell: cd: No such file or directory %s:\n", path);
 			free_commands(mshell);
 			mshell->exit_code  = 1;
 			return ;
 		}
-		printf("path: %s\n", path);
 		if (chdir(path) == -1)
 		{
-			printf("cd:  No such file or directory %s:\n", path);
+			printf("minisHell: cd: No such file or directory %s:\n", path);
 			mshell->exit_code = 1;
 		}
 		else
 			mshell->exit_code = 0;
-		//free(path);
-		//path = NULL;
 	}
-	else if (chdir(path) == -1)
+	else if(path)
 	{
-		printf("cd:  No such file or directory %s:\n", path);
-		mshell->exit_code = 1;
+		if (ft_strncmp(path, "-", 1) == 0)
+		{
+			path = NULL;
+			if(mshell->old_pwd == NULL)
+			{
+				printf("minisHell cd: OLDPWD not set\n");
+				return ;
+			}
+			temp = malloc(ft_strlen(mshell->old_pwd) + 1);
+			if (!temp)
+				exit_and_free(mshell, 1);
+			ft_strlcpy(temp, mshell->old_pwd, ft_strlen(mshell->old_pwd) + 1);
+			set_old_pwd(mshell);
+			printf("%s\n", temp);
+			i = chdir(temp);
+			if(i == -1)
+			{
+				printf("minisHell: cd: No such file or directory %s:\n", path);
+				mshell->exit_code = 1;
+			}
+			free(temp);
+			temp = NULL;
+			return ;
+		}
+		else
+		{
+			set_old_pwd(mshell);
+			i = chdir(path);
+			if(i == -1)
+			{
+				printf("minisHell: cd: No such file or directory %s:\n", path);
+				mshell->exit_code = 1;
+			}
+		}
 	}
 	else
 		mshell->exit_code = 0;
-	// else
-	// {
-	// 	free_workingdir(mshell);
-	// 	matti_set(mshell);
-	// }
 	free_commands(mshell); //Lisäsin tän poistamaan leakit
 }
 void free_workingdir(t_minishell *mshell)

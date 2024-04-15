@@ -63,6 +63,7 @@ typedef struct s_minishell
 	char		*input_cmd; 		// prompt text
 	char		*prompt_text;
 	char		*redir_output;
+	char		*old_pwd;
 	int			num_of_pipes;
 	int			num_of_cmds;
 	bool		ends_with_pipe;
