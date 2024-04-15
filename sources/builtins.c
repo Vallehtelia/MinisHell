@@ -6,13 +6,13 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 17:10:14 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/04/13 20:44:28 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/04/15 14:29:05 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-static void	echo(char **cmd, int i)
+static void	echo(t_minishell *mshell, char **cmd, int i)
 {
 	if (!cmd[i])
 		ft_printf("\n");
@@ -38,10 +38,10 @@ static void	echo(char **cmd, int i)
 		}
 		ft_printf("\n");
 	}
-	global_signal = 0;
+	mshell->exit_code = 0;
 }
 
-static void	get_pwd(void)
+static void	get_pwd(t_minishell *mshell)
 {
 	char	*pwd;
 
@@ -49,13 +49,13 @@ static void	get_pwd(void)
 	if (!pwd)
 	{
 		ft_printf("minishell: pwd: error retrieving current directory\n");
-		global_signal = 1;
+		mshell->exit_code = 1;
 	}
 	else
 	{
 		ft_printf("%s\n", pwd);
 		free(pwd);
-		global_signal = 0;
+		mshell->exit_code = 0;
 	}
 }
 
@@ -64,7 +64,7 @@ void	run_exit(t_minishell *mshell, char **cmd)
 	if (cmd[1] != NULL)
 	{
 		ft_printf("minishell: exit: too many arguments\n");
-		global_signal = 1;
+		mshell->exit_code = 1;
 		return ;
 	}
 	else
@@ -87,32 +87,32 @@ static void	handle_env_var(t_minishell *mshell)
 		if (stat(mshell->cmds[0]->cmd[0], &statbuf) == 0)
 		{
 			if (S_ISDIR(statbuf.st_mode))
-				error_str(mshell->cmds[0]->cmd[0], 2);
+				error_str(mshell, mshell->cmds[0]->cmd[0], 2);
 			else if (statbuf.st_mode & S_IXUSR)
 				execute_cmd(mshell, mshell->cmds[0]->cmd, mshell->env);
 			else
-				error_str(mshell->cmds[0]->cmd[0], 3);
+				error_str(mshell, mshell->cmds[0]->cmd[0], 3);
 		}
 		else
-			error_str(mshell->cmds[0]->cmd[0], 1);
+			error_str(mshell, mshell->cmds[0]->cmd[0], 1);
 	}
 	else
-		error_str(mshell->cmds[0]->cmd[0], 4);
+		error_str(mshell, mshell->cmds[0]->cmd[0], 4);
 }
 
 int	check_builtins(t_minishell *mshell, char **cmd)
 {
 	if (ft_strncmp(cmd[0], "echo", 5) == 0)
 	{
-		echo(cmd, 1);
+		echo(mshell, cmd, 1);
 		return (1);
 	}
 	if (ft_strncmp(cmd[0], "pwd", 4) == 0)
 	{
-		get_pwd();
+		get_pwd(mshell);
 		return (1);
 	}
-	if (check_exit_code(cmd))
+	if (check_exit_code(mshell, cmd))
 	{
 		return (1);
 	}

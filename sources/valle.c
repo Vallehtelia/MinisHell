@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 15:23:49 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/04/14 19:52:18 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/04/15 16:52:15 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,6 @@ void	valle(t_minishell *mshell)
 		return ;
 	if (check_valid_redir(mshell))
 		return ;
-	// global_signal = 0;
 	run_commands(mshell);
 	free_commands(mshell);
 }
@@ -148,7 +147,6 @@ void	run_commands(t_minishell *mshell)
 	fd_in = 0;
 	while (mshell->cmds[i])
 	{
-		// check_exit_code(mshell->cmds[i]->cmd);
 		pipe(pipefd);
 		if (fork() == 0)
 		{
@@ -166,7 +164,7 @@ void	run_commands(t_minishell *mshell)
 		{
 			wait(&status);
 			if (WIFEXITED(status))
-				global_signal = WEXITSTATUS(status);
+				mshell->exit_code = WEXITSTATUS(status);
 			close(pipefd[1]);
 			fd_in = pipefd[0];
 			i++;
@@ -180,9 +178,9 @@ void	execute_cmd(t_minishell *mshell, char **cmd, t_env **env)
 	char	**env_arr;
 
 	if (check_builtins(mshell, cmd))
-		exit (global_signal);
-	if (check_redirections(cmd))
-		exit (global_signal);
+		exit (mshell->exit_code);
+	if (check_redirections(mshell, cmd))
+		exit (mshell->exit_code);
 	path = find_path(cmd[0], env, 0);
 	if (!path)
 	{
@@ -190,38 +188,35 @@ void	execute_cmd(t_minishell *mshell, char **cmd, t_env **env)
 			path = cmd[0];
 		else
 		{
-			error_str(cmd[0], 1);
-			global_signal = 127;
-			exit (global_signal);
+			error_str(mshell, cmd[0], 1);
+			mshell->exit_code = 127;
+			exit (mshell->exit_code);
 		}
 	}
-	global_signal = 0;
+	mshell->exit_code = 0;
 	env_arr = env_to_char_array(env);
 	if (execve(path, cmd, env_arr) == -1)
-		free_env_arr(env_arr, path, cmd);
-	exit (global_signal);
+		free_env_arr(mshell, env_arr, path, cmd);
+	exit (mshell->exit_code);
 }
 
-void	free_env_arr(char **env_arr, char *path, char **cmd)
+void	free_env_arr(t_minishell *mshell, char **env_arr, char *path, char **cmd)
 {
-	// printf("errno: %d\n", errno);
 	int	i;
 
 	i = 0;
-	// (void)path;
-	// (void)cmd;
 	while (env_arr[i])
 		free(env_arr[i++]);
 	free(env_arr);
 	if (path != cmd[0])
 		free(path);
 	if (errno == EACCES)
-		global_signal = 126;
+		mshell->exit_code = 126;
 	else
-		global_signal = 1;
+		mshell->exit_code = 1;
 }
 
-void	error_str(char *av, int n)
+void	error_str(t_minishell *mshell, char *av, int n)
 {
 	if (n == 1)
 	{
@@ -234,7 +229,7 @@ void	error_str(char *av, int n)
 		ft_putstr_fd("minisHell: ", 2);
 		ft_putstr_fd(av, 2);
 		ft_putstr_fd(": is a directory\n", 2);
-		global_signal = 126;
+		mshell->exit_code = 126;
 	}
 	else if (n == 3)
 	{
@@ -312,7 +307,7 @@ char	*get_env_value(t_env **env, char *key)
 	return (NULL);
 }
 
-int	check_exit_code(char **cmd)
+int	check_exit_code(t_minishell *mshell, char **cmd)
 {
 	int	i;
 
@@ -325,7 +320,7 @@ int	check_exit_code(char **cmd)
 			cmd[i] = malloc(sizeof(char) * 4);
 			if (!cmd[i])
 				return (1);
-			cmd[i] = ft_itoa(global_signal);
+			cmd[i] = ft_itoa(mshell->exit_code);
 			return (0);
 		}
 		i++;

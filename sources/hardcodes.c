@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/05 15:50:13 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/04/14 21:32:28 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/04/15 14:24:44 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ int	check_valid_redir(t_minishell *mshell)
 			{
 				if (syntax_error_check(mshell, i, x) == 1)
 				{
-					global_signal = 258;
+					mshell->exit_code = 258;
 					free_commands(mshell);
 					return (1);
 				}

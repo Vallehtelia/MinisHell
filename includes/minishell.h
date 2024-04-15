@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 17:10:07 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/04/14 21:32:15 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/04/15 14:23:29 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,22 +100,22 @@ void	execute_cmd(t_minishell *mshell, char **cmd, t_env **env);
 char	*find_path(char *cmd, t_env **env, int i);
 char	**env_to_char_array(t_env **env);
 char	*get_env_value(t_env **env, char *key);
-void	error_str(char *av, int n);
-void	free_env_arr(char **env_arr, char *path, char **cmd);
+void	error_str(t_minishell *mshell, char *av, int n);
+void	free_env_arr(t_minishell *mshell, char **env_arr, char *path, char **cmd);
 int		check_cmd(t_minishell *mshell);
-int		check_exit_code(char **cmd);
+int		check_exit_code(t_minishell *mshell, char **cmd);
 void	count_pipes(t_minishell *mshell, char *input_cmd);
 int		ft_cmdlen(char *str);
 void	handle_pipe_end(t_minishell *mshell, char *input);
 
 /* redirections */
-int		check_redirections(char **cmd);
+int		check_redirections(t_minishell *mshell, char **cmd);
 int		check_valid_redir(t_minishell *mshell);
-int		check_output_redirection(char **cmd, int j);
-void	nullify_cmd(char **cmd, int i);
+int		check_output_redirection(t_minishell *mshell, char **cmd, int j);
+void	nullify_cmd(t_minishell *mshell, char **cmd, int i);
 
-void 	signal_handler(t_minishell *mshell);
-void 	handle_sigquit(int sig);
+void	signal_handler(t_minishell *mshell);
+void	handle_sigquit(int sig);
 
 
 void	print_shrek(void);

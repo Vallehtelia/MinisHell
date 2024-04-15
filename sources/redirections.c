@@ -6,13 +6,13 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 17:25:47 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/04/14 20:39:40 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/04/15 16:22:15 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-void	nullify_cmd(char **cmd, int i)
+void	nullify_cmd(t_minishell *mshell, char **cmd, int i)
 {
 	int	j;
 
@@ -24,10 +24,10 @@ void	nullify_cmd(char **cmd, int i)
 		j++;
 	}
 	cmd[j] = NULL;
-	global_signal = 0;
+	mshell->exit_code = 0;
 }
 
-static void	handle_redir_input(char **cmd, int i)
+static void	handle_redir_input(t_minishell *mshell, char **cmd, int i)
 {
 	int	fd;
 
@@ -35,14 +35,14 @@ static void	handle_redir_input(char **cmd, int i)
 	if (fd < 0)
 	{
 		printf("minishell: %s: %s\n", cmd[i + 1], strerror(errno));
-		global_signal = 1;
+		mshell->exit_code = 1;
 		return ;
 	}
 	dup2(fd, STDIN_FILENO);
 	close(fd);
 	free(cmd[i]);
 	free(cmd[i + 1]);
-	nullify_cmd(cmd, i);
+	nullify_cmd(mshell, cmd, i);
 }
 
 static int	check_line(char **cmd, char *line, int i)
@@ -56,7 +56,7 @@ static int	check_line(char **cmd, char *line, int i)
 	return (0);
 }
 
-static void	handle_redir_input_heredoc(char **cmd, int i)
+static void	handle_redir_input_heredoc(t_minishell *mshell, char **cmd, int i)
 {
 	int		pipefd[2];
 	char	*line;
@@ -64,7 +64,7 @@ static void	handle_redir_input_heredoc(char **cmd, int i)
 	if (pipe(pipefd) == -1)
 	{
 		printf("minishell: %s\n", strerror(errno));
-		global_signal = 1;
+		mshell->exit_code = 1;
 		return ;
 	}
 	while (1)
@@ -82,30 +82,37 @@ static void	handle_redir_input_heredoc(char **cmd, int i)
 	close(pipefd[0]);
 	free(cmd[i]);
 	free(cmd[i + 1]);
-	nullify_cmd(cmd, i);
+	nullify_cmd(mshell, cmd, i);
 }
 
-int	check_redirections(char **cmd)
+int	check_redirections(t_minishell *mshell, char **cmd)
 {
 	int	j;
 
 	j = 0;
+	for (int l = 0; cmd[l]; l++)
+		printf("cmd[%d]: %s\n", l, cmd[l]);
 	while (cmd[j])
 	{
 		if (ft_strncmp(cmd[j], "<", 2) == 0)
 		{
-			handle_redir_input(cmd, j);
+			handle_redir_input(mshell, cmd, j);
 			if ((cmd[j] == NULL && cmd[j - 1] == NULL) || (cmd[0] == NULL))
 				return (1);
 		}
 		else if (ft_strncmp(cmd[j], "<<", 3) == 0)
 		{
-			handle_redir_input_heredoc(cmd, j);
+			handle_redir_input_heredoc(mshell, cmd, j);
 			if ((cmd[j] == NULL && cmd[j - 1] == NULL) || (cmd[0] == NULL))
 				return (1);
 		}
-		if (check_output_redirection(cmd, j))
-			return (1);
+		for (int l = 0; cmd[l]; l++)
+			printf("cmd[%d]: %s\n", l, cmd[l]);
+		if (cmd[j] != NULL)
+		{
+			if (check_output_redirection(mshell, cmd, j))
+				return (1);
+		}
 		j++;
 	}
 	return (0);
