@@ -53,6 +53,8 @@ t_env	**parse_env(char **envp, int i, int keylen)
 		{
 			keylen = del_pos - env_entry;
 			key = ft_strndup(env_entry, keylen);
+			if(!ft_strncmp(key, "OLDPWD", 6)) // Jattaa OLDPWD pois. Pitaa ehka keksia parempi tapa
+				continue;
 			value = ft_strdup(del_pos + 1);
 			env_vars[i] = allocate_env(key, value);
 		}
