@@ -1,18 +1,23 @@
 #include "../includes/minishell.h"
 
-static void	free_env(t_minishell *mshell)
+void	free_env(t_minishell *mshell) // Otin staticin pois.. Katotaan haittaako?
 {
 	int	i;
 
 	i = 0;
-	while (mshell->env[i])
+	if(mshell->env)
 	{
-		free(mshell->env[i]->key);
-		free(mshell->env[i]->value);
-		free(mshell->env[i]);
-		i++;
+		while (mshell->env[i])
+		{
+			free(mshell->env[i]->key);
+			free(mshell->env[i]->value);
+			free(mshell->env[i]);
+			mshell->env[i] = NULL;
+			i++;
+		}
+		free(mshell->env);
+		mshell->env = NULL;
 	}
-	free(mshell->env);
 }
 
 void	exit_and_free(t_minishell *mshell, int errnum)

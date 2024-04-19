@@ -100,6 +100,18 @@ static void	handle_env_var(t_minishell *mshell)
 		error_str(mshell, mshell->cmds[0]->cmd[0], 4);
 }
 
+void print_env(t_env **env)
+{
+	int i;
+
+	i = 0;
+	while (env[i])
+	{
+		ft_printf("%s=%s\n", env[i]->key, env[i]->value);
+		i++;
+	}
+}
+
 int	check_builtins(t_minishell *mshell, char **cmd)
 {
 	if (ft_strncmp(cmd[0], "echo", 5) == 0)
@@ -119,6 +131,11 @@ int	check_builtins(t_minishell *mshell, char **cmd)
 	else if (cmd[0][0] == '$' && cmd[0][1] != '\0')
 	{
 		handle_env_var(mshell);
+		return (1);
+	}
+	else if(ft_strncmp(cmd[0], "env", 4) == 0)
+	{
+		print_env(mshell->env);
 		return (1);
 	}
 	return (0);

@@ -33,6 +33,87 @@ static int	env_count(char **envp)
 		i++;
 	return (i);
 }
+bool check_if_env_exists(t_env **env, char *key)
+{
+	int	i;
+
+	i = 0;
+	while (env[i])
+	{
+		if (ft_strncmp(env[i]->key, key, ft_strlen(key) + 1) == 0)
+			return (true);
+		i++;
+	}
+	return (false);
+}
+/*
+	Changes value of environment variable.
+*/
+int		set_env_value(t_env **env, char *key, char* value)
+{
+	int	i;
+
+	i = 0;
+	while (env[i])
+	{
+		if (ft_strncmp(env[i]->key, key, ft_strlen(key) + 1) == 0)
+		{
+			if(ft_strlen(env[i]->value) > 0)
+				free(env[i]->value);
+			env[i]->value = NULL;
+			env[i]->value = ft_strdup(value);
+			if(!env[i]->value)
+				return (1);
+			return (0);
+		}
+		i++;
+	}
+	return (1);
+}
+
+t_env	** add_env(t_minishell *mshell, char *key, char *value) // Taytta paskaa. Ei toimi!!!!!
+{
+	int	i;
+	int env_count;
+	t_env	**temp_env_vars;
+
+	i = 0;
+	env_count = 0;
+	while (mshell->env[env_count])
+		env_count++;
+	temp_env_vars = malloc(sizeof(t_env *) * (env_count + 2));
+	if (!temp_env_vars)
+		return NULL; // Joku kunnon malloc check tähän
+	while (mshell->env[i])
+	{
+		temp_env_vars[i] = allocate_env(mshell->env[i]->key, mshell->env[i]->value);
+		//printf(" OLD key: %s value: %s\n", mshell->env[i]->key, mshell->env[i]->value);
+		//printf(" NEW key: %s value: %s\n", temp_env_vars[i]->key, temp_env_vars[i]->value);
+		i++;
+
+	}
+	//free_env(mshell);
+	temp_env_vars[i] = allocate_env(key, value);
+	//printf(" OLD key: %s value: %s\n", mshell->env[i]->key, mshell->env[i]->value);
+	temp_env_vars[i + 1] = NULL;
+	//printf(" OLD key: %s value: %s\n", mshell->env[i +1 ]->key, mshell->env[i + 1]->value);
+	return (temp_env_vars);
+	//i = 0;
+	//
+	//mshell->env = malloc(sizeof(t_env *) * (env_count + 2));
+	//while (temp_env_vars[++i])
+	//{
+	//	mshell->env[i] = allocate_env(temp_env_vars[i]->key, temp_env_vars[i]->value);
+	//}
+	//temp_env_vars[i] = allocate_env(key, value);
+	//temp_env_vars[i + 1] = NULL;
+	////printf(" OLD key: %s value: %s\n", mshell->env[i]->key, mshell->env[i]->value);
+	////printf(" NEW key: %s value: %s\n", temp_env_vars[i]->key, temp_env_vars[i]->value);
+	////free_env(mshell);
+	////printf("TESTI\n");
+
+	//mshell->env = temp_env_vars;
+}
 
 t_env	**parse_env(char **envp, int i, int keylen)
 {

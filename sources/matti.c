@@ -28,7 +28,7 @@ void set_working_directory(t_minishell *mshell)
 			free(mshell->env[i]->value);
 			mshell->env[i]->value = NULL;
 			mshell->env[i]->value = getcwd(NULL, 0);
-			printf("%s %s\n",mshell->env[i]->key, mshell->env[i]->value);
+			//printf("%s %s\n",mshell->env[i]->key, mshell->env[i]->value);
 			//mshell->working_directory = ft_strdup(mshell->env[i]->value);
 			break;
 		}
@@ -36,43 +36,16 @@ void set_working_directory(t_minishell *mshell)
 	}
 }
 
-/*
-	Changes value of environment variable.
-*/
-int		set_env_value(t_env **env, char *key, char* value)
-{
-	int	i;
 
-	i = 0;
-	while (env[i])
-	{
-		if (ft_strncmp(env[i]->key, key, ft_strlen(key) + 1) == 0)
-		{
-			free(env[i]->value);
-			env[i]->value = ft_strdup(value);
-			if(!env[i]->value)
-				return (1);
-			return (0);
-		}
-		i++;
-	}
-	return (1);
-}
 void set_old_pwd(t_minishell *mshell)
 {
-	int i;
-
-	i = 0;
-	while(mshell->env[i])
+	if(check_if_env_exists(mshell->env, "OLDPWD"))
 	{
-		if(ft_strncmp(mshell->env[i]->key, "OLDPWD", 3) == 0)
-		{
-			free(mshell->env[i]->value);
-			mshell->env[i]->value = NULL;
-			mshell->env[i]->value = getcwd(NULL, 0);
-			break;
-		}
-		i++;
+		set_env_value(mshell->env, "OLDPWD", get_env_value(mshell->env, "PWD"));
+	}
+	else
+	{
+		mshell->env = add_env(mshell, "OLDPWD", get_env_value(mshell->env, "PWD"));
 	}
 }
 int get_old_pwd(t_minishell *mshell)
@@ -127,17 +100,13 @@ void change_working_directory(t_minishell *mshell, char *path)
 				printf("minisHell cd: OLDPWD not set\n");
 				return ;
 			}
-			//ft_strlcpy(temp, mshell->old_pwd, ft_strlen(mshell->old_pwd) + 1);
 			set_old_pwd(mshell);
-			//printf("%s\n", temp);
 			i = chdir(temp);
 			if(i == -1)
 			{
 				printf("minisHell: cd: No such file or directory %s:\n", path);
 				mshell->exit_code = 1;
 			}
-			//free(temp);
-			//temp = NULL;
 			return ;
 		}
 		else
@@ -156,6 +125,7 @@ void change_working_directory(t_minishell *mshell, char *path)
 		mshell->exit_code = 0;
 	free_commands(mshell); //Lisäsin tän poistamaan leakit
 }
+
 void free_workingdir(t_minishell *mshell)
 {
 	if (mshell->prompt_text)

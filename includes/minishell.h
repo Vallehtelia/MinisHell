@@ -30,6 +30,7 @@
 # include <glob.h>
 # include <errno.h>
 # include <sys/stat.h>
+# include <stdbool.h>
 
 extern int	global_signal;
 
@@ -119,5 +120,13 @@ void	signal_handler(t_minishell *mshell);
 void	handle_sigquit(int sig);
 
 void	print_shrek(void);
+
+/* matin sekoilua */
+t_env	**add_env(t_minishell *mshell, char *key, char *value);
+void	free_env(t_minishell *mshell);
+bool		check_if_env_exists(t_env **env, char *key);
+int		set_env_value(t_env **env, char *key, char* value);
+
+
 
 #endif

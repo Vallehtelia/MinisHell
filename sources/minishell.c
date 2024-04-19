@@ -27,8 +27,8 @@ int	main(int ac, char **av, char **envp)
 	mshell.env = parse_env(envp, -1, 0);
 	while (1)
 	{
-		signal(SIGQUIT, handle_sigquit);
-		signal_handler(&mshell);
+		//signal(SIGQUIT, handle_sigquit); // Commented out to help debugging
+		//signal_handler(&mshell);
 		matti_set(&mshell);
 		input = readline(mshell.prompt_text);
 		if (!input)
