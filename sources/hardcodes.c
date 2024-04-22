@@ -78,7 +78,17 @@ int	check_cmd(t_minishell *mshell)
 		change_working_directory(mshell, mshell->cmds[0]->cmd[1]);
 		return (1);
 	}
-	if (ft_strncmp(mshell->cmds[0]->cmd[0], "exit", 5) == 0)
+	else if(ft_strncmp(mshell->cmds[0]->cmd[0], "export", 7) == 0)
+	{
+		export_env(mshell, mshell->cmds[0]->cmd);
+		return (1);
+	}
+	else if(ft_strncmp(mshell->cmds[0]->cmd[0], "unset", 6) == 0)
+	{
+		delete_env(mshell, mshell->cmds[0]->cmd[1]);
+		return (1);
+	}
+	else if (ft_strncmp(mshell->cmds[0]->cmd[0], "exit", 5) == 0)
 		run_exit(mshell, mshell->cmds[0]->cmd);
 	return (0);
 }

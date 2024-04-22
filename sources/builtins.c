@@ -163,16 +163,6 @@ int	check_builtins(t_minishell *mshell, char **cmd)
 		print_env(mshell);
 		return (1);
 	}
-	else if(ft_strncmp(cmd[0], "export", 7) == 0)
-	{
-		export_env(mshell, cmd);
-		return (1);
-	}
-	else if(ft_strncmp(cmd[0], "unset", 6) == 0)
-	{
-		delete_env(mshell, cmd[1]);
-		return (1);
-	}
 	return (0);
 }
 /*
