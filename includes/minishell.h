@@ -64,7 +64,7 @@ typedef struct s_minishell
 	char		*input_cmd; 		// prompt text
 	char		*prompt_text;
 	char		*redir_output;
-	char		*old_pwd;
+	//char		*old_pwd;
 	int			num_of_pipes;
 	int			num_of_cmds;
 	bool		ends_with_pipe;
@@ -122,10 +122,12 @@ void	handle_sigquit(int sig);
 void	print_shrek(void);
 
 /* matin sekoilua */
-t_env	**add_env(t_minishell *mshell, char *key, char *value);
+void 	add_env(t_minishell *mshell, char *key, char *value);
 void	free_env(t_minishell *mshell);
-bool		check_if_env_exists(t_env **env, char *key);
+bool	check_if_env_exists(t_env **env, char *key);
 int		set_env_value(t_env **env, char *key, char* value);
+void	print_env(t_minishell *mshell);
+void	delete_env(t_minishell *mshell, char *key);
 
 
 

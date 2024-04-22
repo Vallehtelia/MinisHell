@@ -100,14 +100,39 @@ static void	handle_env_var(t_minishell *mshell)
 		error_str(mshell, mshell->cmds[0]->cmd[0], 4);
 }
 
-void print_env(t_env **env)
+void print_env(t_minishell *mshell)
 {
 	int i;
 
 	i = 0;
-	while (env[i])
+	while (mshell->env[i])
 	{
-		ft_printf("%s=%s\n", env[i]->key, env[i]->value);
+		ft_printf("%s=%s\n", mshell->env[i]->key, mshell->env[i]->value);
+		i++;
+	}
+}
+
+void export_env(t_minishell *mshell, char **cmd)
+{
+	int		i;
+	int 	keylen;
+	char	*key;
+	char	*value;
+	char	*env_entry;
+	char	*del_pos;
+
+	i = 1;
+	while(cmd[i])
+	{
+		env_entry = cmd[i];
+		del_pos = ft_strchr(cmd[i], '=');
+		if (del_pos)
+		{
+			keylen = del_pos - env_entry;
+			key = ft_strndup(env_entry, keylen);
+			value = ft_strdup(del_pos + 1);
+			add_env(mshell,key,value);
+		}
 		i++;
 	}
 }
@@ -135,8 +160,27 @@ int	check_builtins(t_minishell *mshell, char **cmd)
 	}
 	else if(ft_strncmp(cmd[0], "env", 4) == 0)
 	{
-		print_env(mshell->env);
+		print_env(mshell);
+		return (1);
+	}
+	else if(ft_strncmp(cmd[0], "export", 7) == 0)
+	{
+		export_env(mshell, cmd);
+		return (1);
+	}
+	else if(ft_strncmp(cmd[0], "unset", 6) == 0)
+	{
+		delete_env(mshell, cmd[1]);
 		return (1);
 	}
 	return (0);
 }
+/*
+echo with option -n
+◦ cd with only a relative or absolute path
+◦ pwd with no options
+◦ export with no options
+◦ unset with no options
+◦ env with no options or arguments
+◦ exit with no options
+*/

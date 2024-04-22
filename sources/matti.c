@@ -4,19 +4,9 @@ void matti(t_minishell *mshell)
 {
 	mshell->prompt_text = NULL;
 	mshell->working_directory = NULL;
-
-
-	//printf("%s",mshell->env[6]->value);
-	//if (mshell->input_cmd[0] == 'c' && mshell->input_cmd[1] == 'd' && mshell->input_cmd[2] == ' ')
-	//{
-	//	change_working_directory(mshell, mshell->input_cmd + 3);
-	//}
-	//else
-	//{
-	//	printf("mshell: %s: command not found\n", mshell->input_cmd);
-	//}
 }
 void set_working_directory(t_minishell *mshell)
+
 {
 	int i;
 
@@ -28,44 +18,27 @@ void set_working_directory(t_minishell *mshell)
 			free(mshell->env[i]->value);
 			mshell->env[i]->value = NULL;
 			mshell->env[i]->value = getcwd(NULL, 0);
-			//printf("%s %s\n",mshell->env[i]->key, mshell->env[i]->value);
-			//mshell->working_directory = ft_strdup(mshell->env[i]->value);
 			break;
 		}
 		i++;
 	}
 }
 
-
 void set_old_pwd(t_minishell *mshell)
 {
+	char *temp;
+
 	if(check_if_env_exists(mshell->env, "OLDPWD"))
 	{
 		set_env_value(mshell->env, "OLDPWD", get_env_value(mshell->env, "PWD"));
 	}
 	else
 	{
-		mshell->env = add_env(mshell, "OLDPWD", get_env_value(mshell->env, "PWD"));
+		temp = get_env_value(mshell->env, "PWD");
+		add_env(mshell, "OLDPWD", temp);
 	}
 }
-int get_old_pwd(t_minishell *mshell)
-{
-	int i;
 
-	i = 0;
-	while(mshell->env[i])
-	{
-		if(ft_strncmp(mshell->env[i]->key, "OLDPWD", 3) == 0)
-		{
-			if(mshell->env[i]->value == NULL)
-			{
-				return (1);
-			}
-		}
-		i++;
-	}
-	return (0);
-}
 void change_working_directory(t_minishell *mshell, char *path)
 {
 	int i;
@@ -95,7 +68,7 @@ void change_working_directory(t_minishell *mshell, char *path)
 		if (ft_strncmp(path, "-", 1) == 0)
 		{
 			path = NULL;
-			if(!get_old_pwd(mshell))
+			if(!check_if_env_exists(mshell->env,"OLDPWD"))
 			{
 				printf("minisHell cd: OLDPWD not set\n");
 				return ;
@@ -147,16 +120,9 @@ void matti_set(t_minishell *mshell)
 	if (!mshell->working_directory)
 		exit_and_free(mshell, 1);
 	ft_strlcpy(mshell->working_directory, temp, ft_strlen(temp) + 1);
-	// getcwd(mshell->working_directory, sizeof(mshell->working_directory));
-	// printf("Current working dir: %s\n", cwd);
-
-	// mshell->input_cmd = malloc(ft_strlen(temp) + 1);
-
-	mshell->prompt_text = ft_strjoin(mshell->working_directory, " >>> ");
+		mshell->prompt_text = ft_strjoin(mshell->working_directory, " >>> ");
 	if (!mshell->prompt_text)
 		exit_and_free(mshell, 1);
-	// mshell->input_cmd = mshell->working_directory;
-	// printf("\033[1;32mC:%s\\> \033[0m",mshell.working_directory);
 }
 //void print_prompt(t_minishell *mshell)
 //{

@@ -25,6 +25,8 @@ int	main(int ac, char **av, char **envp)
 
 	print_shrek();
 	mshell.env = parse_env(envp, -1, 0);
+	delete_env(&mshell, "OLDPWD");
+	add_env(&mshell, "TESTI33", "VALUE1");
 	while (1)
 	{
 		//signal(SIGQUIT, handle_sigquit); // Commented out to help debugging
