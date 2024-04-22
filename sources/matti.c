@@ -42,8 +42,8 @@ void set_old_pwd(t_minishell *mshell)
 void change_working_directory(t_minishell *mshell, char *path)
 {
 	int i;
-	char *temp;
 
+	//char *temp;
 	if(path == NULL)
 	{
 		path = getenv("HOME");
@@ -65,37 +65,18 @@ void change_working_directory(t_minishell *mshell, char *path)
 	}
 	else if(path)
 	{
-		if (ft_strncmp(path, "-", 1) == 0)
+		set_old_pwd(mshell);
+		i = chdir(path);
+		if(i == -1)
 		{
-			path = NULL;
-			if(!check_if_env_exists(mshell->env,"OLDPWD"))
-			{
-				printf("minisHell cd: OLDPWD not set\n");
-				return ;
-			}
-			set_old_pwd(mshell);
-			i = chdir(temp);
-			if(i == -1)
-			{
-				printf("minisHell: cd: No such file or directory %s:\n", path);
-				mshell->exit_code = 1;
-			}
-			return ;
+			printf("minisHell: cd: No such file or directory %s:\n", path);
+			mshell->exit_code = 1;
 		}
-		else
-		{
-			set_old_pwd(mshell);
-			i = chdir(path);
-			set_working_directory(mshell);
-			if(i == -1)
-			{
-				printf("minisHell: cd: No such file or directory %s:\n", path);
-				mshell->exit_code = 1;
-			}
-		}
+
 	}
 	else
 		mshell->exit_code = 0;
+	set_working_directory(mshell);
 	free_commands(mshell); //Lisäsin tän poistamaan leakit
 }
 

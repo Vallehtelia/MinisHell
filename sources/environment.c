@@ -79,6 +79,11 @@ void add_env(t_minishell *mshell, char *key, char *value)
 
 	i = 0;
     env_count = 0;
+	if(check_if_env_exists(mshell->env, key))
+	{
+		set_env_value(mshell->env, key, value);
+		return;
+	}
     while (mshell->env[env_count])
         env_count++;
     temp_env_vars = malloc(sizeof(t_env *) * (env_count + 2));
@@ -88,7 +93,8 @@ void add_env(t_minishell *mshell, char *key, char *value)
         i++;
     }
     temp_env_vars[i] = allocate_env(key, value);
-    free(mshell->env);
+	temp_env_vars[i + 1] = NULL;
+    free_env(mshell);
 	mshell->env = NULL;
     mshell->env = temp_env_vars;
 }
@@ -118,7 +124,7 @@ void	delete_env(t_minishell *mshell, char *key)
 		i++;
 	}
 	temp_env_vars[i] = NULL;
-	free(mshell->env);
+    free_env(mshell);
 	mshell->env = NULL;
 	mshell->env = temp_env_vars;
 }
