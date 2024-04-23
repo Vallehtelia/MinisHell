@@ -70,7 +70,29 @@ int		set_env_value(t_env **env, char *key, char* value)
 	}
 	return (1);
 }
+char *clean_value(char *value)
+{
+	int i;
+	int x;
+	char *cleaned_value;
 
+	i = 0;
+	x = 0;
+	cleaned_value = malloc(sizeof(char) * (ft_strlen(value) + 1));
+	if(!cleaned_value)
+		return (NULL);
+	while(value[i])
+	{
+		if(value[i] != '\"')
+		{
+			cleaned_value[x] = value[i];
+			x++;
+		}
+		i++;
+	}
+	cleaned_value[x] = '\0';
+	return (cleaned_value);
+}
 void add_env(t_minishell *mshell, char *key, char *value)
 {
 	int i;
@@ -92,7 +114,7 @@ void add_env(t_minishell *mshell, char *key, char *value)
         temp_env_vars[i] = allocate_env(mshell->env[i]->key, mshell->env[i]->value);
         i++;
     }
-    temp_env_vars[i] = allocate_env(key, value);
+    temp_env_vars[i] = allocate_env(key, clean_value(value));
 	temp_env_vars[i + 1] = NULL;
     free_env(mshell);
 	mshell->env = NULL;

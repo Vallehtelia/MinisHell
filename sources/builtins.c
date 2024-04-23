@@ -111,6 +111,24 @@ void print_env(t_minishell *mshell)
 		i++;
 	}
 }
+void print_env_export(t_minishell *mshell)
+{
+	int i;
+
+	i = 0;
+	char abc = 'A';
+	while(abc <= 'z')
+	{
+		while (mshell->env[i])
+		{
+			if (mshell->env[i]->key[0] == abc)
+				printf("declare -x %s=\"%s\"\n", mshell->env[i]->key, mshell->env[i]->value);
+			i++;
+		}
+		abc++;
+		i = 0;
+	}
+}
 
 void export_env(t_minishell *mshell, char **cmd)
 {
@@ -122,6 +140,11 @@ void export_env(t_minishell *mshell, char **cmd)
 	char	*del_pos;
 
 	i = 1;
+	if(!cmd[i])
+	{
+		print_env_export(mshell);
+		return;
+	}
 	while(cmd[i])
 	{
 		env_entry = cmd[i];
@@ -165,12 +188,3 @@ int	check_builtins(t_minishell *mshell, char **cmd)
 	}
 	return (0);
 }
-/*
-echo with option -n
-◦ cd with only a relative or absolute path
-◦ pwd with no options
-◦ export with no options
-◦ unset with no options
-◦ env with no options or arguments
-◦ exit with no options
-*/
