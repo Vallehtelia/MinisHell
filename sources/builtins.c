@@ -12,10 +12,32 @@
 
 #include "../includes/minishell.h"
 
+void print_variable(t_minishell *mshell, char *var, bool space)
+{
+	if (var[0] == '$' && var[1] == '\0')
+		var = "$";
+	else if (ft_strncmp(var, "$?", 3) == 0 && ft_strlen(var) == 2)
+		var = ft_itoa(mshell->exit_code); // MALLOCCI. Pitaa kattoa miten suojataan ja freeataan
+	else if (var[0] == '$')
+	{
+		var++;
+		if(check_if_env_exists(mshell->env, var) == false)
+			var = NULL;
+		else
+			var = get_env_value(mshell->env, var);
+	}
+	if (var != NULL)
+	{
+		printf("%s", var);
+		if (space)
+			printf(" ");
+	}
+}
+
 static void	echo(t_minishell *mshell, char **cmd, int i)
 {
 	if (!cmd[i])
-		ft_printf("\n");
+		printf("\n");
 	else if (ft_strncmp(cmd[i], "-n", 3) == 0)
 	{
 		while (ft_strncmp(cmd[i], "-n", 3) == 0)
@@ -23,9 +45,9 @@ static void	echo(t_minishell *mshell, char **cmd, int i)
 		while (cmd[i] != NULL)
 		{
 			if (cmd[i + 1] == NULL)
-				ft_printf("%s", cmd[i]);
+				print_variable(mshell, cmd[i], false);
 			else
-				ft_printf("%s ", cmd[i]);
+				print_variable(mshell, cmd[i], true);
 			i++;
 		}
 	}
@@ -33,10 +55,10 @@ static void	echo(t_minishell *mshell, char **cmd, int i)
 	{
 		while (cmd[i] != NULL)
 		{
-			ft_printf("%s ", cmd[i]);
+			print_variable(mshell, cmd[i], false);
 			i++;
 		}
-		ft_printf("\n");
+		printf("\n");
 	}
 	mshell->exit_code = 0;
 }
@@ -53,7 +75,7 @@ static void	get_pwd(t_minishell *mshell)
 	}
 	else
 	{
-		ft_printf("%s\n", pwd);
+		printf("%s\n", pwd);
 		free(pwd);
 		mshell->exit_code = 0;
 	}

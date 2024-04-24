@@ -16,8 +16,8 @@ Matti:
 
 ✅cd with only a relative or absolute path
 ✅pwd with no options
-export with no options
-unset with no options
+✅export with no options
+✅unset with no options
 ✅env with no options or arguments
 
 ✅Handle environment variables ($ followed by a sequence of characters) which should expand to their values.
@@ -30,17 +30,8 @@ ctrl-\ does nothing.
 
 ✅echo with option -n
 
-//////////////////////////////////////////////////
+Evaluationform feiluja:
 
-
-Search and launch the right executable (based on the PATH variable or using a relative or an absolute path).
-Avoid using more than one global variable to indicate a received signal. Consider
-the implications: this approach ensures that your signal handler will not access your main data structures.
-
-
- Not interpret unclosed quotes or special characters which are not required by the subject such as \ (backslash) or ; (semicolon).
-
-
-
-
-
+- Test only spaces or tabs. !!! // Segfaulttaa joskus!!
+- >>> pitaa antaa error: bash: syntax error near unexpected token `>'
+- echo "esim $PWD" antaa vaaran
