@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 06:11:36 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/03/28 08:05:04 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/04/25 14:07:09 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,7 +145,7 @@ void	delete_env(t_minishell *mshell, char *key)
 		}
 		i++;
 	}
-	temp_env_vars[i] = NULL;
+	temp_env_vars[x] = NULL;
     free_env(mshell);
 	mshell->env = NULL;
 	mshell->env = temp_env_vars;
@@ -173,6 +173,8 @@ t_env	**parse_env(char **envp, int i, int keylen)
 			key = ft_strndup(env_entry, keylen);
 			value = ft_strdup(del_pos + 1);
 			env_vars[i] = allocate_env(key, value);
+			free (key);
+			free (value);
 		}
 		else
 			env_vars[i] = NULL;

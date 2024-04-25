@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 17:10:14 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/04/15 14:29:05 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/04/25 15:10:58 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ void print_variable(t_minishell *mshell, char *var, bool space)
 			printf(" ");
 	}
 }
+
 void echo_print(t_minishell *mshell, char **cmd, int i)
 {
 	if (cmd[i + 1] == NULL)
@@ -40,8 +41,25 @@ void echo_print(t_minishell *mshell, char **cmd, int i)
 	else
 		print_variable(mshell, cmd[i], true);
 }
-static void	echo(t_minishell *mshell, char **cmd, int i)
+
+static bool	check_echo_to_file(t_minishell *mshell, char **cmd)
 {
+	int	i;
+
+	i = 0;
+	while (cmd[i] != NULL)
+	{
+		if (check_output_redirection(mshell, cmd, i))
+			return (true);
+		i++;
+	}
+	return (false);
+}
+
+static int	echo(t_minishell *mshell, char **cmd, int i)
+{
+	if (check_echo_to_file(mshell, cmd))
+		return (1);
 	if (!cmd[i])
 		printf("\n");
 	else if (ft_strncmp(cmd[i], "-n", 3) == 0)
@@ -64,6 +82,7 @@ static void	echo(t_minishell *mshell, char **cmd, int i)
 		printf("\n");
 	}
 	mshell->exit_code = 0;
+	return (0);
 }
 
 static void	get_pwd(t_minishell *mshell)
@@ -189,7 +208,8 @@ int	check_builtins(t_minishell *mshell, char **cmd)
 {
 	if (ft_strncmp(cmd[0], "echo", 5) == 0)
 	{
-		echo(mshell, cmd, 1);
+		if (echo(mshell, cmd, 1))
+			return (0);
 		return (1);
 	}
 	if (ft_strncmp(cmd[0], "pwd", 4) == 0)
