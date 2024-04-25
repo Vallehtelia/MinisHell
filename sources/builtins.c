@@ -33,7 +33,13 @@ void print_variable(t_minishell *mshell, char *var, bool space)
 			printf(" ");
 	}
 }
-
+void echo_print(t_minishell *mshell, char **cmd, int i)
+{
+	if (cmd[i + 1] == NULL)
+		print_variable(mshell, cmd[i], false);
+	else
+		print_variable(mshell, cmd[i], true);
+}
 static void	echo(t_minishell *mshell, char **cmd, int i)
 {
 	if (!cmd[i])
@@ -44,10 +50,7 @@ static void	echo(t_minishell *mshell, char **cmd, int i)
 			i++;
 		while (cmd[i] != NULL)
 		{
-			if (cmd[i + 1] == NULL)
-				print_variable(mshell, cmd[i], false);
-			else
-				print_variable(mshell, cmd[i], true);
+			echo_print(mshell, cmd, i);
 			i++;
 		}
 	}
@@ -55,7 +58,7 @@ static void	echo(t_minishell *mshell, char **cmd, int i)
 	{
 		while (cmd[i] != NULL)
 		{
-			print_variable(mshell, cmd[i], false);
+			echo_print(mshell, cmd, i);
 			i++;
 		}
 		printf("\n");
