@@ -34,3 +34,6 @@ ctrl-\ does nothing.
 Evaluationform feiluja:
 
 ✅- echo "c.lol > tac | c.lol tac" luo tiedoston eika echota koko roskaa. (pipe sotkee)
+- Single quotes ei pitäis vissiin muuttaa arvoa esim "echo '$USER'" pitäis printtaa "$USER"
+	meillä printtaa environment valuen.
+
