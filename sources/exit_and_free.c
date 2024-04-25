@@ -31,3 +31,15 @@ void	exit_and_free(t_minishell *mshell, int errnum)
 		free_commands(mshell);
 	exit(errnum);
 }
+
+void	free_arr(char **arr, int i)
+{
+	while (i >= 0)
+	{
+		free(arr[i]);
+		arr[i] = NULL;
+		i--;
+	}
+	free(arr);
+	arr = NULL;
+}

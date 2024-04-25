@@ -6,11 +6,34 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 15:23:49 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/04/25 16:38:46 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/04/25 21:45:10 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+
+static int	count_cmdlen(char *input, int l)
+{
+	int		cmdlen;
+	char	quote_type;
+
+	cmdlen = 0;
+	while (input[l + cmdlen] && input[l + cmdlen] != '|')
+	{
+		if (input[l + cmdlen] == '\'' || input[l + cmdlen] == '"')
+		{
+			quote_type = input[l + cmdlen];
+			cmdlen++;
+			while (input[l + cmdlen] && input[l + cmdlen] != quote_type)
+				cmdlen++;
+			if (input[l + cmdlen] == quote_type)
+				cmdlen++;
+		}
+		else
+			cmdlen++;
+	}
+	return (cmdlen);
+}
 
 static char	**split_by_cmds(char *input, int num_of_cmds, int l, int k)
 {
@@ -18,22 +41,22 @@ static char	**split_by_cmds(char *input, int num_of_cmds, int l, int k)
 	int		cmdlen;
 	int		i;
 
-	arr = malloc(sizeof(char *) * num_of_cmds + 1);
+	arr = malloc(sizeof(char *) * (num_of_cmds + 1));
 	if (!arr)
 		return (NULL);
 	while (input[l] && k < num_of_cmds)
 	{
 		i = 0;
-		cmdlen = 0;
-		while (input[l + cmdlen] && input[l + cmdlen] != '|')
-			cmdlen++;
+		cmdlen = count_cmdlen(input, l);
 		arr[k] = malloc(sizeof(char) * (cmdlen + 1));
 		if (!arr[k])
+		{
+			free_arr(arr, k);
 			return (NULL);
+		}
 		while (i < cmdlen)
 			arr[k][i++] = input[l++];
-		arr[k][i] = '\0';
-		k++;
+		arr[k++][i] = '\0';
 		if (input[l] == '|')
 			l++;
 	}
@@ -72,14 +95,19 @@ int	parse_command(t_minishell *mshell)
 /*
 - Counts number of pipes and saves result to struct.
 */
-void	count_pipes(t_minishell *mshell, char *input_cmd)
+void	count_pipes(t_minishell *mshell, char *input_cmd, int i, bool in_quote)
 {
-	int	i;
-
-	i = 0;
 	while (input_cmd[i])
 	{
-		if (input_cmd[i] == '|')
+		if (input_cmd[i] == '\'' || input_cmd[i] == '"')
+		{
+			if (in_quote == true)
+				in_quote = false;
+			else
+				in_quote = true;
+			i++;
+		}
+		if (input_cmd[i] == '|' && in_quote == false)
 			mshell->num_of_pipes++;
 		i++;
 	}
@@ -89,9 +117,7 @@ void	count_pipes(t_minishell *mshell, char *input_cmd)
 		while (input_cmd[i] == ' ')
 			i--;
 		if (input_cmd[i] == '|')
-		{
 			mshell->ends_with_pipe = true;
-		}
 	}
 	mshell->num_of_cmds = mshell->num_of_pipes + 1;
 }
@@ -107,7 +133,10 @@ void	valle(t_minishell *mshell)
 		return ;
 	}
 	if (check_cmd(mshell))
+	{
+		free_commands(mshell);
 		return ;
+	}
 	if (check_valid_redir(mshell))
 		return ;
 	run_commands(mshell);

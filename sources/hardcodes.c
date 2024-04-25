@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/05 15:50:13 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/04/25 16:30:40 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/04/25 20:16:25 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,6 @@ static void	handle_redir_error(t_minishell *mshell, char *cmd)
 			printf("minishell: syntax error near unexpected token `>>'\n");
 	}
 	mshell->exit_code = 258;
-	free_commands(mshell);
 }
 
 int	check_cmd(t_minishell *mshell)
@@ -103,7 +102,10 @@ int	check_cmd(t_minishell *mshell)
 		return (1);
 	}
 	else if (ft_strncmp(mshell->cmds[0]->cmd[0], "exit", 5) == 0)
-		run_exit(mshell, mshell->cmds[0]->cmd);
+	{
+		if (run_exit(mshell, mshell->cmds[0]->cmd))
+			return (1);
+	}
 	else if ((ft_strncmp(mshell->cmds[0]->cmd[0], "<", 1) == 0
 			|| ft_strncmp(mshell->cmds[0]->cmd[0], ">", 1) == 0)
 		&& ft_strlen(mshell->cmds[0]->cmd[0]) > 2)

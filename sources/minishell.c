@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 13:47:58 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/04/25 13:30:40 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/04/25 21:45:13 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ int	main(int ac, char **av, char **envp)
 		if (!input)
 			break ;
 		free_workingdir(&mshell);
-		count_pipes(&mshell, input);
+		count_pipes(&mshell, input, 0, false);
 		if (mshell.ends_with_pipe == true)
 			handle_pipe_end(&mshell, input);
 		else

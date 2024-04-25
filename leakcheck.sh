@@ -1,7 +1,7 @@
 #!/bin/bash
 
 i=1
-
+clear
 echo "Shrek is sniffing for leaks..."
 while true; do
 	if leaks minishell | grep -q "LEAK"; then

@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 06:11:36 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/04/25 14:07:09 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/04/25 19:47:57 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static t_env	*allocate_env(char *key, char *value)
 	if (!env_var)
 		return (NULL);
 	env_var->key = ft_strdup(key);
-    env_var->value = ft_strdup(value);
+	env_var->value = ft_strdup(value);
 	return (env_var);
 }
 
@@ -70,7 +70,8 @@ int		set_env_value(t_env **env, char *key, char* value)
 	}
 	return (1);
 }
-char *clean_value(char *value)
+
+char *clean_value(char *value) // Mikä tämä on? johtaa leakkiin
 {
 	int i;
 	int x;
@@ -95,30 +96,29 @@ char *clean_value(char *value)
 }
 void add_env(t_minishell *mshell, char *key, char *value)
 {
-	int i;
-    int env_count;
-    t_env **temp_env_vars;
+	int		i;
+	int		env_count;
+	t_env	**temp_env_vars;
+	char	*cleaned_value; // hoitaa muistin vapautuksen
 
-	i = 0;
-    env_count = 0;
-	if(check_if_env_exists(mshell->env, key))
+	i = -1;
+	env_count = 0;
+	if (check_if_env_exists(mshell->env, key))
 	{
 		set_env_value(mshell->env, key, value);
-		return;
+		return ;
 	}
-    while (mshell->env[env_count])
-        env_count++;
-    temp_env_vars = malloc(sizeof(t_env *) * (env_count + 2));
-    while (mshell->env[i])
-    {
-        temp_env_vars[i] = allocate_env(mshell->env[i]->key, mshell->env[i]->value);
-        i++;
-    }
-    temp_env_vars[i] = allocate_env(key, clean_value(value));
+	while (mshell->env[env_count])
+		env_count++;
+	temp_env_vars = malloc(sizeof(t_env *) * (env_count + 2));
+	while (mshell->env[++i])
+		temp_env_vars[i] = allocate_env(mshell->env[i]->key, mshell->env[i]->value);
+	cleaned_value = clean_value(value);
+	temp_env_vars[i] = allocate_env(key, cleaned_value);
 	temp_env_vars[i + 1] = NULL;
-    free_env(mshell);
-	mshell->env = NULL;
-    mshell->env = temp_env_vars;
+	free(cleaned_value);
+	free_env(mshell);
+	mshell->env = temp_env_vars;
 }
 
 void	delete_env(t_minishell *mshell, char *key)

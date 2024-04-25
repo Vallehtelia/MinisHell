@@ -77,7 +77,6 @@ void change_working_directory(t_minishell *mshell, char *path)
 	else
 		mshell->exit_code = 0;
 	set_working_directory(mshell);
-	free_commands(mshell); //Lisäsin tän poistamaan leakit
 }
 
 void free_workingdir(t_minishell *mshell)

@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 17:10:14 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/04/25 15:10:58 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/04/25 20:15:14 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,19 +103,20 @@ static void	get_pwd(t_minishell *mshell)
 	}
 }
 
-void	run_exit(t_minishell *mshell, char **cmd)
+int	run_exit(t_minishell *mshell, char **cmd)
 {
 	if (cmd[1] != NULL)
 	{
 		ft_printf("minishell: exit: too many arguments\n");
 		mshell->exit_code = 1;
-		return ;
+		return (1);
 	}
 	else
 	{
 		ft_printf("exit\n");
 		exit_and_free(mshell, 0);
 	}
+	return (0);
 }
 
 static void	handle_env_var(t_minishell *mshell)
@@ -155,6 +156,7 @@ void print_env(t_minishell *mshell)
 		i++;
 	}
 }
+
 void print_env_export(t_minishell *mshell)
 {
 	int i;
@@ -198,7 +200,9 @@ void export_env(t_minishell *mshell, char **cmd)
 			keylen = del_pos - env_entry;
 			key = ft_strndup(env_entry, keylen);
 			value = ft_strdup(del_pos + 1);
-			add_env(mshell,key,value);
+			add_env(mshell, key, value);
+			free(key);
+			free(value);
 		}
 		i++;
 	}

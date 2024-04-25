@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 17:10:07 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/04/15 17:03:55 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/04/25 21:46:33 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,7 @@ void	valle(t_minishell *mshell);
 void	exit_and_free(t_minishell *mshell, int errnum);
 void	free_workingdir(t_minishell *mshell);
 void	change_working_directory(t_minishell *mshell, char *path);
+void	free_arr(char **arr, int i);
 
 /* command parsing */
 int		parse_command(t_minishell *mshell);
@@ -94,7 +95,7 @@ t_env	**parse_env(char **envp, int i, int keylen);
 
 /* Builtins */
 int		check_builtins(t_minishell *mshell, char **cmd);
-void	run_exit(t_minishell *mshell, char **cmd);
+int		run_exit(t_minishell *mshell, char **cmd);
 
 /* command execution */
 void	run_commands(t_minishell *mshell);
@@ -106,7 +107,7 @@ void	error_str(t_minishell *mshell, char *av, int n);
 void	free_env_arr(t_minishell *mshell, char **env_arr, char *path, char **cmd);
 int		check_cmd(t_minishell *mshell);
 int		check_exit_code(t_minishell *mshell, char **cmd);
-void	count_pipes(t_minishell *mshell, char *input_cmd);
+void	count_pipes(t_minishell *mshell, char *input_cmd, int i, bool in_quote);
 int		ft_cmdlen(char *str);
 void	handle_pipe_end(t_minishell *mshell, char *input);
 
