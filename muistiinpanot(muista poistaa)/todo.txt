@@ -33,7 +33,6 @@ ctrl-\ does nothing.
 
 Evaluationform feiluja:
 
-- Test only spaces or tabs. !!! // Segfaulttaa joskus!!
-- >>> pitaa antaa error: bash: syntax error near unexpected token `>'
-- echo "esim $PWD" antaa vaaran
-- pariton maara quoteseja ei avaa uutta readlinea
+✅- Test only spaces or tabs. !!! // Segfaulttaa joskus!!
+✅- >>> pitaa antaa error: bash: syntax error near unexpected token `>'
+✅- echo "esim $PWD" antaa vaaran

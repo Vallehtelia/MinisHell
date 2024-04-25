@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 15:23:49 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/04/15 18:55:40 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/04/25 16:38:46 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,9 +101,10 @@ void	valle(t_minishell *mshell)
 	mshell->num_of_pipes = 0;
 	if (mshell->input_cmd[0] == '\0')
 		return ;
-	if (parse_command(mshell) == 1)
+	if (parse_command(mshell) == 1 || mshell->cmds[0]->cmd[0] == '\0')
 	{
 		free_commands(mshell);
+		return ;
 	}
 	if (check_cmd(mshell))
 		return ;

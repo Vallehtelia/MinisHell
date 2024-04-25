@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/05 15:50:13 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/04/15 17:02:06 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/04/25 16:30:40 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,39 +57,60 @@ int	check_valid_redir(t_minishell *mshell)
 	return (0);
 }
 
+static void	handle_redir_error(t_minishell *mshell, char *cmd)
+{
+	int i;
+
+	i = ft_strlen(cmd);
+	if (ft_strlen(cmd) > 2 && ft_strncmp(mshell->cmds[0]->cmd[0], "<", 1) == 0)
+	{
+		if (i == 3)
+			printf("minishell: syntax error near unexpected token `newline'\n");
+		else if (i == 4)
+			printf("minishell: syntax error near unexpected token `<'\n");
+		else if (i == 5)
+			printf("minishell: syntax error near unexpected token `<<'\n");
+		else
+			printf("minishell: syntax error near unexpected token `<<<'\n");
+	}
+	else if (ft_strlen(cmd) > 2
+		&& ft_strncmp(mshell->cmds[0]->cmd[0], ">", 1) == 0)
+	{
+		if (i == 3)
+			printf("minishell: syntax error near unexpected token `>'\n");
+		else
+			printf("minishell: syntax error near unexpected token `>>'\n");
+	}
+	mshell->exit_code = 258;
+	free_commands(mshell);
+}
+
 int	check_cmd(t_minishell *mshell)
 {
-	//int i = 0;
-	//int x;
-	//while(mshell->cmds[i] != NULL)
-	//{
-	//	x = 1;
-	//	printf("cmd: %s\n", mshell->cmds[i]->cmd[0]);
-	//	while(mshell->cmds[i]->cmd[x] != NULL)
-	//	{
-	//		printf("arg: %s\n", mshell->cmds[i]->cmd[x]);
-	//		x++;
-	//	}
-	//	i++;
-	//}
 	if ((ft_strncmp(mshell->cmds[0]->cmd[0], "cd", 3) == 0))
 	{
-		//if(mshell->cmds[0]->cmd[1] != NULL)
 		change_working_directory(mshell, mshell->cmds[0]->cmd[1]);
 		return (1);
 	}
-	else if(ft_strncmp(mshell->cmds[0]->cmd[0], "export", 7) == 0)
+	if (ft_strncmp(mshell->cmds[0]->cmd[0], "export", 7) == 0)
 	{
 		export_env(mshell, mshell->cmds[0]->cmd);
 		return (1);
 	}
-	else if(ft_strncmp(mshell->cmds[0]->cmd[0], "unset", 6) == 0)
+	else if (ft_strncmp(mshell->cmds[0]->cmd[0], "unset", 6) == 0)
 	{
 		delete_env(mshell, mshell->cmds[0]->cmd[1]);
 		return (1);
 	}
 	else if (ft_strncmp(mshell->cmds[0]->cmd[0], "exit", 5) == 0)
 		run_exit(mshell, mshell->cmds[0]->cmd);
+	else if ((ft_strncmp(mshell->cmds[0]->cmd[0], "<", 1) == 0
+			|| ft_strncmp(mshell->cmds[0]->cmd[0], ">", 1) == 0)
+		&& ft_strlen(mshell->cmds[0]->cmd[0]) > 2)
+	{
+		handle_redir_error(mshell, mshell->cmds[0]->cmd[0]);
+		return (1);
+	}
 	return (0);
 }
 
