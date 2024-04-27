@@ -127,7 +127,7 @@ void	valle(t_minishell *mshell)
 	mshell->num_of_pipes = 0;
 	if (mshell->input_cmd[0] == '\0')
 		return ;
-	if (parse_command(mshell) == 1 || mshell->cmds[0]->cmd[0] == '\0')
+	if (parse_command(mshell) == 1 || mshell->cmds[0]->cmd[0] == NULL)
 	{
 		free_commands(mshell);
 		return ;
