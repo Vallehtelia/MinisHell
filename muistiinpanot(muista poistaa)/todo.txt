@@ -37,3 +37,6 @@ Evaluationform feiluja:
 - Single quotes ei pitäis vissiin muuttaa arvoa esim "echo '$USER'" pitäis printtaa "$USER"
 	meillä printtaa environment valuen.
 
+- export matti='homo'
+- export testi =arvo
+
