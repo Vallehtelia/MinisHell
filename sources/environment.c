@@ -70,8 +70,22 @@ int		set_env_value(t_env **env, char *key, char* value)
 	}
 	return (1);
 }
+int parse_quotes(char *string)
+{
+    int len;
+	int i = 0;
 
-char *clean_value(char *value) // Mikä tämä on? johtaa leakkiin
+	len = strlen(string);
+    while (string[i] != '\0')
+	{
+		if (string[i] != '\"' && string[i] != '\'')
+			len++;
+		i++;
+	}
+	return (len);
+}
+
+char *clean_value(char *value)
 {
 	int i;
 	int x;
@@ -79,18 +93,18 @@ char *clean_value(char *value) // Mikä tämä on? johtaa leakkiin
 
 	i = 0;
 	x = 0;
-	cleaned_value = malloc(sizeof(char) * (ft_strlen(value) + 1));
+	cleaned_value = malloc(sizeof(char) * (parse_quotes(value) + 1));
 	if(!cleaned_value)
 		return (NULL);
 	while(value[i])
-	{
-		if(value[i] != '\"')
-		{
-			cleaned_value[x] = value[i];
-			x++;
-		}
-		i++;
-	}
+    {
+        if(value[i] != '\"' && value[i] != '\'')
+        {
+            cleaned_value[x] = value[i];
+            x++;
+        }
+        i++;
+    }
 	cleaned_value[x] = '\0';
 	return (cleaned_value);
 }
@@ -99,7 +113,7 @@ void add_env(t_minishell *mshell, char *key, char *value)
 	int		i;
 	int		env_count;
 	t_env	**temp_env_vars;
-	char	*cleaned_value; // hoitaa muistin vapautuksen
+	char	*cleaned_value;
 
 	i = -1;
 	env_count = 0;
