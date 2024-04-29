@@ -130,6 +130,7 @@ int		set_env_value(t_env **env, char *key, char* value);
 void	print_env(t_minishell *mshell);
 void	delete_env(t_minishell *mshell, char *key);
 void	export_env(t_minishell *mshell, char **cmd);
+char	*clean_value(char *value);
 
 
 

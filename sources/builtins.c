@@ -184,6 +184,7 @@ void export_env(t_minishell *mshell, char **cmd)
 	char	*value;
 	char	*env_entry;
 	char	*del_pos;
+	char	*cleaned_value;
 
 	i = 1;
 	if(!cmd[i])
@@ -194,17 +195,24 @@ void export_env(t_minishell *mshell, char **cmd)
 	while(cmd[i])
 	{
 		env_entry = cmd[i];
+		printf("before del_pos\n"); //debug
 		del_pos = ft_strchr(cmd[i], '=');
+		printf("after del_pos\n"); //debug
 		if (!del_pos && cmd[i + 1][0] == '=')
 		{
+			printf("entered next is =\n"); //debug
+			cleaned_value = clean_value(cmd[i + 1]);
 			ft_putstr_fd("minishell: export: `", 2);
-			ft_putstr_fd(cmd[i + 1], 2);
+			ft_putstr_fd(cleaned_value, 2);
 			ft_putendl_fd("': not a valid identifier", 2);
+			free(cleaned_value);
 			mshell->exit_code = 1;
 			return ;
 		}
+		printf("vittu saatana\n"); //debug
 		if (del_pos)
 		{
+			printf("entered else if\n"); //debug
 			keylen = del_pos - env_entry;
 			key = ft_strndup(env_entry, keylen);
 			value = ft_strdup(del_pos + 1);
@@ -212,6 +220,8 @@ void export_env(t_minishell *mshell, char **cmd)
 			free(key);
 			free(value);
 		}
+		else
+			printf("command: %s at: %i\n", cmd[i], i); //debug
 		i++;
 	}
 }

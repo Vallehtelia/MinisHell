@@ -51,7 +51,8 @@ bool check_if_env_exists(t_env **env, char *key)
 */
 int		set_env_value(t_env **env, char *key, char* value)
 {
-	int	i;
+	int		i;
+	char	*cleaned_value;
 
 	i = 0;
 	while (env[i])
@@ -61,7 +62,10 @@ int		set_env_value(t_env **env, char *key, char* value)
 			if(ft_strlen(env[i]->value) > 0)
 				free(env[i]->value);
 			env[i]->value = NULL;
-			env[i]->value = ft_strdup(value);
+			cleaned_value = clean_value(value);
+			env[i]->value = ft_strdup(cleaned_value);
+			if (cleaned_value)
+				free(cleaned_value);
 			if(!env[i]->value)
 				return (1);
 			return (0);
@@ -72,15 +76,28 @@ int		set_env_value(t_env **env, char *key, char* value)
 }
 int parse_quotes(char *string)
 {
-    int len;
-	int i = 0;
+    int		len;
+	int		i;
+	char	current_quote;
 
-	len = strlen(string);
-    while (string[i] != '\0')
+	i = 0;
+	len = 0;
+	current_quote = '\0';
+	while (string[i])
 	{
-		if (string[i] != '\"' && string[i] != '\'')
+		if ((string[i] == '\'' || string[i] == '\"') && current_quote == 0)
+			current_quote = string[i++];
+		else if (string[i] == current_quote)
+		{
+			current_quote = 0;
+			i++;
+		}
+		else
+		{
 			len++;
-		i++;
+			i++;
+		}
+			
 	}
 	return (len);
 }
@@ -90,20 +107,28 @@ char *clean_value(char *value)
 	int i;
 	int x;
 	char *cleaned_value;
+	char current_quote;
 
 	i = 0;
 	x = 0;
 	cleaned_value = malloc(sizeof(char) * (parse_quotes(value) + 1));
 	if(!cleaned_value)
 		return (NULL);
+	current_quote = '\0';
 	while(value[i])
     {
-        if(value[i] != '\"' && value[i] != '\'')
-        {
-            cleaned_value[x] = value[i];
-            x++;
-        }
-        i++;
+		if ((value[i] == '\'' || value[i] == '\"') && current_quote == '\0')
+		{
+			current_quote = value[i];
+			i++;
+			while (value[i] != current_quote && value[i] != '\0')
+				cleaned_value[x++] = value[i++];
+			if (value[i] == current_quote)
+				i++;
+			current_quote = '\0';
+		}
+        else
+            cleaned_value[x++] = value[i++];
     }
 	cleaned_value[x] = '\0';
 	return (cleaned_value);
