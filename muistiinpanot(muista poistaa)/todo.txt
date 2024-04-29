@@ -34,14 +34,13 @@ ctrl-\ does nothing.
 Evaluationform feiluja:
 
 ✅- echo "c.lol > tac | c.lol tac" luo tiedoston eika echota koko roskaa. (pipe sotkee)
-- Single quotes ei pitäis vissiin muuttaa arvoa esim "echo '$USER'" pitäis printtaa "$USER"
-	meillä printtaa environment valuen.
 ✅- bash-3.2$ export testi='"testi"'
 	bash-3.2$ env | grep testi
 	tulos=	testi="testi"
-
-- Segfaulttaa ilman "=" merkkiä exportissa esim. "export asd vittu_saatana"
-
+✅- Segfaulttaa ilman "=" merkkiä exportissa esim. "export asd vittu_saatana"
 ✅- export matti='homo'
 ✅- export testi =arvo
+
+- Single quotes ei pitäis vissiin muuttaa arvoa esim "echo '$USER'" pitäis printtaa "$USER"
+	meillä printtaa environment valuen.
 

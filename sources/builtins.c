@@ -36,7 +36,17 @@ void print_variable(t_minishell *mshell, char *var, bool space)
 
 void echo_print(t_minishell *mshell, char **cmd, int i)
 {
-	if (cmd[i + 1] == NULL)
+	char	s_quote[2];
+	char	d_quote[2];
+
+	s_quote[0] = '\'';
+	s_quote[1] = '\0';
+	d_quote[0] = '"';
+	d_quote[1] = '\0';
+	if ((ft_strncmp(cmd[i], d_quote, 2) == 0) || (ft_strncmp(cmd[i], s_quote, 2) == 0))
+		print_variable(mshell, cmd[i], false);
+	else if ((cmd[i + 1] == NULL) || (ft_strncmp(cmd[i + 1], d_quote, 2) == 0)
+		|| (ft_strncmp(cmd[i + 1], s_quote, 2) == 0))
 		print_variable(mshell, cmd[i], false);
 	else
 		print_variable(mshell, cmd[i], true);
@@ -195,12 +205,14 @@ void export_env(t_minishell *mshell, char **cmd)
 	while(cmd[i])
 	{
 		env_entry = cmd[i];
-		printf("before del_pos\n"); //debug
 		del_pos = ft_strchr(cmd[i], '=');
-		printf("after del_pos\n"); //debug
+		if (!del_pos && !cmd[i + 1])
+		{
+			mshell->exit_code = 1;
+			return ;
+		}
 		if (!del_pos && cmd[i + 1][0] == '=')
 		{
-			printf("entered next is =\n"); //debug
 			cleaned_value = clean_value(cmd[i + 1]);
 			ft_putstr_fd("minishell: export: `", 2);
 			ft_putstr_fd(cleaned_value, 2);
@@ -209,10 +221,8 @@ void export_env(t_minishell *mshell, char **cmd)
 			mshell->exit_code = 1;
 			return ;
 		}
-		printf("vittu saatana\n"); //debug
 		if (del_pos)
 		{
-			printf("entered else if\n"); //debug
 			keylen = del_pos - env_entry;
 			key = ft_strndup(env_entry, keylen);
 			value = ft_strdup(del_pos + 1);
@@ -220,8 +230,6 @@ void export_env(t_minishell *mshell, char **cmd)
 			free(key);
 			free(value);
 		}
-		else
-			printf("command: %s at: %i\n", cmd[i], i); //debug
 		i++;
 	}
 }

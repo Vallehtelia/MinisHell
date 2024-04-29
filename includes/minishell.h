@@ -131,6 +131,7 @@ void	print_env(t_minishell *mshell);
 void	delete_env(t_minishell *mshell, char *key);
 void	export_env(t_minishell *mshell, char **cmd);
 char	*clean_value(char *value);
+int		parse_quotes(char *string);
 
 
 

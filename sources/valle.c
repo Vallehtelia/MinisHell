@@ -122,10 +122,37 @@ void	count_pipes(t_minishell *mshell, char *input_cmd, int i, bool in_quote)
 	mshell->num_of_cmds = mshell->num_of_pipes + 1;
 }
 
+int	count_quotes(char *input_cmd)
+{
+	int		i;
+	int		s_quote;
+	int		d_quote;
+
+	i = 0;
+	s_quote = 0;
+	d_quote = 0;
+	while (input_cmd[i])
+	{
+		if (input_cmd[i] == '\'')
+			s_quote++;
+		if (input_cmd[i] == '"')
+			d_quote++;
+		i++;
+	}
+	if (s_quote % 2 != 0 || d_quote % 2 != 0)
+	{
+		ft_putstr_fd("minisHell: Close quotes!\n", 2);
+		return (1);
+	}
+	return (0);
+}
+
 void	valle(t_minishell *mshell)
 {
 	mshell->num_of_pipes = 0;
 	if (mshell->input_cmd[0] == '\0')
+		return ;
+	if (count_quotes(mshell->input_cmd))
 		return ;
 	if (parse_command(mshell) == 1 || mshell->cmds[0]->cmd[0] == NULL)
 	{

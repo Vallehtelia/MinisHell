@@ -39,7 +39,7 @@ static char	*copy_arg(const char *cmd, char **arg_out, int j, char quote)
 	}
 	else
 	{
-		while (*cmd != ' ' && *cmd != '\0')
+		while (*cmd != ' ' && *cmd != '\0' && *cmd != '\'' && *cmd != '"')
 		{
 			if (*cmd == '\\' && (*(cmd + 1) == '\'' || *(cmd + 1) == '"'))
 				cmd++;
@@ -50,6 +50,7 @@ static char	*copy_arg(const char *cmd, char **arg_out, int j, char quote)
 	*arg_out = arg;
 	return ((char *)cmd);
 }
+
 
 /*
 - Similar to ft_split but splits given parameter with spaces and skips
