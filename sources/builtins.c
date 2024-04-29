@@ -189,12 +189,20 @@ void export_env(t_minishell *mshell, char **cmd)
 	if(!cmd[i])
 	{
 		print_env_export(mshell);
-		return;
+		return ;
 	}
 	while(cmd[i])
 	{
 		env_entry = cmd[i];
 		del_pos = ft_strchr(cmd[i], '=');
+		if (!del_pos && cmd[i + 1][0] == '=')
+		{
+			ft_putstr_fd("minishell: export: `", 2);
+			ft_putstr_fd(cmd[i + 1], 2);
+			ft_putendl_fd("': not a valid identifier", 2);
+			mshell->exit_code = 1;
+			return ;
+		}
 		if (del_pos)
 		{
 			keylen = del_pos - env_entry;
