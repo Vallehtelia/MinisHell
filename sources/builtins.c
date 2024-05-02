@@ -6,25 +6,14 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 17:10:14 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/05/02 18:52:39 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/02 19:53:40 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-void print_variable(t_minishell *mshell, char *var, bool space)
+void print_variable(char *var, bool space)
 {
-	(void)mshell;
-	// if (var[0] == '$' && var[1] == '\0')
-	// 	var = "$";
-	// else if (var[0] == '$')
-	// {
-	// 	var++;
-	// 	if(check_if_env_exists(mshell->env, var) == false)
-	// 		var = NULL;
-	// 	else
-	// 		var = get_env_value(mshell->env, var);
-	// }
 	if (var != NULL)
 	{
 		printf("%s", var);
@@ -35,6 +24,7 @@ void print_variable(t_minishell *mshell, char *var, bool space)
 
 void echo_print(t_minishell *mshell, char **cmd, int i)
 {
+	(void)mshell;
 	char	s_quote[2];
 	char	d_quote[2];
 
@@ -43,12 +33,14 @@ void echo_print(t_minishell *mshell, char **cmd, int i)
 	d_quote[0] = '"';
 	d_quote[1] = '\0';
 	if ((ft_strncmp(cmd[i], d_quote, 2) == 0) || (ft_strncmp(cmd[i], s_quote, 2) == 0))
-		print_variable(mshell, cmd[i], false);
+	{
+		print_variable(cmd[i], false);
+	}
 	else if ((cmd[i + 1] == NULL) || (ft_strncmp(cmd[i + 1], d_quote, 2) == 0)
 		|| (ft_strncmp(cmd[i + 1], s_quote, 2) == 0))
-		print_variable(mshell, cmd[i], false);
+		print_variable(cmd[i], false);
 	else
-		print_variable(mshell, cmd[i], true);
+		print_variable(cmd[i], true);
 }
 
 static bool	check_echo_to_file(t_minishell *mshell, char **cmd)
@@ -163,7 +155,7 @@ bool	check_env_inside_squotes(t_minishell *mshell, char **cmd, int i, int k)
 	return (false);
 }
 
-static void	handle_env_var(t_minishell *mshell)
+static int	handle_env_var(t_minishell *mshell)
 {
 	struct stat	statbuf;
 	char		*value;
@@ -183,12 +175,15 @@ static void	handle_env_var(t_minishell *mshell)
 				execute_cmd(mshell, mshell->cmds[0]->cmd, mshell->env);
 			else
 				error_str(mshell, mshell->cmds[0]->cmd[0], 3);
+			return (1);
 		}
 		else
+		{
 			error_str(mshell, mshell->cmds[0]->cmd[0], 1);
+			return (1);
+		}
 	}
-	// else
-	// 	error_str(mshell, mshell->cmds[0]->cmd[0], 4);
+	return (0);
 }
 
 void print_env(t_minishell *mshell)
@@ -277,8 +272,8 @@ int	check_builtins(t_minishell *mshell, char **cmd)
 		return (1);
 	else if (cmd[0][0] == '$' && cmd[0][1] != '\0')
 	{
-		handle_env_var(mshell);
-		return (1);
+		if (handle_env_var(mshell))
+			return (1);
 	}
 	if (ft_strncmp(cmd[0], "echo", 5) == 0)
 	{

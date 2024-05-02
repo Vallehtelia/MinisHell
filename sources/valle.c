@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 15:23:49 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/05/02 17:11:34 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/02 19:53:16 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -290,6 +290,27 @@ void	run_commands(t_minishell *mshell)
 	}
 }
 
+int	check_access(t_minishell *mshell, char *cmd)
+{
+	if (access(cmd, F_OK) == 0)
+	{
+		if (access(cmd, X_OK) == 0)
+			return (0);
+		else
+		{
+			error_str(mshell, cmd, 3);
+			mshell->exit_code = 126;
+			return (1);
+		}
+	}
+	else
+	{
+		error_str(mshell, cmd, 1);
+		mshell->exit_code = 127;
+		return (1);
+	}
+}
+
 void	execute_cmd(t_minishell *mshell, char **cmd, t_env **env)
 {
 	char	*path;
@@ -302,14 +323,9 @@ void	execute_cmd(t_minishell *mshell, char **cmd, t_env **env)
 	path = find_path(cmd[0], env, 0);
 	if (!path)
 	{
-		if (access(cmd[0], X_OK) == 0)
-			path = cmd[0];
-		else
-		{
-			error_str(mshell, cmd[0], 1);
-			mshell->exit_code = 127;
+		if (check_access(mshell, cmd[0]))
 			exit (mshell->exit_code);
-		}
+		path = ft_strdup(cmd[0]);
 	}
 	mshell->exit_code = 0;
 	env_arr = env_to_char_array(env);
@@ -351,9 +367,9 @@ void	error_str(t_minishell *mshell, char *av, int n)
 	}
 	else if (n == 3)
 	{
-		ft_putstr_fd("minisHell: permission denied: ", 2);
+		ft_putstr_fd("minisHell: ", 2);
 		ft_putstr_fd(av, 2);
-		ft_putstr_fd("\n", 2);
+		ft_putstr_fd(": permission denied\n", 2);
 	}
 	else if (n == 4)
 	{
