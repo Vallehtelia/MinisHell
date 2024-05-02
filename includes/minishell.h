@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 17:10:07 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/05/02 17:00:55 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/02 22:11:25 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ t_env	**parse_env(char **envp, int i, int keylen);
 
 /* Builtins */
 int		check_builtins(t_minishell *mshell, char **cmd);
-int		run_exit(t_minishell *mshell, char **cmd);
+int		run_exit(t_minishell *mshell, char **cmd, int i, int res);
 
 /* command execution */
 void	run_commands(t_minishell *mshell);

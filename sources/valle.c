@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 15:23:49 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/05/02 19:53:16 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/02 22:50:51 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,21 +125,26 @@ void	count_pipes(t_minishell *mshell, char *input_cmd, int i, bool in_quote)
 int	count_quotes(char *input_cmd)
 {
 	int		i;
+	char	quote_type;
 	int		s_quote;
-	int		d_quote;
 
 	i = 0;
 	s_quote = 0;
-	d_quote = 0;
 	while (input_cmd[i])
 	{
-		if (input_cmd[i] == '\'')
+		if (input_cmd[i] == '\'' || input_cmd[i] == '"')
+		{
+			quote_type = input_cmd[i];
 			s_quote++;
-		if (input_cmd[i] == '"')
-			d_quote++;
+			i++;
+			while (input_cmd[i] && input_cmd[i] != quote_type)
+				i++;
+			if (input_cmd[i] == quote_type)
+				s_quote++;
+		}
 		i++;
 	}
-	if (s_quote % 2 != 0 || d_quote % 2 != 0)
+	if (s_quote % 2 != 0)
 	{
 		ft_putstr_fd("minisHell: Close quotes!\n", 2);
 		return (1);
@@ -316,6 +321,7 @@ void	execute_cmd(t_minishell *mshell, char **cmd, t_env **env)
 	char	*path;
 	char	**env_arr;
 
+	printf("do i get here?\n");
 	if (check_builtins(mshell, cmd))
 		exit (mshell->exit_code);
 	if (check_redirections(mshell, cmd))
@@ -373,9 +379,9 @@ void	error_str(t_minishell *mshell, char *av, int n)
 	}
 	else if (n == 4)
 	{
-		ft_putstr_fd("minisHell: undefined variable: ", 2);
+		ft_putstr_fd("minisHell: cd: ", 2);
 		ft_putstr_fd(av, 2);
-		ft_putstr_fd("\n", 2);
+		ft_putstr_fd(": No such file or directory\n", 2);
 	}
 }
 
