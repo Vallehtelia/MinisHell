@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 17:10:14 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/04/25 20:15:14 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/02 18:52:39 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,18 +14,17 @@
 
 void print_variable(t_minishell *mshell, char *var, bool space)
 {
-	if (var[0] == '$' && var[1] == '\0')
-		var = "$";
-	else if (ft_strncmp(var, "$?", 3) == 0 && ft_strlen(var) == 2)
-		var = ft_itoa(mshell->exit_code); // MALLOCCI. Pitaa kattoa miten suojataan ja freeataan
-	else if (var[0] == '$')
-	{
-		var++;
-		if(check_if_env_exists(mshell->env, var) == false)
-			var = NULL;
-		else
-			var = get_env_value(mshell->env, var);
-	}
+	(void)mshell;
+	// if (var[0] == '$' && var[1] == '\0')
+	// 	var = "$";
+	// else if (var[0] == '$')
+	// {
+	// 	var++;
+	// 	if(check_if_env_exists(mshell->env, var) == false)
+	// 		var = NULL;
+	// 	else
+	// 		var = get_env_value(mshell->env, var);
+	// }
 	if (var != NULL)
 	{
 		printf("%s", var);
@@ -129,12 +128,49 @@ int	run_exit(t_minishell *mshell, char **cmd)
 	return (0);
 }
 
+bool	check_env_inside_squotes(t_minishell *mshell, char **cmd, int i, int k)
+{
+	char	*t;
+
+	while (cmd[++i])
+	{
+		mshell->quote_check = 0;
+		while (mshell->input_cmd[mshell->quote_check] != '\0')
+		{
+			if (mshell->input_cmd[mshell->quote_check] == '\'')
+			{
+				mshell->quote_check++;
+				while (mshell->input_cmd[mshell->quote_check] != '\''
+					&& mshell->input_cmd[mshell->quote_check] != '$')
+					mshell->quote_check++;
+				if (mshell->input_cmd[mshell->quote_check] == '$'
+					&& mshell->quote_check > mshell->quote_check_past)
+				{
+					k = mshell->quote_check;
+					t = ft_substr(mshell->input_cmd, k, ft_strlen(cmd[i]) - k);
+					if (ft_strncmp(t, cmd[i], ft_strlen(t)) == 0)
+					{
+						free(t);
+						return (true);
+					}
+					free(t);
+					mshell->quote_check_past = mshell->quote_check;
+				}
+			}
+			mshell->quote_check++;
+		}
+	}
+	return (false);
+}
+
 static void	handle_env_var(t_minishell *mshell)
 {
 	struct stat	statbuf;
 	char		*value;
 
-	value = get_env_value(mshell->env, mshell->cmds[0]->cmd[0] + 1);
+	value = NULL;
+	if (check_env_inside_squotes(mshell, mshell->cmds[0]->cmd, -1, 0) == false)
+		value = get_env_value(mshell->env, mshell->cmds[0]->cmd[0] + 1);
 	if (value != NULL)
 	{
 		free(mshell->cmds[0]->cmd[0]);
@@ -151,8 +187,8 @@ static void	handle_env_var(t_minishell *mshell)
 		else
 			error_str(mshell, mshell->cmds[0]->cmd[0], 1);
 	}
-	else
-		error_str(mshell, mshell->cmds[0]->cmd[0], 4);
+	// else
+	// 	error_str(mshell, mshell->cmds[0]->cmd[0], 4);
 }
 
 void print_env(t_minishell *mshell)
@@ -234,8 +270,16 @@ void export_env(t_minishell *mshell, char **cmd)
 	}
 }
 
+
 int	check_builtins(t_minishell *mshell, char **cmd)
 {
+	if (check_exit_code(mshell, cmd))
+		return (1);
+	else if (cmd[0][0] == '$' && cmd[0][1] != '\0')
+	{
+		handle_env_var(mshell);
+		return (1);
+	}
 	if (ft_strncmp(cmd[0], "echo", 5) == 0)
 	{
 		if (echo(mshell, cmd, 1))
@@ -247,16 +291,7 @@ int	check_builtins(t_minishell *mshell, char **cmd)
 		get_pwd(mshell);
 		return (1);
 	}
-	if (check_exit_code(mshell, cmd))
-	{
-		return (1);
-	}
-	else if (cmd[0][0] == '$' && cmd[0][1] != '\0')
-	{
-		handle_env_var(mshell);
-		return (1);
-	}
-	else if(ft_strncmp(cmd[0], "env", 4) == 0)
+	else if (ft_strncmp(cmd[0], "env", 4) == 0)
 	{
 		print_env(mshell);
 		return (1);

@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 15:23:49 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/04/25 21:45:10 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/02 17:11:34 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,6 +147,63 @@ int	count_quotes(char *input_cmd)
 	return (0);
 }
 
+void	handle_values(t_minishell *mshell)
+{
+	int		i;
+	int		l;
+	char	*temp;
+	char	*value;
+
+	i = 0;
+	while (mshell->cmds[i])
+	{
+		l = 0;
+		while (mshell->cmds[i]->cmd[l])
+		{
+			if (mshell->cmds[i]->cmd[l][0] != '\'' && l > 0)
+			{
+				temp = ft_strchr(mshell->cmds[i]->cmd[l], '$');
+				if (temp)
+				{
+					value = get_env_value(mshell->env, temp + 1);
+					if (value)
+					{
+						free(mshell->cmds[i]->cmd[l]);
+						mshell->cmds[i]->cmd[l] = ft_strdup(value);
+					}
+				}
+			}
+			l++;
+		}
+		i++;
+	}
+}
+
+void	remove_quotes(t_minishell *mshell)
+{
+	int		i;
+	int		l;
+	char	*temp;
+
+	i = 0;
+	while (mshell->cmds[i])
+	{
+		l = 0;
+		while (mshell->cmds[i]->cmd[l])
+		{
+			if (mshell->cmds[i]->cmd[l][0] == '\''
+				|| mshell->cmds[i]->cmd[l][0] == '"')
+			{
+				temp = ft_strtrim(mshell->cmds[i]->cmd[l], "\'");
+				free(mshell->cmds[i]->cmd[l]);
+				mshell->cmds[i]->cmd[l] = temp;
+			}
+			l++;
+		}
+		i++;
+	}
+}
+
 void	valle(t_minishell *mshell)
 {
 	mshell->num_of_pipes = 0;
@@ -159,6 +216,8 @@ void	valle(t_minishell *mshell)
 		free_commands(mshell);
 		return ;
 	}
+	handle_values(mshell);
+	remove_quotes(mshell);
 	if (check_cmd(mshell))
 	{
 		free_commands(mshell);
@@ -166,6 +225,8 @@ void	valle(t_minishell *mshell)
 	}
 	if (check_valid_redir(mshell))
 		return ;
+	mshell->quote_check = 0;
+	mshell->quote_check_past = 0;
 	run_commands(mshell);
 	free_commands(mshell);
 }

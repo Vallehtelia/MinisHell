@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 01:45:22 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/04/25 20:35:13 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/02 16:37:29 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,14 @@ static char	*copy_arg(const char *cmd, char **arg_out, int j, char quote)
 		return (NULL);
 	if (*cmd == '\'' || *cmd == '"')
 	{
-		quote = *cmd++;
+		quote = *cmd;
+		if (quote == '"')
+			cmd++;
+		else
+			arg[j++] = *cmd++;
 		while (*cmd != quote && *cmd != '\0')
+			arg[j++] = *cmd++;
+		if (*cmd == quote && quote == '\'')
 			arg[j++] = *cmd++;
 		if (*cmd == quote)
 			cmd++;

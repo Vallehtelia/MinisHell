@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 17:10:07 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/04/25 21:46:33 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/02 17:00:55 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,14 +59,16 @@ typedef struct s_minishell
 	t_env		**env;
 	char		**av;
 	int			ac;
-	int 		exit_code;
+	int			exit_code;
 	char		*cmd_to_split;
-	char		*input_cmd; 		// prompt text
+	char		*input_cmd;		// prompt text
 	char		*prompt_text;
 	char		*redir_output;
 	//char		*old_pwd;
 	int			num_of_pipes;
 	int			num_of_cmds;
+	int			quote_check_past;
+	int			quote_check;
 	bool		ends_with_pipe;
 	char		*working_directory;	//current working directory
 }	t_minishell;
@@ -110,6 +112,8 @@ int		check_exit_code(t_minishell *mshell, char **cmd);
 void	count_pipes(t_minishell *mshell, char *input_cmd, int i, bool in_quote);
 int		ft_cmdlen(char *str);
 void	handle_pipe_end(t_minishell *mshell, char *input);
+bool	check_env_inside_squotes(t_minishell *mshell, char **cmd, int i, int k);
+void	remove_quotes(t_minishell *mshell);
 
 /* redirections */
 int		check_redirections(t_minishell *mshell, char **cmd);
