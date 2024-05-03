@@ -5,20 +5,22 @@ CFLAGS = -Wall -Wextra -Werror
 
 SRC_DIR = ./sources/
 
+READ_LINE_DIR = /Users/mrinkine/.brew/Cellar/readline/8.2.10/lib
+
 # source files here
 SRC_FILES = minishell.c valle.c matti.c exit_and_free.c cmd_split.c \
 			environment.c hardcodes.c builtins.c redirections.c \
-			redir_utils.c
+			redir_utils.c signal.c
 
 SRC = $(addprefix $(SRC_DIR), $(SRC_FILES))
 
 OBJ = $(SRC:.c=.o)
 
-all: $(LIBFT)/libft.a $(NAME)
+all: $(LIBFT)/libft.a $(READ_LINE_DIR)/libreadline.a $(NAME)
 
 $(NAME): $(OBJ)
 	@echo "\033[0;32m" -------Building minishell------ "\033[0m"
-	@$(CC) $(OBJ) -o $(NAME) -L$(LIBFT) -lft -lreadline
+	@$(CC) $(OBJ) -o $(NAME) -L$(LIBFT) -lft -L $(READ_LINE_DIR) -lreadline
 
 $(LIBFT)/libft.a:
 	@make -C $(LIBFT)

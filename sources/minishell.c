@@ -26,10 +26,10 @@ int	main(int ac, char **av, char **envp)
 	// print_shrek();
 	mshell.env = parse_env(envp, -1, 0);
 	delete_env(&mshell, "OLDPWD");
+	handle_signal();
 	while (1)
 	{
-		//signal(SIGQUIT, handle_sigquit); // Commented out to help debugging
-		//signal_handler(&mshell);
+		//signal(SIGQUIT, sigquit_handler); // jatan viela tahan, jos tarvii myohemmin
 		matti_set(&mshell);
 		input = readline(mshell.prompt_text);
 		if (!input)

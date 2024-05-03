@@ -38,7 +38,7 @@ Evaluationform feiluja:
 	bash-3.2$ env | grep testi
 	tulos=	testi="testi"
 ✅- Segfaulttaa ilman "=" merkkiä exportissa esim. "export asd vittu_saatana"
-✅- export matti='homo'
+✅- export matti='paras koodari ikina'
 ✅- export testi =arvo
 
 - Single quotes ei pitäis vissiin muuttaa arvoa esim "echo '$USER'" pitäis printtaa "$USER"

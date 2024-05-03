@@ -16,6 +16,7 @@
 # include "../libft/inc/libft.h"
 # include "../libft/inc/ft_printf.h"
 # include "../libft/inc/get_next_line.h"
+//# include "/Users/mrinkine/.brew/Cellar/readline/8.2.10/include/readline/readline.h"
 # include <stdlib.h>
 # include <unistd.h>
 # include <stdio.h>
@@ -31,6 +32,7 @@
 # include <errno.h>
 # include <sys/stat.h>
 # include <stdbool.h>
+# include <termios.h>
 
 extern int	global_signal;
 
@@ -136,6 +138,12 @@ void	delete_env(t_minishell *mshell, char *key);
 void	export_env(t_minishell *mshell, char **cmd);
 char	*clean_value(char *value);
 int		parse_quotes(char *string);
+
+/* signals */
+void	sigquit_handler(int sig);
+int		handle_signal(void);
+void 	rl_replace_line(const char *text, int clear_undo);
+
 
 
 

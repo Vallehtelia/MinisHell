@@ -104,26 +104,4 @@ void matti_set(t_minishell *mshell)
 	if (!mshell->prompt_text)
 		exit_and_free(mshell, 1);
 }
-//void print_prompt(t_minishell *mshell)
-//{
-//	printf("%s",mshell->prompt_text);
-//}
 
-void handle_sigint(int sig)
-{
-	(void)sig;
-	write(1, "\n", 1);
-}
-
-void handle_sigquit(int sig)
-{
-	(void)sig;
-	write(1, "exit\n", 5);
-}
-void signal_handler(t_minishell *mshell)
-{
-	(void)mshell;
-	signal(SIGINT, handle_sigint);
-	//signal(SIGQUIT, handle_sigquit);
-
-}
