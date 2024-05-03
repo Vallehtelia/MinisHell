@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 17:10:07 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/05/02 22:11:25 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/03 20:28:33 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,9 @@ t_env	**parse_env(char **envp, int i, int keylen);
 /* Builtins */
 int		check_builtins(t_minishell *mshell, char **cmd);
 int		run_exit(t_minishell *mshell, char **cmd, int i, int res);
+int		handle_env_var(t_minishell *mshell, char *env);
+int		change_value(t_minishell *mshell, int i, int l, int echo_check);
+int		handle_values(t_minishell *mshell, int i);
 
 /* command execution */
 void	run_commands(t_minishell *mshell);
@@ -110,7 +113,7 @@ char	*get_env_value(t_env **env, char *key);
 void	error_str(t_minishell *mshell, char *av, int n);
 void	free_env_arr(t_minishell *mshell, char **env_arr, char *path, char **cmd);
 int		check_cmd(t_minishell *mshell);
-int		check_exit_code(t_minishell *mshell, char **cmd);
+int		check_exit_code(t_minishell *mshell, int i, int l);
 void	count_pipes(t_minishell *mshell, char *input_cmd, int i, bool in_quote);
 int		ft_cmdlen(char *str);
 void	handle_pipe_end(t_minishell *mshell, char *input);

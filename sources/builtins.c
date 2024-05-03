@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 17:10:14 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/05/02 22:36:07 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/03 20:20:40 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -174,68 +174,24 @@ int	run_exit(t_minishell *mshell, char **cmd, int i, int res)
 	return (0);
 }
 
-bool	check_env_inside_squotes(t_minishell *mshell, char **cmd, int i, int k)
-{
-	char	*t;
-
-	while (cmd[++i])
-	{
-		mshell->quote_check = 0;
-		while (mshell->input_cmd[mshell->quote_check] != '\0')
-		{
-			if (mshell->input_cmd[mshell->quote_check] == '\'')
-			{
-				mshell->quote_check++;
-				while (mshell->input_cmd[mshell->quote_check] != '\''
-					&& mshell->input_cmd[mshell->quote_check] != '$')
-					mshell->quote_check++;
-				if (mshell->input_cmd[mshell->quote_check] == '$'
-					&& mshell->quote_check > mshell->quote_check_past)
-				{
-					k = mshell->quote_check;
-					t = ft_substr(mshell->input_cmd, k, ft_strlen(cmd[i]) - k);
-					if (ft_strncmp(t, cmd[i], ft_strlen(t)) == 0)
-					{
-						free(t);
-						return (true);
-					}
-					free(t);
-					mshell->quote_check_past = mshell->quote_check;
-				}
-			}
-			mshell->quote_check++;
-		}
-	}
-	return (false);
-}
-
-static int	handle_env_var(t_minishell *mshell)
+int	handle_env_var(t_minishell *mshell, char *env)
 {
 	struct stat	statbuf;
-	char		*value;
 
-	value = NULL;
-	if (check_env_inside_squotes(mshell, mshell->cmds[0]->cmd, -1, 0) == false)
-		value = get_env_value(mshell->env, mshell->cmds[0]->cmd[0] + 1);
-	if (value != NULL)
+	if (stat(env, &statbuf) == 0)
 	{
-		free(mshell->cmds[0]->cmd[0]);
-		mshell->cmds[0]->cmd[0] = ft_strdup(value);
-		if (stat(mshell->cmds[0]->cmd[0], &statbuf) == 0)
-		{
-			if (S_ISDIR(statbuf.st_mode))
-				error_str(mshell, mshell->cmds[0]->cmd[0], 2);
-			else if (statbuf.st_mode & S_IXUSR)
-				execute_cmd(mshell, mshell->cmds[0]->cmd, mshell->env);
-			else
-				error_str(mshell, mshell->cmds[0]->cmd[0], 3);
-			return (1);
-		}
+		if (S_ISDIR(statbuf.st_mode))
+			error_str(mshell, env, 2);
+		else if (statbuf.st_mode & S_IXUSR)
+			return (0);
 		else
-		{
-			error_str(mshell, mshell->cmds[0]->cmd[0], 1);
-			return (1);
-		}
+			error_str(mshell, env, 3);
+		return (1);
+	}
+	else
+	{
+		error_str(mshell, env, 1);
+		return (1);
 	}
 	return (0);
 }
@@ -285,6 +241,7 @@ void export_env(t_minishell *mshell, char **cmd)
 	if(!cmd[i])
 	{
 		print_env_export(mshell);
+		mshell->exit_code = 0;
 		return ;
 	}
 	while(cmd[i])
@@ -322,13 +279,13 @@ void export_env(t_minishell *mshell, char **cmd)
 
 int	check_builtins(t_minishell *mshell, char **cmd)
 {
-	if (check_exit_code(mshell, cmd))
-		return (1);
-	else if (cmd[0][0] == '$' && cmd[0][1] != '\0')
-	{
-		if (handle_env_var(mshell))
-			return (1);
-	}
+	// if (check_exit_code(mshell, cmd))
+	// 	return (1);
+	// else if (cmd[0][0] == '$' && cmd[0][1] != '\0')
+	// {
+	// 	if (handle_env_var(mshell))
+	// 		return (1);
+	// }
 	if (ft_strncmp(cmd[0], "echo", 5) == 0)
 	{
 		if (echo(mshell, cmd, 1))

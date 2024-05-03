@@ -5,7 +5,7 @@ CFLAGS = -Wall -Wextra -Werror
 
 SRC_DIR = ./sources/
 
-READ_LINE_DIR = /Users/mrinkine/.brew/Cellar/readline/8.2.10/lib
+READ_LINE_DIR = /Users/$(USER)/.brew/Cellar/readline/8.2.10/lib
 
 # source files here
 SRC_FILES = minishell.c valle.c matti.c exit_and_free.c cmd_split.c \

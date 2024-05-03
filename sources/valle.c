@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 15:23:49 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/05/02 22:50:51 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/03 20:42:03 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,37 +152,95 @@ int	count_quotes(char *input_cmd)
 	return (0);
 }
 
-void	handle_values(t_minishell *mshell)
+int	builtin_check(t_minishell *mshell, int i)
 {
-	int		i;
-	int		l;
+	if (ft_strncmp(mshell->cmds[i]->cmd[0], "cd", 3) == 0)
+		return (1);
+	else if (ft_strncmp(mshell->cmds[i]->cmd[0], "echo", 5) == 0)
+		return (1);
+	else if (ft_strncmp(mshell->cmds[i]->cmd[0], "pwd", 4) == 0)
+		return (1);
+	else if (ft_strncmp(mshell->cmds[i]->cmd[0], "export", 7) == 0)
+		return (1);
+	else if (ft_strncmp(mshell->cmds[i]->cmd[0], "unset", 6) == 0)
+		return (1);
+	else if (ft_strncmp(mshell->cmds[i]->cmd[0], "env", 4) == 0)
+		return (1);
+	else if (ft_strncmp(mshell->cmds[i]->cmd[0], "exit", 5) == 0)
+		return (1);
+	return (0);
+}
+
+int	change_value(t_minishell *mshell, int i, int l, int cmd_check)
+{
+	int		k;
+	int		j;
 	char	*temp;
 	char	*value;
+	char	*temp_two;
+	char	*temp_three;
 
-	i = 0;
-	while (mshell->cmds[i])
+	k = 0;
+	while (mshell->cmds[i]->cmd[l][k])
 	{
-		l = 0;
-		while (mshell->cmds[i]->cmd[l])
+		if (mshell->cmds[i]->cmd[l][k] == '$')
 		{
-			if (mshell->cmds[i]->cmd[l][0] != '\'' && l > 0)
+			j = k;
+			while (mshell->cmds[i]->cmd[l][j] && mshell->cmds[i]->cmd[l][j] != ' ')
+				j++;
+			temp = ft_strndup(mshell->cmds[i]->cmd[l] + k, j - k);
+			value = get_env_value(mshell->env, temp + 1);
+			free(temp);
+			temp = ft_strndup(mshell->cmds[i]->cmd[l], k);
+			if (value)
 			{
-				temp = ft_strchr(mshell->cmds[i]->cmd[l], '$');
-				if (temp)
+				if (cmd_check == 0)
 				{
-					value = get_env_value(mshell->env, temp + 1);
-					if (value)
+					if (handle_env_var(mshell, value))
 					{
-						free(mshell->cmds[i]->cmd[l]);
-						mshell->cmds[i]->cmd[l] = ft_strdup(value);
+						free(temp);
+						return (1);
 					}
 				}
+				temp_two = ft_strjoin(temp, value);
+				temp_three = ft_strjoin(temp_two, mshell->cmds[i]->cmd[l] + j);
+				free(mshell->cmds[i]->cmd[l]);
+				mshell->cmds[i]->cmd[l] = temp_three;
+				free(temp_two);
 			}
+			free(temp);
+		}
+		k++;
+	}
+	return (0);
+}
+
+int	handle_values(t_minishell *mshell, int i)
+{
+	int		l;
+	int		cmd_check;
+
+	while (mshell->cmds[++i])
+	{
+		l = 0;
+		while (mshell->cmds[i]->cmd[l] != NULL)
+		{
+			cmd_check = builtin_check(mshell, i);
+			if (mshell->cmds[i]->cmd[l][0] == '\'')
+			{
+				l++;
+				continue ;
+			}
+			if (check_exit_code(mshell, i, l))
+				return (1);
+			if (change_value(mshell, i, l, cmd_check))
+				return (1);
 			l++;
 		}
-		i++;
 	}
+	return (0);
 }
+
 
 void	remove_quotes(t_minishell *mshell)
 {
@@ -221,7 +279,11 @@ void	valle(t_minishell *mshell)
 		free_commands(mshell);
 		return ;
 	}
-	handle_values(mshell);
+	if (handle_values(mshell, -1))
+	{
+		free_commands(mshell);
+		return ;
+	}
 	remove_quotes(mshell);
 	if (check_cmd(mshell))
 	{
@@ -321,7 +383,6 @@ void	execute_cmd(t_minishell *mshell, char **cmd, t_env **env)
 	char	*path;
 	char	**env_arr;
 
-	printf("do i get here?\n");
 	if (check_builtins(mshell, cmd))
 		exit (mshell->exit_code);
 	if (check_redirections(mshell, cmd))
@@ -447,23 +508,42 @@ char	*get_env_value(t_env **env, char *key)
 	return (NULL);
 }
 
-int	check_exit_code(t_minishell *mshell, char **cmd)
+int	check_exit_code(t_minishell *mshell, int i, int l)
 {
-	int	i;
+	char	*temp;
+	char	*temp_two;
+	char	*new_cmd;
+	char	*new_cmd_two;
 
-	i = 0;
-	while (cmd[i])
+	temp = NULL;
+	temp = ft_strchr(mshell->cmds[i]->cmd[l], '$');
+	if (temp)
 	{
-		if (ft_strncmp(cmd[i], "$?", 3) == 0)
+		if (ft_strncmp(temp, "$?", 2) == 0)
 		{
-			free(cmd[i]);
-			cmd[i] = malloc(sizeof(char) * 4);
-			if (!cmd[i])
+			temp_two = ft_strndup(mshell->cmds[i]->cmd[l], temp - mshell->cmds[i]->cmd[l]);
+			if (!temp_two)
 				return (1);
-			cmd[i] = ft_itoa(mshell->exit_code);
-			return (0);
+			new_cmd = ft_strjoin(temp_two, ft_itoa(mshell->exit_code));
+			if (!new_cmd)
+			{
+				free(temp_two);
+				return (1);
+			}
+			if (temp + 2)
+			{
+				new_cmd_two = ft_strjoin(new_cmd, temp + 2);
+				free(mshell->cmds[i]->cmd[l]);
+				mshell->cmds[i]->cmd[l] = new_cmd_two;
+				free(new_cmd);
+			}
+			else
+			{
+				free(mshell->cmds[i]->cmd[l]);
+				mshell->cmds[i]->cmd[l] = new_cmd;
+			}
+			free(temp_two);
 		}
-		i++;
 	}
 	return (0);
 }
