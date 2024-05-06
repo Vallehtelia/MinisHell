@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 17:10:07 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/05/03 20:28:33 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/03 23:55:34 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,8 +69,6 @@ typedef struct s_minishell
 	//char		*old_pwd;
 	int			num_of_pipes;
 	int			num_of_cmds;
-	int			quote_check_past;
-	int			quote_check;
 	bool		ends_with_pipe;
 	char		*working_directory;	//current working directory
 }	t_minishell;
@@ -132,10 +130,10 @@ void	handle_sigquit(int sig);
 void	print_shrek(void);
 
 /* matin sekoilua */
-void 	add_env(t_minishell *mshell, char *key, char *value);
+void	add_env(t_minishell *mshell, char *key, char *value);
 void	free_env(t_minishell *mshell);
 bool	check_if_env_exists(t_env **env, char *key);
-int		set_env_value(t_env **env, char *key, char* value);
+int		set_env_value(t_env **env, char *key, char *value);
 void	print_env(t_minishell *mshell);
 void	delete_env(t_minishell *mshell, char *key);
 void	export_env(t_minishell *mshell, char **cmd);
@@ -145,9 +143,6 @@ int		parse_quotes(char *string);
 /* signals */
 void	sigquit_handler(int sig);
 int		handle_signal(void);
-void 	rl_replace_line(const char *text, int clear_undo);
-
-
-
+void	rl_replace_line(const char *text, int clear_undo);
 
 #endif

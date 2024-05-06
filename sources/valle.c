@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 15:23:49 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/05/03 20:42:03 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/03 23:55:58 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,9 +128,9 @@ int	count_quotes(char *input_cmd)
 	char	quote_type;
 	int		s_quote;
 
-	i = 0;
+	i = -1;
 	s_quote = 0;
-	while (input_cmd[i])
+	while (input_cmd[++i])
 	{
 		if (input_cmd[i] == '\'' || input_cmd[i] == '"')
 		{
@@ -142,7 +142,6 @@ int	count_quotes(char *input_cmd)
 			if (input_cmd[i] == quote_type)
 				s_quote++;
 		}
-		i++;
 	}
 	if (s_quote % 2 != 0)
 	{
@@ -186,7 +185,8 @@ int	change_value(t_minishell *mshell, int i, int l, int cmd_check)
 		if (mshell->cmds[i]->cmd[l][k] == '$')
 		{
 			j = k;
-			while (mshell->cmds[i]->cmd[l][j] && mshell->cmds[i]->cmd[l][j] != ' ')
+			while (mshell->cmds[i]->cmd[l][j] && mshell->cmds[i]->cmd[l][j] != ' '
+				&& mshell->cmds[i]->cmd[l][j] != '"')
 				j++;
 			temp = ft_strndup(mshell->cmds[i]->cmd[l] + k, j - k);
 			value = get_env_value(mshell->env, temp + 1);
@@ -241,7 +241,6 @@ int	handle_values(t_minishell *mshell, int i)
 	return (0);
 }
 
-
 void	remove_quotes(t_minishell *mshell)
 {
 	int		i;
@@ -254,10 +253,15 @@ void	remove_quotes(t_minishell *mshell)
 		l = 0;
 		while (mshell->cmds[i]->cmd[l])
 		{
-			if (mshell->cmds[i]->cmd[l][0] == '\''
-				|| mshell->cmds[i]->cmd[l][0] == '"')
+			if (mshell->cmds[i]->cmd[l][0] == '\'')
 			{
 				temp = ft_strtrim(mshell->cmds[i]->cmd[l], "\'");
+				free(mshell->cmds[i]->cmd[l]);
+				mshell->cmds[i]->cmd[l] = temp;
+			}
+			else if (mshell->cmds[i]->cmd[l][0] == '"')
+			{
+				temp = ft_strtrim(mshell->cmds[i]->cmd[l], "\"");
 				free(mshell->cmds[i]->cmd[l]);
 				mshell->cmds[i]->cmd[l] = temp;
 			}
@@ -292,8 +296,6 @@ void	valle(t_minishell *mshell)
 	}
 	if (check_valid_redir(mshell))
 		return ;
-	mshell->quote_check = 0;
-	mshell->quote_check_past = 0;
 	run_commands(mshell);
 	free_commands(mshell);
 }

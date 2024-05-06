@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 06:11:36 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/04/25 19:47:57 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/03 23:01:32 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ int parse_quotes(char *string)
 			len++;
 			i++;
 		}
-			
+
 	}
 	return (len);
 }
@@ -112,11 +112,11 @@ char *clean_value(char *value)
 	i = 0;
 	x = 0;
 	cleaned_value = malloc(sizeof(char) * (parse_quotes(value) + 1));
-	if(!cleaned_value)
+	if (!cleaned_value)
 		return (NULL);
 	current_quote = '\0';
-	while(value[i])
-    {
+	while (value[i])
+	{
 		if ((value[i] == '\'' || value[i] == '\"') && current_quote == '\0')
 		{
 			current_quote = value[i];
@@ -127,9 +127,9 @@ char *clean_value(char *value)
 				i++;
 			current_quote = '\0';
 		}
-        else
-            cleaned_value[x++] = value[i++];
-    }
+		else
+			cleaned_value[x++] = value[i++];
+	}
 	cleaned_value[x] = '\0';
 	return (cleaned_value);
 }
@@ -138,25 +138,23 @@ void add_env(t_minishell *mshell, char *key, char *value)
 	int		i;
 	int		env_count;
 	t_env	**temp_env_vars;
-	char	*cleaned_value;
 
-	i = -1;
+	i = 0;
 	env_count = 0;
-	if (check_if_env_exists(mshell->env, key))
-	{
-		set_env_value(mshell->env, key, value);
-		return ;
-	}
 	while (mshell->env[env_count])
 		env_count++;
 	temp_env_vars = malloc(sizeof(t_env *) * (env_count + 2));
-	while (mshell->env[++i])
+	if (!temp_env_vars)
+		return ;
+	while (mshell->env[i])
+	{
 		temp_env_vars[i] = allocate_env(mshell->env[i]->key, mshell->env[i]->value);
-	cleaned_value = clean_value(value);
-	temp_env_vars[i] = allocate_env(key, cleaned_value);
+		i++;
+	}
+	temp_env_vars[i] = allocate_env(key, value);
 	temp_env_vars[i + 1] = NULL;
-	free(cleaned_value);
 	free_env(mshell);
+	mshell->env = NULL;
 	mshell->env = temp_env_vars;
 }
 

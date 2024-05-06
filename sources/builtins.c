@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 17:10:14 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/05/03 20:20:40 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/03 23:55:02 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,11 @@ void print_variable(char *var, bool space)
 void echo_print(t_minishell *mshell, char **cmd, int i)
 {
 	(void)mshell;
-	char	s_quote[2];
-	char	d_quote[2];
+	char	*s_quote;
+	char	*d_quote;
 
-	s_quote[0] = '\'';
-	s_quote[1] = '\0';
-	d_quote[0] = '"';
-	d_quote[1] = '\0';
+	s_quote = "'";
+	d_quote = "\"";
 	if ((ft_strncmp(cmd[i], d_quote, 2) == 0) || (ft_strncmp(cmd[i], s_quote, 2) == 0))
 	{
 		print_variable(cmd[i], false);
@@ -233,9 +231,7 @@ void export_env(t_minishell *mshell, char **cmd)
 	int 	keylen;
 	char	*key;
 	char	*value;
-	char	*env_entry;
 	char	*del_pos;
-	char	*cleaned_value;
 
 	i = 1;
 	if(!cmd[i])
@@ -246,36 +242,27 @@ void export_env(t_minishell *mshell, char **cmd)
 	}
 	while(cmd[i])
 	{
-		env_entry = cmd[i];
+		keylen = ft_strlen(cmd[i]);
 		del_pos = ft_strchr(cmd[i], '=');
-		if (!del_pos && !cmd[i + 1])
+		if (del_pos == NULL)
 		{
-			mshell->exit_code = 1;
-			return ;
+			key = ft_substr(cmd[i], 0, keylen);
+			value = ft_strdup("");
 		}
-		if (!del_pos && cmd[i + 1][0] == '=')
+		else
 		{
-			cleaned_value = clean_value(cmd[i + 1]);
-			ft_putstr_fd("minishell: export: `", 2);
-			ft_putstr_fd(cleaned_value, 2);
-			ft_putendl_fd("': not a valid identifier", 2);
-			free(cleaned_value);
-			mshell->exit_code = 1;
-			return ;
-		}
-		if (del_pos)
-		{
-			keylen = del_pos - env_entry;
-			key = ft_strndup(env_entry, keylen);
+			key = ft_substr(cmd[i], 0, del_pos - cmd[i]);
 			value = ft_strdup(del_pos + 1);
-			add_env(mshell, key, value);
-			free(key);
-			free(value);
 		}
+		if (check_if_env_exists(mshell->env, key))
+			set_env_value(mshell->env, key, value);
+		else
+			add_env(mshell, key, value);
+		free(key);
+		free(value);
 		i++;
 	}
 }
-
 
 int	check_builtins(t_minishell *mshell, char **cmd)
 {

@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 01:45:22 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/05/02 16:37:29 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/03 22:15:48 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,41 @@ static const char	*skip_spaces(const char *str)
 /*
 - Does allocating for each argument and returns them to array.
 */
+// static char	*copy_arg(const char *cmd, char **arg_out, int j, char quote)
+// {
+// 	char		*arg;
+
+// 	arg = malloc(ft_strlen(cmd) + 1);
+// 	if (!arg)
+// 		return (NULL);
+// 	if (*cmd == '\'' || *cmd == '"')
+// 	{
+// 		quote = *cmd;
+// 		if (quote == '"')
+// 			cmd++;
+// 		else
+// 			arg[j++] = *cmd++;
+// 		while (*cmd != quote && *cmd != '\0')
+// 			arg[j++] = *cmd++;
+// 		if (*cmd == quote && quote == '\'')
+// 			arg[j++] = *cmd++;
+// 		if (*cmd == quote)
+// 			cmd++;
+// 	}
+// 	else
+// 	{
+// 		while (*cmd != ' ' && *cmd != '\0' && *cmd != '\'' && *cmd != '"')
+// 		{
+// 			if (*cmd == '\\' && (*(cmd + 1) == '\'' || *(cmd + 1) == '"'))
+// 				cmd++;
+// 			arg[j++] = *cmd++;
+// 		}
+// 	}
+// 	arg[j] = '\0';
+// 	*arg_out = arg;
+// 	return ((char *)cmd);
+// }
+
 static char	*copy_arg(const char *cmd, char **arg_out, int j, char quote)
 {
 	char		*arg;
@@ -32,13 +67,10 @@ static char	*copy_arg(const char *cmd, char **arg_out, int j, char quote)
 	if (*cmd == '\'' || *cmd == '"')
 	{
 		quote = *cmd;
-		if (quote == '"')
-			cmd++;
-		else
-			arg[j++] = *cmd++;
+		arg[j++] = *cmd++;
 		while (*cmd != quote && *cmd != '\0')
 			arg[j++] = *cmd++;
-		if (*cmd == quote && quote == '\'')
+		if (*cmd == quote)
 			arg[j++] = *cmd++;
 		if (*cmd == quote)
 			cmd++;
