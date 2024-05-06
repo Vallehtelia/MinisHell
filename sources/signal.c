@@ -1,14 +1,5 @@
 #include "../includes/minishell.h"
 
-void	sigint_handler(int sig)
-{
-	(void)sig;
-    write(1, "\n", 1);
-    rl_on_new_line();
-    rl_replace_line("", 0);
-    rl_redisplay();
-}
-
 void    caret_switch(int on)
 {
     struct termios    term;
@@ -19,6 +10,63 @@ void    caret_switch(int on)
     else
         term.c_lflag |= ECHOCTL;
     tcsetattr(STDIN_FILENO, TCSANOW, &term);
+}
+void	sigint_handler(int sig)
+{
+	//(void)sig;
+	printf("\nSINGNAALI !! sig = %d global = %d\n",sig, global_signal);
+	if(sig == SIGINT && global_signal == DEFAULT)
+	{
+		caret_switch(0);
+		write(1, "\n", 1);
+		rl_on_new_line();
+		rl_replace_line("", 0);
+		rl_redisplay();
+		global_signal = DEFAULT;
+		return ;
+	}
+	if(sig == SIGINT && global_signal == IN_HEREDOC)
+	{
+		caret_switch(0);
+		write(1, "\n", 1);
+		rl_on_new_line();
+		rl_replace_line("", 0);
+		rl_redisplay();
+		global_signal = DEFAULT;
+		return ;
+	}
+	if(global_signal == 0)
+	{
+		caret_switch(0);
+		write(1, "\n", 1);
+		rl_on_new_line();
+		rl_replace_line("", 0);
+		rl_redisplay();
+		global_signal = DEFAULT;
+		return ;
+	}
+	printf("\nTULEEKO TANNE KOSKAAAN!!!\n");
+	global_signal = sig;
+	caret_switch(0);
+    write(1, "\n", 1);
+    rl_on_new_line();
+    rl_replace_line("", 0);
+    rl_redisplay();
+
+	//if (global_signal != IN_HEREDOC)
+	//	ft_putstr_fd("\n", STDERR_FILENO);
+	//if (global_signal == IN_CMD)
+	//{
+	//	//global_signal = STOP_HEREDOC;
+	//	rl_replace_line("", 0);
+	//	rl_redisplay();
+	//	//rl_done = 1;
+	//	return ;
+	//}
+	//rl_on_new_line();
+	//rl_replace_line("", 0);
+	//rl_redisplay();
+	//(void) sig;
 }
 
 void	sigquit_handler(int sig) // Ei kaytossa, mutta saatttaa tarvita myohemmin
@@ -31,11 +79,11 @@ void	sigquit_handler(int sig) // Ei kaytossa, mutta saatttaa tarvita myohemmin
 }
 int	handle_signal(void)
 {
-	caret_switch(0);
 	signal(SIGINT, &sigint_handler);
 	signal(SIGQUIT, SIG_IGN);
 	return (0);
 }
+
 
 
 //void print_prompt(t_minishell *mshell)

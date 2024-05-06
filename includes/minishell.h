@@ -41,6 +41,10 @@ extern int	global_signal;
 # define DF "\033[0m"
 
 # define MAX_ARGS 10
+# define DEFAULT 0
+# define IN_HEREDOC 666
+# define STOP_HEREDOC 555
+# define IN_CMD 66
 
 typedef struct s_commands
 {

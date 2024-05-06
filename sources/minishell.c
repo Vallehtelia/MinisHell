@@ -12,7 +12,7 @@
 
 #include "../includes/minishell.h"
 
-int	global_signal = 0;
+int	global_signal = DEFAULT;
 
 int	main(int ac, char **av, char **envp)
 {
@@ -29,6 +29,7 @@ int	main(int ac, char **av, char **envp)
 	handle_signal();
 	while (1)
 	{
+		//global_signal = 0;
 		//signal(SIGQUIT, sigquit_handler); // jatan viela tahan, jos tarvii myohemmin
 		matti_set(&mshell);
 		input = readline(mshell.prompt_text);
