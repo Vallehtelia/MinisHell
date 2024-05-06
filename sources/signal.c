@@ -14,7 +14,7 @@ void    caret_switch(int on)
 void	sigint_handler(int sig)
 {
 	//(void)sig;
-	printf("\nSINGNAALI !! sig = %d global = %d\n",sig, global_signal);
+	//printf("\nSINGNAALI !! sig = %d global = %d\n",sig, global_signal);
 	if(sig == SIGINT && global_signal == DEFAULT)
 	{
 		caret_switch(0);
@@ -45,7 +45,7 @@ void	sigint_handler(int sig)
 		global_signal = DEFAULT;
 		return ;
 	}
-	printf("\nTULEEKO TANNE KOSKAAAN!!!\n");
+	//printf("\nTULEEKO TANNE KOSKAAAN!!!\n");
 	global_signal = sig;
 	caret_switch(0);
     write(1, "\n", 1);

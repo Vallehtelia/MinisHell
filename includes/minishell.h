@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 17:10:07 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/05/03 23:55:34 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/06 16:16:25 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ typedef struct s_env
 {
 	char	*key;
 	char	*value;
+	bool	have_value;
 }	t_env;
 
 typedef struct s_minishell
@@ -107,7 +108,7 @@ int		change_value(t_minishell *mshell, int i, int l, int echo_check);
 int		handle_values(t_minishell *mshell, int i);
 
 /* command execution */
-void	run_commands(t_minishell *mshell);
+void	run_commands(t_minishell *mshell, int i, int fd_in);
 void	execute_cmd(t_minishell *mshell, char **cmd, t_env **env);
 char	*find_path(char *cmd, t_env **env, int i);
 char	**env_to_char_array(t_env **env);

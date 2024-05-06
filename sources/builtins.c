@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 17:10:14 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/05/03 23:55:02 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/06 10:03:32 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -201,7 +201,11 @@ void print_env(t_minishell *mshell)
 	i = 0;
 	while (mshell->env[i])
 	{
-		ft_printf("%s=%s\n", mshell->env[i]->key, mshell->env[i]->value);
+		printf("%s", mshell->env[i]->key);
+		if (mshell->env[i]->have_value)
+			printf("=");
+		if (mshell->env[i]->value != NULL)
+			printf("%s\n", mshell->env[i]->value);
 		i++;
 	}
 }

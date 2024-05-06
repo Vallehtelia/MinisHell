@@ -6,13 +6,13 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 06:11:36 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/05/03 23:01:32 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/06 10:07:37 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-static t_env	*allocate_env(char *key, char *value)
+static t_env	*allocate_env(char *key, char *value, int parsing)
 {
 	t_env	*env_var;
 
@@ -21,6 +21,8 @@ static t_env	*allocate_env(char *key, char *value)
 		return (NULL);
 	env_var->key = ft_strdup(key);
 	env_var->value = ft_strdup(value);
+	if (parsing == 1)
+		env_var->have_value = true;
 	return (env_var);
 }
 
@@ -148,10 +150,10 @@ void add_env(t_minishell *mshell, char *key, char *value)
 		return ;
 	while (mshell->env[i])
 	{
-		temp_env_vars[i] = allocate_env(mshell->env[i]->key, mshell->env[i]->value);
+		temp_env_vars[i] = allocate_env(mshell->env[i]->key, mshell->env[i]->value, 1);
 		i++;
 	}
-	temp_env_vars[i] = allocate_env(key, value);
+	temp_env_vars[i] = allocate_env(key, value, 1);
 	temp_env_vars[i + 1] = NULL;
 	free_env(mshell);
 	mshell->env = NULL;
@@ -177,7 +179,7 @@ void	delete_env(t_minishell *mshell, char *key)
 	{
 		if(ft_strncmp(mshell->env[i]->key, key, ft_strlen(key) + 1) != 0)
 		{
-			temp_env_vars[x] = allocate_env(mshell->env[i]->key, mshell->env[i]->value);
+			temp_env_vars[x] = allocate_env(mshell->env[i]->key, mshell->env[i]->value, 1);
 			x++;
 		}
 		i++;
@@ -209,7 +211,7 @@ t_env	**parse_env(char **envp, int i, int keylen)
 			keylen = del_pos - env_entry;
 			key = ft_strndup(env_entry, keylen);
 			value = ft_strdup(del_pos + 1);
-			env_vars[i] = allocate_env(key, value);
+			env_vars[i] = allocate_env(key, value, 1);
 			free (key);
 			free (value);
 		}

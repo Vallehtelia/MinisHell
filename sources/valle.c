@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 15:23:49 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/05/03 23:55:58 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/06 19:05:36 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -271,6 +271,7 @@ void	remove_quotes(t_minishell *mshell)
 	}
 }
 
+
 void	valle(t_minishell *mshell)
 {
 	mshell->num_of_pipes = 0;
@@ -296,7 +297,12 @@ void	valle(t_minishell *mshell)
 	}
 	if (check_valid_redir(mshell))
 		return ;
-	run_commands(mshell);
+	// for (int i = 0; mshell->cmds[i]; i++)
+	// {
+	// 	for (int l = 0; mshell->cmds[i]->cmd[l]; l++)
+	// 		printf("[%i][%i] %s\n", i, l, mshell->cmds[i]->cmd[l]);
+	// }
+	run_commands(mshell, 0, 0);
 	free_commands(mshell);
 }
 
@@ -323,38 +329,85 @@ void	free_commands(t_minishell *mshell)
 	free(mshell->cmds);
 }
 
-void	run_commands(t_minishell *mshell)
-{
-	int		i;
-	int		pipefd[2];
-	int		fd_in;
-	int		status;
+// void	run_commands(t_minishell *mshell)
+// {
+// 	int		i;
+// 	int		pipefd[2];
+// 	int		fd_in;
+// 	int		status;
 
-	i = 0;
-	fd_in = 0;
-	while (mshell->cmds[i])
+// 	i = 0;
+// 	fd_in = 0;
+// 	while (mshell->cmds[i])
+// 	{
+// 		pipe(pipefd);
+// 		if (fork() == 0)
+// 		{
+// 			if (fd_in != 0)
+// 			{
+// 				dup2(fd_in, 0);
+// 				close(fd_in);
+// 			}
+// 			if (mshell->cmds[i + 1])
+// 				dup2(pipefd[1], 1);
+// 			close(pipefd[0]);
+// 			execute_cmd(mshell, mshell->cmds[i]->cmd, mshell->env);
+// 		}
+// 		else
+// 		{
+// 			wait(&status);
+// 			if (WIFEXITED(status))
+// 				mshell->exit_code = WEXITSTATUS(status);
+// 			close(pipefd[1]);
+// 			fd_in = pipefd[0];
+// 			i++;
+// 		}
+// 	}
+// }
+
+void	run_commands(t_minishell *mshell, int i, int fd_in)
+{
+	int	pipefd[2];
+	int	status;
+
+	if (mshell->cmds[i])
 	{
-		pipe(pipefd);
+		if (mshell->cmds[i + 1])
+		{
+			if (pipe(pipefd) == -1)
+			{
+				ft_putstr_fd("minisHell: pipe error\n", 2);
+				mshell->exit_code = 1;
+				return ;
+			}
+		}
 		if (fork() == 0)
 		{
 			if (fd_in != 0)
 			{
-				dup2(fd_in, 0);
+				dup2(fd_in, STDIN_FILENO);
 				close(fd_in);
 			}
 			if (mshell->cmds[i + 1])
-				dup2(pipefd[1], 1);
-			close(pipefd[0]);
+			{
+				dup2(pipefd[1], STDOUT_FILENO);
+				close(pipefd[0]);
+				close(pipefd[1]);
+			}
 			execute_cmd(mshell, mshell->cmds[i]->cmd, mshell->env);
 		}
 		else
 		{
+			if (fd_in != 0)
+				close(fd_in);
+			if (mshell->cmds[i + 1])
+			{
+				close(pipefd[1]);
+				run_commands(mshell, i + 1, pipefd[0]);
+			}
 			wait(&status);
 			if (WIFEXITED(status))
 				mshell->exit_code = WEXITSTATUS(status);
-			close(pipefd[1]);
-			fd_in = pipefd[0];
-			i++;
 		}
 	}
 }
@@ -380,6 +433,44 @@ int	check_access(t_minishell *mshell, char *cmd)
 	}
 }
 
+// int	check_if_input_to_grep_exists(t_minishell *mshell, char **cmd)
+// {
+// 	int	i;
+// 	int	bytes_avail;
+// 	int	res;
+
+// 	i = 0;
+// 	while (cmd[i])
+// 	{
+// 		if (ft_strncmp(cmd[i], "grep", 5) == 0)
+// 		{
+// 			if (cmd[i + 1] == NULL)
+// 			{
+// 				return (0);
+// 			}
+// 			res = ioctl(0, FIONREAD, &bytes_avail);
+// 			if (res == -1)
+// 			{
+// 				ft_putstr_fd("minisHell: ioctl error\n", 2);
+// 				mshell->exit_code = 1;
+// 				return (1);
+// 			}
+// 			if (bytes_avail > 0)
+// 			{
+// 				return (0);
+// 			}
+// 			else
+// 			{
+// 				ft_putstr_fd("minisHell: grep: no input\n", 2);
+// 				mshell->exit_code = 1;
+// 				return (1);
+// 			}
+// 		}
+// 		i++;
+// 	}
+// 	return (0);
+// }
+
 void	execute_cmd(t_minishell *mshell, char **cmd, t_env **env)
 {
 	char	*path;
@@ -397,6 +488,8 @@ void	execute_cmd(t_minishell *mshell, char **cmd, t_env **env)
 		path = ft_strdup(cmd[0]);
 	}
 	mshell->exit_code = 0;
+	// if (check_if_input_to_grep_exists(mshell, cmd))
+	// 	exit (mshell->exit_code);
 	env_arr = env_to_char_array(env);
 	if (execve(path, cmd, env_arr) == -1)
 		free_env_arr(mshell, env_arr, path, cmd);
