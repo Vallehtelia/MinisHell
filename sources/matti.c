@@ -50,14 +50,14 @@ void change_working_directory(t_minishell *mshell, char *path)
 		set_old_pwd(mshell);
 		if(!path)
 		{
-			error_str(mshell, path, 4);
+			error_str(mshell, path, ": No such file or directory", 4);
 			free_commands(mshell);
 			mshell->exit_code = 1;
 			return ;
 		}
 		if (chdir(path) == -1)
 		{
-			error_str(mshell, path, 4);
+			error_str(mshell, path, ": No such file or directory", 4);
 			mshell->exit_code = 1;
 		}
 		else
@@ -69,7 +69,7 @@ void change_working_directory(t_minishell *mshell, char *path)
 		i = chdir(path);
 		if(i == -1)
 		{
-			error_str(mshell, path, 4);
+			error_str(mshell, path, ": No such file or directory", 4);
 			mshell->exit_code = 1;
 		}
 

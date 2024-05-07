@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/05 15:50:13 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/05/02 22:11:49 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/07 16:50:27 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,12 +93,16 @@ int	check_cmd(t_minishell *mshell)
 	}
 	if (ft_strncmp(mshell->cmds[0]->cmd[0], "export", 7) == 0)
 	{
-		export_env(mshell, mshell->cmds[0]->cmd);
+		if (mshell->num_of_cmds == 1)
+			export_env(mshell, mshell->cmds[0]->cmd);
+		else
+			mshell->exit_code = 1;
 		return (1);
 	}
 	else if (ft_strncmp(mshell->cmds[0]->cmd[0], "unset", 6) == 0)
 	{
-		delete_env(mshell, mshell->cmds[0]->cmd[1]);
+		if (mshell->cmds[0]->cmd[1] != NULL)
+			delete_env(mshell, mshell->cmds[0]->cmd[1]);
 		return (1);
 	}
 	else if (ft_strncmp(mshell->cmds[0]->cmd[0], "exit", 5) == 0)

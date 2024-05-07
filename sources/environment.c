@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 06:11:36 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/05/06 10:07:37 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/07 16:07:21 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,7 @@ int		set_env_value(t_env **env, char *key, char* value)
 				free(cleaned_value);
 			if(!env[i]->value)
 				return (1);
+			env[i]->have_value = true;
 			return (0);
 		}
 		i++;
@@ -153,7 +154,10 @@ void add_env(t_minishell *mshell, char *key, char *value)
 		temp_env_vars[i] = allocate_env(mshell->env[i]->key, mshell->env[i]->value, 1);
 		i++;
 	}
-	temp_env_vars[i] = allocate_env(key, value, 1);
+	if (ft_strlen(value) == 0)
+		temp_env_vars[i] = allocate_env(key, value, 0);
+	else
+		temp_env_vars[i] = allocate_env(key, value, 1);
 	temp_env_vars[i + 1] = NULL;
 	free_env(mshell);
 	mshell->env = NULL;

@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 17:25:47 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/04/25 15:23:18 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/07 18:31:50 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ static void	handle_redir_input(t_minishell *mshell, char **cmd, int i)
 	fd = open(cmd[i + 1], O_RDONLY);
 	if (fd < 0)
 	{
-		printf("minishell: %s: %s\n", cmd[i + 1], strerror(errno));
+		error_str(mshell, cmd[i + 1], ": No such file or directory", 1);
 		mshell->exit_code = 1;
 		return ;
 	}
@@ -63,7 +63,8 @@ static void	handle_redir_input_heredoc(t_minishell *mshell, char **cmd, int i)
 
 	if (pipe(pipefd) == -1)
 	{
-		printf("minishell: %s\n", strerror(errno));
+		ft_putstr_fd("minishell: ", 2);
+		ft_putendl_fd(strerror(errno), 2);
 		mshell->exit_code = 1;
 		return ;
 	}
@@ -88,26 +89,35 @@ static void	handle_redir_input_heredoc(t_minishell *mshell, char **cmd, int i)
 int	check_redirections(t_minishell *mshell, char **cmd)
 {
 	int	j;
+	int	output;
 
 	j = 0;
+	output = 0;
 	while (cmd[j])
 	{
 		if (ft_strncmp(cmd[j], "<", 2) == 0)
 		{
 			handle_redir_input(mshell, cmd, j);
-			if ((cmd[j] == NULL && cmd[j - 1] == NULL) || (cmd[0] == NULL))
+			if ((cmd[j] == NULL && cmd[j - 1] == NULL) || (cmd[0] == NULL)
+				|| mshell->exit_code == 1)
 				return (1);
+			continue ;
 		}
 		else if (ft_strncmp(cmd[j], "<<", 3) == 0)
 		{
 			handle_redir_input_heredoc(mshell, cmd, j);
-			if ((cmd[j] == NULL && cmd[j - 1] == NULL) || (cmd[0] == NULL))
+			if ((cmd[j] == NULL && cmd[j - 1] == NULL) || (cmd[0] == NULL)
+				|| mshell->exit_code == 1)
 				return (1);
+			continue ;
 		}
 		if (cmd[j] != NULL)
 		{
-			if (check_output_redirection(mshell, cmd, j))
+			output = check_output_redirection(mshell, cmd, j);
+			if (output == 1)
 				return (1);
+			else if (output == 2)
+				continue ;
 		}
 		j++;
 	}

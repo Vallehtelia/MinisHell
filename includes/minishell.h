@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 17:10:07 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/05/06 16:16:25 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/07 16:29:21 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,7 @@ void	execute_cmd(t_minishell *mshell, char **cmd, t_env **env);
 char	*find_path(char *cmd, t_env **env, int i);
 char	**env_to_char_array(t_env **env);
 char	*get_env_value(t_env **env, char *key);
-void	error_str(t_minishell *mshell, char *av, int n);
+void	error_str(t_minishell *mshell, char *av, char *str, int n);
 void	free_env_arr(t_minishell *mshell, char **env_arr, char *path, char **cmd);
 int		check_cmd(t_minishell *mshell);
 int		check_exit_code(t_minishell *mshell, int i, int l);
@@ -121,7 +121,7 @@ void	count_pipes(t_minishell *mshell, char *input_cmd, int i, bool in_quote);
 int		ft_cmdlen(char *str);
 void	handle_pipe_end(t_minishell *mshell, char *input);
 bool	check_env_inside_squotes(t_minishell *mshell, char **cmd, int i, int k);
-void	remove_quotes(t_minishell *mshell);
+void	remove_quotes(char **cmd, int j);
 
 /* redirections */
 int		check_redirections(t_minishell *mshell, char **cmd);

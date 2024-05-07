@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 15:23:49 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/05/06 19:05:36 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/07 17:45:10 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -241,36 +241,80 @@ int	handle_values(t_minishell *mshell, int i)
 	return (0);
 }
 
-void	remove_quotes(t_minishell *mshell)
+// void	remove_quotes(t_minishell *mshell)
+// {
+// 	int		i;
+// 	int		l;
+// 	char	*temp;
+
+// 	i = 0;
+// 	while (mshell->cmds[i])
+// 	{
+// 		l = 0;
+// 		while (mshell->cmds[i]->cmd[l])
+// 		{
+// 			if (mshell->cmds[i]->cmd[l][0] == '\'')
+// 			{
+// 				temp = ft_strtrim(mshell->cmds[i]->cmd[l], "\'");
+// 				free(mshell->cmds[i]->cmd[l]);
+// 				mshell->cmds[i]->cmd[l] = temp;
+// 			}
+// 			else if (mshell->cmds[i]->cmd[l][0] == '"')
+// 			{
+// 				temp = ft_strtrim(mshell->cmds[i]->cmd[l], "\"");
+// 				free(mshell->cmds[i]->cmd[l]);
+// 				mshell->cmds[i]->cmd[l] = temp;
+// 			}
+// 			l++;
+// 		}
+// 		i++;
+// 	}
+// }
+
+void	remove_quotes(char **cmd, int j)
 {
+	char	*result;
 	int		i;
-	int		l;
-	char	*temp;
+	char	quote;
+
+	quote = 0;
+	i = -1;
+	result = malloc(strlen(*cmd) + 1);
+	while ((*cmd)[++i])
+	{
+		if (((*cmd)[i] == '\'' || (*cmd)[i] == '"') && (i == 0 || (*cmd)[i - 1] != '\\'))
+		{
+			if (quote == 0)
+				quote = (*cmd)[i];
+			else if (quote == (*cmd)[i])
+				quote = 0;
+			else
+				result[j++] = (*cmd)[i];
+		}
+		else
+			result[j++] = (*cmd)[i];
+	}
+	result[j] = '\0';
+	free(*cmd);
+	*cmd = result;
+}
+
+void remove_quotes_from_cmds(t_minishell *mshell)
+{
+	int	i;
 
 	i = 0;
 	while (mshell->cmds[i])
 	{
-		l = 0;
-		while (mshell->cmds[i]->cmd[l])
+		int j = 0;
+		while (mshell->cmds[i]->cmd[j])
 		{
-			if (mshell->cmds[i]->cmd[l][0] == '\'')
-			{
-				temp = ft_strtrim(mshell->cmds[i]->cmd[l], "\'");
-				free(mshell->cmds[i]->cmd[l]);
-				mshell->cmds[i]->cmd[l] = temp;
-			}
-			else if (mshell->cmds[i]->cmd[l][0] == '"')
-			{
-				temp = ft_strtrim(mshell->cmds[i]->cmd[l], "\"");
-				free(mshell->cmds[i]->cmd[l]);
-				mshell->cmds[i]->cmd[l] = temp;
-			}
-			l++;
+			remove_quotes(&mshell->cmds[i]->cmd[j], 0);
+			j++;
 		}
 		i++;
 	}
 }
-
 
 void	valle(t_minishell *mshell)
 {
@@ -289,7 +333,7 @@ void	valle(t_minishell *mshell)
 		free_commands(mshell);
 		return ;
 	}
-	remove_quotes(mshell);
+	remove_quotes_from_cmds(mshell);
 	if (check_cmd(mshell))
 	{
 		free_commands(mshell);
@@ -420,65 +464,32 @@ int	check_access(t_minishell *mshell, char *cmd)
 			return (0);
 		else
 		{
-			error_str(mshell, cmd, 3);
+			error_str(mshell, cmd, ": permission denied", 1);
 			mshell->exit_code = 126;
 			return (1);
 		}
 	}
 	else
 	{
-		error_str(mshell, cmd, 1);
+		error_str(mshell, cmd, ": command not found", 1);
 		mshell->exit_code = 127;
 		return (1);
 	}
 }
-
-// int	check_if_input_to_grep_exists(t_minishell *mshell, char **cmd)
-// {
-// 	int	i;
-// 	int	bytes_avail;
-// 	int	res;
-
-// 	i = 0;
-// 	while (cmd[i])
-// 	{
-// 		if (ft_strncmp(cmd[i], "grep", 5) == 0)
-// 		{
-// 			if (cmd[i + 1] == NULL)
-// 			{
-// 				return (0);
-// 			}
-// 			res = ioctl(0, FIONREAD, &bytes_avail);
-// 			if (res == -1)
-// 			{
-// 				ft_putstr_fd("minisHell: ioctl error\n", 2);
-// 				mshell->exit_code = 1;
-// 				return (1);
-// 			}
-// 			if (bytes_avail > 0)
-// 			{
-// 				return (0);
-// 			}
-// 			else
-// 			{
-// 				ft_putstr_fd("minisHell: grep: no input\n", 2);
-// 				mshell->exit_code = 1;
-// 				return (1);
-// 			}
-// 		}
-// 		i++;
-// 	}
-// 	return (0);
-// }
 
 void	execute_cmd(t_minishell *mshell, char **cmd, t_env **env)
 {
 	char	*path;
 	char	**env_arr;
 
-	if (check_builtins(mshell, cmd))
-		exit (mshell->exit_code);
+	// for (int i = 0; mshell->cmds[i]; i++)
+	// {
+	// 	for (int l = 0; mshell->cmds[i]->cmd[l]; l++)
+	// 		printf("[%i][%i] %s\n", i, l, mshell->cmds[i]->cmd[l]);
+	// }
 	if (check_redirections(mshell, cmd))
+		exit (mshell->exit_code);
+	if (check_builtins(mshell, cmd))
 		exit (mshell->exit_code);
 	path = find_path(cmd[0], env, 0);
 	if (!path)
@@ -488,8 +499,6 @@ void	execute_cmd(t_minishell *mshell, char **cmd, t_env **env)
 		path = ft_strdup(cmd[0]);
 	}
 	mshell->exit_code = 0;
-	// if (check_if_input_to_grep_exists(mshell, cmd))
-	// 	exit (mshell->exit_code);
 	env_arr = env_to_char_array(env);
 	if (execve(path, cmd, env_arr) == -1)
 		free_env_arr(mshell, env_arr, path, cmd);
@@ -512,32 +521,38 @@ void	free_env_arr(t_minishell *mshell, char **env_arr, char *path, char **cmd)
 		mshell->exit_code = 1;
 }
 
-void	error_str(t_minishell *mshell, char *av, int n)
+void	error_str(t_minishell *mshell, char *av, char *str, int n)
 {
+	char	*temp;
+
+	if (ft_strncmp(av, "export", 6) == 0)
+	{
+		temp = ft_strjoin("`", str);
+	}
+	ft_putstr_fd("minisHell: ", 2);
 	if (n == 1)
 	{
-		ft_putstr_fd("minisHell: ", 2);
 		ft_putstr_fd(av, 2);
-		ft_putstr_fd(": command not found\n", 2);
+		ft_putendl_fd(str, 2); //": command not found\n"": permission denied\n"
 	}
 	else if (n == 2)
 	{
-		ft_putstr_fd("minisHell: ", 2);
 		ft_putstr_fd(av, 2);
-		ft_putstr_fd(": is a directory\n", 2);
+		ft_putendl_fd(str, 2); //": is a directory\n"
 		mshell->exit_code = 126;
 	}
 	else if (n == 3)
 	{
-		ft_putstr_fd("minisHell: ", 2);
 		ft_putstr_fd(av, 2);
-		ft_putstr_fd(": permission denied\n", 2);
+		ft_putstr_fd(temp, 2);
+		ft_putendl_fd("': not a valid identifier", 2);
+		free(temp);
 	}
 	else if (n == 4)
 	{
-		ft_putstr_fd("minisHell: cd: ", 2);
+		ft_putstr_fd("cd: ", 2);
 		ft_putstr_fd(av, 2);
-		ft_putstr_fd(": No such file or directory\n", 2);
+		ft_putendl_fd(str, 2); //": No such file or directory\n"
 	}
 }
 

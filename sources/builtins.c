@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 17:10:14 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/05/06 10:03:32 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/07 16:42:40 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,16 +179,16 @@ int	handle_env_var(t_minishell *mshell, char *env)
 	if (stat(env, &statbuf) == 0)
 	{
 		if (S_ISDIR(statbuf.st_mode))
-			error_str(mshell, env, 2);
+			error_str(mshell, env, ": is a directory", 2);
 		else if (statbuf.st_mode & S_IXUSR)
 			return (0);
 		else
-			error_str(mshell, env, 3);
+			error_str(mshell, env, ": permission denied", 1);
 		return (1);
 	}
 	else
 	{
-		error_str(mshell, env, 1);
+		error_str(mshell, env, ": command not found", 1);
 		return (1);
 	}
 	return (0);
@@ -201,11 +201,10 @@ void print_env(t_minishell *mshell)
 	i = 0;
 	while (mshell->env[i])
 	{
-		printf("%s", mshell->env[i]->key);
 		if (mshell->env[i]->have_value)
-			printf("=");
-		if (mshell->env[i]->value != NULL)
-			printf("%s\n", mshell->env[i]->value);
+		{
+			printf("%s=%s\n", mshell->env[i]->key, mshell->env[i]->value);
+		}
 		i++;
 	}
 }
@@ -221,12 +220,34 @@ void print_env_export(t_minishell *mshell)
 		while (mshell->env[i])
 		{
 			if (mshell->env[i]->key[0] == abc)
-				printf("declare -x %s=\"%s\"\n", mshell->env[i]->key, mshell->env[i]->value);
+			{
+				if (mshell->env[i]->have_value)
+					printf("declare -x %s=\"%s\"\n", mshell->env[i]->key, mshell->env[i]->value);
+				else
+					printf("declare -x %s\n", mshell->env[i]->key);
+			}
 			i++;
 		}
 		abc++;
 		i = 0;
 	}
+}
+
+bool	check_indentifier(char *key)
+{
+	int i;
+
+	i = 0;
+	if (!ft_isalpha(key[i]) && key[i] != '_')
+		return (false);
+	i++;
+	while (key[i])
+	{
+		if (!ft_isalnum(key[i]) && key[i] != '_')
+			return (false);
+		i++;
+	}
+	return (true);
 }
 
 void export_env(t_minishell *mshell, char **cmd)
@@ -258,12 +279,20 @@ void export_env(t_minishell *mshell, char **cmd)
 			key = ft_substr(cmd[i], 0, del_pos - cmd[i]);
 			value = ft_strdup(del_pos + 1);
 		}
-		if (check_if_env_exists(mshell->env, key))
-			set_env_value(mshell->env, key, value);
+		if (check_indentifier(key))
+		{
+			if (check_if_env_exists(mshell->env, key))
+				set_env_value(mshell->env, key, value);
+			else
+				add_env(mshell, key, value);
+			free(key);
+			free(value);
+		}
 		else
-			add_env(mshell, key, value);
-		free(key);
-		free(value);
+		{
+			error_str(mshell, "export :", cmd[i], 3);
+			mshell->exit_code = 1;
+		}
 		i++;
 	}
 }
