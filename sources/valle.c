@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 15:23:49 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/05/07 17:45:10 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/08 18:02:38 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,7 +170,68 @@ int	builtin_check(t_minishell *mshell, int i)
 	return (0);
 }
 
-int	change_value(t_minishell *mshell, int i, int l, int cmd_check)
+// int	change_value(t_minishell *mshell, int i, int l, int cmd_check)
+// {
+// 	int		k;
+// 	int		j;
+// 	char	*temp;
+// 	char	*value;
+// 	char	*temp_two;
+// 	char	*temp_three;
+
+// 	k = 0;
+// 	value = NULL;
+// 	while (mshell->cmds[i]->cmd[l][k])
+// 	{
+// 		if (mshell->cmds[i]->cmd[l][k] == '$'
+// 			&& (mshell->cmds[i]->cmd[l][k + 1] != '\0'
+// 			&& mshell->cmds[i]->cmd[l][k + 1] != ' ')
+// 			&& mshell->cmds[i]->cmd[l][k + 1] != '"')
+// 		{
+// 			j = k;
+// 			while (mshell->cmds[i]->cmd[l][j] && mshell->cmds[i]->cmd[l][j] != ' '
+// 				&& mshell->cmds[i]->cmd[l][j] != '"')
+// 				j++;
+// 			temp = ft_strndup(mshell->cmds[i]->cmd[l] + k, j - k);
+// 			value = get_env_value(mshell->env, temp + 1);
+// 			free(temp);
+// 			temp = ft_strndup(mshell->cmds[i]->cmd[l], k);
+// 			if (value)
+// 			{
+// 				if (cmd_check == 0)
+// 				{
+// 					if (handle_env_var(mshell, value))
+// 					{
+// 						free(temp);
+// 						return (1);
+// 					}
+// 				}
+// 				temp_two = ft_strjoin(temp, value);
+// 				temp_three = ft_strjoin(temp_two, mshell->cmds[i]->cmd[l] + j);
+// 				free(mshell->cmds[i]->cmd[l]);
+// 				mshell->cmds[i]->cmd[l] = temp_three;
+// 				free(temp_two);
+// 			}
+// 			else
+// 			{
+// 				temp_two = ft_strndup(mshell->cmds[i]->cmd[l], k);
+// 				temp_three = ft_strndup(mshell->cmds[i]->cmd[l] + j, ft_strlen(mshell->cmds[i]->cmd[l] - j));
+// 				free(mshell->cmds[i]->cmd[l]);
+// 				mshell->cmds[i]->cmd[l] = ft_strjoin(temp_two, temp_three);
+// 				free(temp_two);
+// 				free(temp_three);
+// 			}
+// 			k = j - 1;
+// 			free(temp);
+// 		}
+// 		k++;
+// 	}
+// 	if (value == NULL && k == 0)
+// 		return (1);
+// 	return (0);
+// }
+
+int change_value(t_minishell *mshell, int i, int l, int cmd_check)
 {
 	int		k;
 	int		j;
@@ -180,44 +241,59 @@ int	change_value(t_minishell *mshell, int i, int l, int cmd_check)
 	char	*temp_three;
 
 	k = 0;
+	value = NULL;
 	while (mshell->cmds[i]->cmd[l][k])
 	{
-		if (mshell->cmds[i]->cmd[l][k] == '$')
+		if (mshell->cmds[i]->cmd[l][k] == '$'
+			&& mshell->cmds[i]->cmd[l][k + 1] != '\0'
+			&& mshell->cmds[i]->cmd[l][k + 1] != ' '
+			&& mshell->cmds[i]->cmd[l][k + 1] != '"')
 		{
-			j = k;
-			while (mshell->cmds[i]->cmd[l][j] && mshell->cmds[i]->cmd[l][j] != ' '
+			j = k + 1;
+			while (mshell->cmds[i]->cmd[l][j]
+				&& mshell->cmds[i]->cmd[l][j] != ' '
 				&& mshell->cmds[i]->cmd[l][j] != '"')
 				j++;
-			temp = ft_strndup(mshell->cmds[i]->cmd[l] + k, j - k);
-			value = get_env_value(mshell->env, temp + 1);
+			temp = ft_strndup(mshell->cmds[i]->cmd[l] + k + 1, j - (k + 1));
+			value = get_env_value(mshell->env, temp);
 			free(temp);
-			temp = ft_strndup(mshell->cmds[i]->cmd[l], k);
 			if (value)
 			{
 				if (cmd_check == 0)
 				{
 					if (handle_env_var(mshell, value))
-					{
-						free(temp);
 						return (1);
-					}
 				}
+				temp = ft_strndup(mshell->cmds[i]->cmd[l], k);
 				temp_two = ft_strjoin(temp, value);
 				temp_three = ft_strjoin(temp_two, mshell->cmds[i]->cmd[l] + j);
 				free(mshell->cmds[i]->cmd[l]);
 				mshell->cmds[i]->cmd[l] = temp_three;
+				free(temp);
 				free(temp_two);
 			}
-			free(temp);
+			else
+			{
+				temp_two = ft_strndup(mshell->cmds[i]->cmd[l], k);
+				temp_three = ft_strndup(mshell->cmds[i]->cmd[l] + j,
+						strlen(mshell->cmds[i]->cmd[l]) - j);
+				free(mshell->cmds[i]->cmd[l]);
+				mshell->cmds[i]->cmd[l] = ft_strjoin(temp_two, temp_three);
+				free(temp_two);
+				free(temp_three);
+			}
+			k = j;
 		}
 		k++;
 	}
-	return (0);
+	return (value == NULL && k == 0);
 }
+
 
 int	handle_values(t_minishell *mshell, int i)
 {
 	int		l;
+	int		move_index;
 	int		cmd_check;
 
 	while (mshell->cmds[++i])
@@ -235,9 +311,25 @@ int	handle_values(t_minishell *mshell, int i)
 				return (1);
 			if (change_value(mshell, i, l, cmd_check))
 				return (1);
+			if (mshell->cmds[i]->cmd[l] && ft_strlen(mshell->cmds[i]->cmd[l]) == 0)
+			{
+				free(mshell->cmds[i]->cmd[l]);
+				move_index = l;
+				while (mshell->cmds[i]->cmd[move_index + 1])
+				{
+					mshell->cmds[i]->cmd[move_index] = mshell->cmds[i]->cmd[move_index + 1];
+					move_index++;
+				}
+				mshell->cmds[i]->cmd[move_index] = NULL;
+				if (mshell->cmds[i]->cmd[l] == NULL)
+					break ;
+			}
+
 			l++;
 		}
 	}
+	if (mshell->cmds[0]->cmd[0] == NULL)
+		return (1);
 	return (0);
 }
 
@@ -464,17 +556,44 @@ int	check_access(t_minishell *mshell, char *cmd)
 			return (0);
 		else
 		{
-			error_str(mshell, cmd, ": permission denied", 1);
+			error_str(mshell, cmd, ": Permission denied", 1);
 			mshell->exit_code = 126;
 			return (1);
 		}
 	}
 	else
 	{
-		error_str(mshell, cmd, ": command not found", 1);
+		if (ft_strncmp(cmd, "./", 2) == 0 || ft_strncmp(cmd, "/", 1) == 0)
+			error_str(mshell, cmd, ": No such file or directory", 1);
+		else
+			error_str(mshell, cmd, ": command not found", 1);
 		mshell->exit_code = 127;
 		return (1);
 	}
+}
+
+int	check_path(t_minishell *mshell, char *cmd)
+{
+	struct stat	statbuf;
+
+	if (stat(cmd, &statbuf) == 0)
+	{
+		if (S_ISDIR(statbuf.st_mode))
+		{
+			if (ft_strncmp(cmd, "./", 2) == 0)
+			{
+				error_str(mshell, cmd, ": is a directory", 2);
+				mshell->exit_code = 126;
+			}
+			else
+			{
+				error_str(mshell, cmd, ": command not found", 1);
+				mshell->exit_code = 127;
+			}
+			return (1);
+		}
+	}
+	return (0);
 }
 
 void	execute_cmd(t_minishell *mshell, char **cmd, t_env **env)
@@ -498,6 +617,8 @@ void	execute_cmd(t_minishell *mshell, char **cmd, t_env **env)
 			exit (mshell->exit_code);
 		path = ft_strdup(cmd[0]);
 	}
+	if (check_path(mshell, path))
+		exit (mshell->exit_code);
 	mshell->exit_code = 0;
 	env_arr = env_to_char_array(env);
 	if (execve(path, cmd, env_arr) == -1)
@@ -515,8 +636,16 @@ void	free_env_arr(t_minishell *mshell, char **env_arr, char *path, char **cmd)
 	free(env_arr);
 	if (path != cmd[0])
 		free(path);
-	if (errno == EACCES)
+	if (errno == ENOENT)
+	{
+		error_str(mshell, cmd[0], ": command not found", 1);
+		mshell->exit_code = 127;
+	}
+	else if (errno == EACCES)
+	{
+		error_str(mshell, cmd[0], ": Permission denied", 1);
 		mshell->exit_code = 126;
+	}
 	else
 		mshell->exit_code = 1;
 }
