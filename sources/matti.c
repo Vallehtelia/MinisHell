@@ -5,8 +5,8 @@ void matti(t_minishell *mshell)
 	mshell->prompt_text = NULL;
 	mshell->working_directory = NULL;
 }
-void set_working_directory(t_minishell *mshell)
 
+void set_working_directory(t_minishell *mshell)
 {
 	int i;
 
@@ -39,14 +39,33 @@ void set_old_pwd(t_minishell *mshell)
 	}
 }
 
-void change_working_directory(t_minishell *mshell, char *path)
+void cd_have_path(t_minishell *mshell, char *path)
 {
-	int i;
+	struct stat	statbuf;
 
-	//char *temp;
-	if(path == NULL)
+	if (stat(path, &statbuf) == 0)
 	{
-		path = getenv("HOME");
+		if (!S_ISDIR(statbuf.st_mode))
+			error_str(mshell, path, ": Not a directory", 4);
+		else if(access(path, X_OK) == -1)
+			error_str(mshell, path, ": Permission denied", 4);
+		else
+		{
+			set_old_pwd(mshell);
+			if(chdir(path) == -1)
+			{
+				error_str(mshell, path, ": No such file or directory", 4);
+				mshell->exit_code = 1;
+			}
+			else
+			mshell->exit_code = 0;
+		}
+	}
+}
+
+void cd_no_path(t_minishell *mshell, char *path)
+{
+	path = getenv("HOME");
 		set_old_pwd(mshell);
 		if(!path)
 		{
@@ -62,18 +81,14 @@ void change_working_directory(t_minishell *mshell, char *path)
 		}
 		else
 			mshell->exit_code = 0;
-	}
-	else if(path)
-	{
-		set_old_pwd(mshell);
-		i = chdir(path);
-		if(i == -1)
-		{
-			error_str(mshell, path, ": No such file or directory", 4);
-			mshell->exit_code = 1;
-		}
+}
 
-	}
+void change_working_directory(t_minishell *mshell, char *path)
+{
+	if(path == NULL)
+		cd_no_path(mshell, path);
+	else if(path)
+		cd_have_path(mshell, path);
 	else
 		mshell->exit_code = 0;
 	set_working_directory(mshell);
@@ -92,6 +107,7 @@ void free_workingdir(t_minishell *mshell)
 		mshell->working_directory = NULL;
 	}
 }
+
 void matti_set(t_minishell *mshell)
 {
 	char temp[1024];

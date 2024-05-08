@@ -634,7 +634,9 @@ int	check_exit_code(t_minishell *mshell, int i, int l)
 			temp_two = ft_strndup(mshell->cmds[i]->cmd[l], temp - mshell->cmds[i]->cmd[l]);
 			if (!temp_two)
 				return (1);
-			new_cmd = ft_strjoin(temp_two, ft_itoa(mshell->exit_code));
+			new_cmd_two = ft_itoa(mshell->exit_code);
+			new_cmd = ft_strjoin(temp_two, new_cmd_two);
+			free(new_cmd_two);
 			if (!new_cmd)
 			{
 				free(temp_two);

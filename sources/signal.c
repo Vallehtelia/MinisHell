@@ -35,16 +35,16 @@ void	sigint_handler(int sig)
 		global_signal = DEFAULT;
 		return ;
 	}
-	if(global_signal == 0)
-	{
-		caret_switch(0);
-		write(1, "\n", 1);
-		rl_on_new_line();
-		rl_replace_line("", 0);
-		rl_redisplay();
-		global_signal = DEFAULT;
-		return ;
-	}
+	//if(global_signal == 0)
+	//{
+	//	caret_switch(0);
+	//	write(1, "\n", 1);
+	//	rl_on_new_line();
+	//	rl_replace_line("", 0);
+	//	rl_redisplay();
+	//	global_signal = DEFAULT;
+	//	return ;
+	//}
 	//printf("\nTULEEKO TANNE KOSKAAAN!!!\n");
 	global_signal = sig;
 	caret_switch(0);
