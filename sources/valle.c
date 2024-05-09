@@ -505,6 +505,7 @@ void	run_commands(t_minishell *mshell, int i, int fd_in)
 {
 	int	pipefd[2];
 	int	status;
+	int child_pid;
 
 	if (mshell->cmds[i])
 	{
@@ -517,7 +518,8 @@ void	run_commands(t_minishell *mshell, int i, int fd_in)
 				return ;
 			}
 		}
-		if (fork() == 0)
+		child_pid = fork();
+		if (child_pid == 0)
 		{
 			if (fd_in != 0)
 			{
@@ -530,7 +532,7 @@ void	run_commands(t_minishell *mshell, int i, int fd_in)
 				close(pipefd[0]);
 				close(pipefd[1]);
 			}
-			execute_cmd(mshell, mshell->cmds[i]->cmd, mshell->env);
+			execute_cmd(mshell, mshell->cmds[i]->cmd, mshell->env , child_pid);
 		}
 		else
 		{
@@ -596,7 +598,7 @@ int	check_path(t_minishell *mshell, char *cmd)
 	return (0);
 }
 
-void	execute_cmd(t_minishell *mshell, char **cmd, t_env **env)
+void	execute_cmd(t_minishell *mshell, char **cmd, t_env **env, int child_pid)
 {
 	char	*path;
 	char	**env_arr;
@@ -606,7 +608,8 @@ void	execute_cmd(t_minishell *mshell, char **cmd, t_env **env)
 	// 	for (int l = 0; mshell->cmds[i]->cmd[l]; l++)
 	// 		printf("[%i][%i] %s\n", i, l, mshell->cmds[i]->cmd[l]);
 	// }
-	if (check_redirections(mshell, cmd))
+	signal_execute(child_pid);
+	if (check_redirections(mshell, cmd, child_pid))
 		exit (mshell->exit_code);
 	if (check_builtins(mshell, cmd))
 		exit (mshell->exit_code);

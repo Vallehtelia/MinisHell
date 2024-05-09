@@ -41,6 +41,7 @@ extern int	global_signal;
 # define DF "\033[0m"
 
 # define MAX_ARGS 10
+// Singnal defines
 # define DEFAULT 0
 # define IN_HEREDOC 666
 # define STOP_HEREDOC 555
@@ -109,7 +110,7 @@ int		handle_values(t_minishell *mshell, int i);
 
 /* command execution */
 void	run_commands(t_minishell *mshell, int i, int fd_in);
-void	execute_cmd(t_minishell *mshell, char **cmd, t_env **env);
+void	execute_cmd(t_minishell *mshell, char **cmd, t_env **env , int child_pid);
 char	*find_path(char *cmd, t_env **env, int i);
 char	**env_to_char_array(t_env **env);
 char	*get_env_value(t_env **env, char *key);
@@ -124,7 +125,7 @@ bool	check_env_inside_squotes(t_minishell *mshell, char **cmd, int i, int k);
 void	remove_quotes(char **cmd, int j);
 
 /* redirections */
-int		check_redirections(t_minishell *mshell, char **cmd);
+int		check_redirections(t_minishell *mshell, char **cmd, int child_pid);
 int		check_valid_redir(t_minishell *mshell);
 int		check_output_redirection(t_minishell *mshell, char **cmd, int j);
 void	nullify_cmd(t_minishell *mshell, char **cmd, int i);
@@ -149,5 +150,11 @@ int		parse_quotes(char *string);
 void	sigquit_handler(int sig);
 int		handle_signal(void);
 void	rl_replace_line(const char *text, int clear_undo);
+void	signal_basic(void);
+void 	signal_heredoc(int child_pid);
+void	signal_execute(int child_pid);
+void 	signal_default(void);
+
+
 
 #endif

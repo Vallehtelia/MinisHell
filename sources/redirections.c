@@ -86,7 +86,7 @@ static void	handle_redir_input_heredoc(t_minishell *mshell, char **cmd, int i)
 	nullify_cmd(mshell, cmd, i);
 }
 
-int	check_redirections(t_minishell *mshell, char **cmd)
+int	check_redirections(t_minishell *mshell, char **cmd, int child_pid)
 {
 	int	j;
 	int	output;
@@ -105,6 +105,7 @@ int	check_redirections(t_minishell *mshell, char **cmd)
 		}
 		else if (ft_strncmp(cmd[j], "<<", 3) == 0)
 		{
+			signal_heredoc(child_pid); // Lisatty heredoc singnaali kasittely
 			handle_redir_input_heredoc(mshell, cmd, j);
 			if ((cmd[j] == NULL && cmd[j - 1] == NULL) || (cmd[0] == NULL)
 				|| mshell->exit_code == 1)
@@ -121,5 +122,6 @@ int	check_redirections(t_minishell *mshell, char **cmd)
 		}
 		j++;
 	}
+	signal_basic(); // Lisatty heredoc singnaali kasittely
 	return (0);
 }

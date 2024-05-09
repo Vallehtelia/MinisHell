@@ -26,15 +26,17 @@ int	main(int ac, char **av, char **envp)
 	// print_shrek();
 	mshell.env = parse_env(envp, -1, 0);
 	delete_env(&mshell, "OLDPWD");
-	handle_signal();
 	while (1)
 	{
-		//global_signal = 0;
-		//signal(SIGQUIT, sigquit_handler); // jatan viela tahan, jos tarvii myohemmin
+		signal_basic();
 		matti_set(&mshell);
 		input = readline(mshell.prompt_text);
 		if (!input)
+		{
+			printf("exit\n");
 			break ;
+		}
+		signal_execute(0);
 		free_workingdir(&mshell);
 		count_pipes(&mshell, input, 0, false);
 		if (mshell.ends_with_pipe == true)

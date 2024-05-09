@@ -1,5 +1,9 @@
 #include "../includes/minishell.h"
 
+/*
+1 = caret is on
+0 = caret is off
+*/
 void    caret_switch(int on)
 {
     struct termios    term;
@@ -11,101 +15,51 @@ void    caret_switch(int on)
         term.c_lflag |= ECHOCTL;
     tcsetattr(STDIN_FILENO, TCSANOW, &term);
 }
-void	sigint_handler(int sig)
-{
-	//(void)sig;
-	//printf("\nSINGNAALI !! sig = %d global = %d\n",sig, global_signal);
-	if(sig == SIGINT && global_signal == DEFAULT)
-	{
-		caret_switch(0);
-		write(1, "\n", 1);
-		rl_on_new_line();
-		rl_replace_line("", 0);
-		rl_redisplay();
-		global_signal = DEFAULT;
-		return ;
-	}
-	if(sig == SIGINT && global_signal == IN_HEREDOC)
-	{
-		caret_switch(0);
-		write(1, "\n", 1);
-		rl_on_new_line();
-		rl_replace_line("", 0);
-		rl_redisplay();
-		global_signal = DEFAULT;
-		return ;
-	}
-	//if(global_signal == 0)
-	//{
-	//	caret_switch(0);
-	//	write(1, "\n", 1);
-	//	rl_on_new_line();
-	//	rl_replace_line("", 0);
-	//	rl_redisplay();
-	//	global_signal = DEFAULT;
-	//	return ;
-	//}
-	//printf("\nTULEEKO TANNE KOSKAAAN!!!\n");
-	global_signal = sig;
-	caret_switch(0);
-    write(1, "\n", 1);
-    rl_on_new_line();
-    rl_replace_line("", 0);
-    rl_redisplay();
-
-	//if (global_signal != IN_HEREDOC)
-	//	ft_putstr_fd("\n", STDERR_FILENO);
-	//if (global_signal == IN_CMD)
-	//{
-	//	//global_signal = STOP_HEREDOC;
-	//	rl_replace_line("", 0);
-	//	rl_redisplay();
-	//	//rl_done = 1;
-	//	return ;
-	//}
-	//rl_on_new_line();
-	//rl_replace_line("", 0);
-	//rl_redisplay();
-	//(void) sig;
-}
-
-void	sigquit_handler(int sig) // Ei kaytossa, mutta saatttaa tarvita myohemmin
+static void	handle_sigint(int sig)
 {
 	(void)sig;
-	rl_replace_line("", 0);
-	ft_putstr_fd("Quit: 3\n", STDOUT_FILENO);
+	ft_putstr_fd("\n", STDOUT_FILENO);
 	rl_on_new_line();
+	rl_replace_line("", 0);
 	rl_redisplay();
 }
-int	handle_signal(void)
+
+static void	handle_sigint_heredoc(int sig)
 {
-	signal(SIGINT, &sigint_handler);
-	signal(SIGQUIT, SIG_IGN);
-	return (0);
+	if (sig == SIGINT)
+	{
+		ft_putstr_fd("\n", STDOUT_FILENO);
+		exit(1);
+	}
 }
 
+void	signal_basic(void)
+{
+	caret_switch(0);
+	signal(SIGINT,handle_sigint);
+	signal(SIGQUIT, SIG_IGN);
+}
 
+void	signal_execute(int child_pid)
+{
+	(void)child_pid;
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
+}
 
-//void print_prompt(t_minishell *mshell)
-//{
-//	printf("%s",mshell->prompt_text);
-//}
+void	signal_heredoc(int child_pid)
+{
+	caret_switch(0);
+	signal(SIGINT, SIG_DFL);
+	if (child_pid == 0)
+		signal(SIGINT, handle_sigint_heredoc);
+	else
+		signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
+}
+void	signal_default(void)
+{
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
+}
 
-//void handle_sigint(int sig)
-//{
-//	(void)sig;
-//	write(1, "\n", 1);
-//}
-
-//void handle_sigquit(int sig)
-//{
-//	(void)sig;
-//	write(1, "exit\n", 5);
-//}
-//void signal_handler(t_minishell *mshell)
-//{
-//	(void)mshell;
-//	signal(SIGINT, handle_sigint);
-//	//signal(SIGQUIT, handle_sigquit);
-
-//}
