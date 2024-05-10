@@ -151,9 +151,11 @@ void	sigquit_handler(int sig);
 int		handle_signal(void);
 void	rl_replace_line(const char *text, int clear_undo);
 void	signal_basic(void);
-void 	signal_heredoc(int child_pid);
-void	signal_execute(int child_pid);
+void 	signal_heredoc(void);
+void	signal_execute(void);
 void 	signal_default(void);
+void	signal_in_execve(void);
+
 
 
 

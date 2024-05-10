@@ -44,3 +44,8 @@ Evaluationform feiluja:
 - Single quotes ei pitäis vissiin muuttaa arvoa esim "echo '$USER'" pitäis printtaa "$USER"
 	meillä printtaa environment valuen.
 
+- Signaali errorit:
+	✅- "cat | ls" -> "ctrl - \" & "ctrl + c" muuten ok, mutta caret puuttuu
+	✅- "grep oi | ls" -> samat
+- SHLVL paivittaminen!! (Onko tarpeellinen?????)
+

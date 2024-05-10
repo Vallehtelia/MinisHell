@@ -1,8 +1,8 @@
 #include "../includes/minishell.h"
 
 /*
-1 = caret is on
-0 = caret is off
+	1 = caret is on
+	0 = caret is off
 */
 void    caret_switch(int on)
 {
@@ -23,6 +23,14 @@ static void	handle_sigint(int sig)
 	rl_replace_line("", 0);
 	rl_redisplay();
 }
+void	sigquit_handler(int sig)
+{
+	(void)sig;
+	rl_replace_line("", 0);
+	ft_putstr_fd("Quit: 3\n", STDOUT_FILENO);
+	rl_on_new_line();
+	rl_redisplay();
+}
 
 static void	handle_sigint_heredoc(int sig)
 {
@@ -32,33 +40,63 @@ static void	handle_sigint_heredoc(int sig)
 		exit(1);
 	}
 }
-
+/*
+	Signal handler for basic shell
+	- SIGINT is set to handle_sigint()
+	- SIGQUIT is set to ignore
+*/
 void	signal_basic(void)
 {
+	//printf("--Signal basic pid: %i--\n", getpid());
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
 	caret_switch(0);
 	signal(SIGINT,handle_sigint);
 	signal(SIGQUIT, SIG_IGN);
 }
-
-void	signal_execute(int child_pid)
+/*
+	Signal handler before executing commands
+	- Ignores SIGINT and SIGQUIT
+*/
+void	signal_execute(void)
 {
-	(void)child_pid;
+	//printf("--Signal execute pid: %i--\n", getpid());
+	caret_switch(1);
 	signal(SIGINT, SIG_IGN);
 	signal(SIGQUIT, SIG_IGN);
 }
-
-void	signal_heredoc(int child_pid)
+/*
+	Signal handler for heredoc
+	- SIGINT is set to handle_sigint_heredoc()
+	- SIGQUIT is set to ignore
+*/
+void	signal_heredoc(void)
 {
+	//printf("--Signal heredoc pid: %i--\n", getpid());
 	caret_switch(0);
 	signal(SIGINT, SIG_DFL);
-	if (child_pid == 0)
-		signal(SIGINT, handle_sigint_heredoc);
-	else
-		signal(SIGINT, SIG_IGN);
+	signal(SIGINT, handle_sigint_heredoc);
 	signal(SIGQUIT, SIG_IGN);
 }
+/*
+	Signal handler for executing commands
+	- SIGINT is set to ignore
+	- SIGQUIT is set to sigquit_handler()
+*/
+void	signal_in_execve(void)
+{
+	//printf("--Signal in_exevce pid: %i--\n", getpid());
+	caret_switch(0);
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, sigquit_handler);
+}
+/*
+	Puts the signals back to default
+*/
 void	signal_default(void)
 {
+	//printf("--Signal defaul pid: %i--\n", getpid());
+	caret_switch(1);
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
 }

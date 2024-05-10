@@ -36,7 +36,6 @@ int	main(int ac, char **av, char **envp)
 			printf("exit\n");
 			break ;
 		}
-		signal_execute(0);
 		free_workingdir(&mshell);
 		count_pipes(&mshell, input, 0, false);
 		if (mshell.ends_with_pipe == true)
