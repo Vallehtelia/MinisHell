@@ -30,7 +30,7 @@ void set_old_pwd(t_minishell *mshell)
 
 	if(check_if_env_exists(mshell->env, "OLDPWD"))
 	{
-		set_env_value(mshell->env, "OLDPWD", get_env_value(mshell->env, "PWD"));
+		set_env_value(mshell->env, "OLDPWD", get_env_value(mshell->env, "PWD"), -1);
 	}
 	else
 	{

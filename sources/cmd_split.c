@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 01:45:22 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/05/07 15:17:06 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/11 19:12:47 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,13 +19,30 @@ static const char	*skip_spaces(const char *str)
 	return (str);
 }
 
+const char	*copy_quoted(const char *cmd, char *arg, int *j, char quote)
+{
+	arg[(*j)++] = *cmd++;
+	while (*cmd != quote && *cmd != '\0')
+		arg[(*j)++] = *cmd++;
+	if (*cmd == quote)
+		arg[(*j)++] = *cmd++;
+	if (*cmd == quote)
+		cmd++;
+	return (cmd);
+}
+
+const char	*copy_redirs(const char *cmd, char *arg, int *j)
+{
+	while (*cmd == '<' || *cmd == '>')
+		arg[(*j)++] = *cmd++;
+	return (cmd);
+}
+
 /*
 - Does allocating for each argument and returns them to array.
 */
-static char	*copy_arg(const char *cmd, char **arg_out, int j, char quote)
+static char	*copy_arg(const char *cmd, char **arg_out, int j, char *arg)
 {
-	char		*arg;
-
 	arg = malloc(ft_strlen(cmd) + 1);
 	if (!arg)
 		return (NULL);
@@ -33,22 +50,11 @@ static char	*copy_arg(const char *cmd, char **arg_out, int j, char quote)
 	{
 		if (*cmd == '<' || *cmd == '>')
 		{
-			arg[j++] = *cmd++;
-			while (*cmd == '<' || *cmd == '>')
-				arg[j++] = *cmd++;
+			cmd = copy_redirs(cmd, arg, &j);
 			break ;
 		}
 		else if (*cmd == '\'' || *cmd == '"')
-		{
-			quote = *cmd;
-			arg[j++] = *cmd++;
-			while (*cmd != quote && *cmd != '\0')
-				arg[j++] = *cmd++;
-			if (*cmd == quote)
-				arg[j++] = *cmd++;
-			if (*cmd == quote)
-				cmd++;
-		}
+			cmd = copy_quoted(cmd, arg, &j, *cmd);
 		else
 		{
 			while (*cmd != ' ' && *cmd != '\0' && *cmd != '\'' && *cmd != '"')
@@ -64,44 +70,49 @@ static char	*copy_arg(const char *cmd, char **arg_out, int j, char quote)
 	return ((char *)cmd);
 }
 
-// static char	*copy_arg(const char *cmd, char **arg_out, int j, char quote)
-// {
-// 	char		*arg;
+const char	*skip_redir(const char *cmd)
+{
+	while (*cmd == '<' || *cmd == '>')
+		cmd++;
+	return (cmd);
+}
 
-// 	arg = malloc(ft_strlen(cmd) + 1);
-// 	if (!arg)
-// 		return (NULL);
-// 	if (*cmd == '<')
-// 	{
-// 		arg[j++] = *cmd++;
-// 		while (*cmd == '<' )
-// 			arg[j++] = *cmd++;
-// 	}
-// 	else if (*cmd == '\'' || *cmd == '"')
-// 	{
-// 		quote = *cmd;
-// 		arg[j++] = *cmd++;
-// 		while (*cmd != quote && *cmd != '\0')
-// 			arg[j++] = *cmd++;
-// 		if (*cmd == quote)
-// 			arg[j++] = *cmd++;
-// 		if (*cmd == quote)
-// 			cmd++;
-// 	}
-// 	else
-// 	{
-// 		while (*cmd != ' ' && *cmd != '\0' && *cmd != '\'' && *cmd != '"')
-// 		{
-// 			if (*cmd == '\\' && (*(cmd + 1) == '\'' || *(cmd + 1) == '"'))
-// 				cmd++;
-// 			arg[j++] = *cmd++;
-// 		}
-// 	}
-// 	arg[j] = '\0';
-// 	*arg_out = arg;
-// 	return ((char *)cmd);
-// }
+const char	*skip_quotes(const char *cmd)
+{
+	char	quote;
 
+	quote = *cmd++;
+	while (*cmd != quote && *cmd != '\0')
+		cmd++;
+	if (*cmd == quote)
+		cmd++;
+	return (cmd);
+}
+
+int	count_arg_count(const char *cmd, int count)
+{
+	while (*cmd != '\0')
+	{
+		cmd = skip_spaces(cmd);
+		if (*cmd == '\0')
+			break ;
+		if (*cmd == '\'' || *cmd == '"')
+			cmd = skip_quotes(cmd);
+		else if (*cmd == '<' || *cmd == '>')
+			cmd = skip_redir(cmd);
+		else
+		{
+			while (*cmd != ' ' && *cmd != '\0' && *cmd != '\'' && *cmd != '"')
+			{
+				if (*cmd == '\\' && (*(cmd + 1) == '\'' || *(cmd + 1) == '"'))
+					cmd++;
+				cmd++;
+			}
+		}
+		count++;
+	}
+	return (count);
+}
 
 /*
 - Similar to ft_split but splits given parameter with spaces and skips
@@ -114,17 +125,19 @@ char	**get_cmd(const char *cmd)
 	char		*arg;
 	int			i;
 	const char	*next_cmd;
+	int			arg_count;
 
-	args = malloc(MAX_ARGS * sizeof(char *) + 1); // hankkiudu eroon max argsista
+	arg_count = count_arg_count(cmd, 0);
+	args = malloc(arg_count * sizeof(char *) + 1);
 	if (!args)
 		return (NULL);
 	i = 0;
-	while (*cmd != '\0' && i < MAX_ARGS - 1) // poista max_args
+	while (*cmd != '\0' && i < arg_count)
 	{
 		cmd = skip_spaces(cmd);
 		if (*cmd == '\0')
 			break ;
-		next_cmd = copy_arg(cmd, &arg, 0, 0);
+		next_cmd = copy_arg(cmd, &arg, 0, NULL);
 		if (arg && *arg)
 			args[i++] = arg;
 		else

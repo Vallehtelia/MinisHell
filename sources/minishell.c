@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 13:47:58 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/05/07 19:08:22 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/11 20:38:16 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ int	main(int ac, char **av, char **envp)
 	mshell = (t_minishell){};
 
 	// print_shrek();
-	mshell.env = parse_env(envp, -1, 0);
+	mshell.env = parse_env(envp, -1);
 	delete_env(&mshell, "OLDPWD");
 	while (1)
 	{

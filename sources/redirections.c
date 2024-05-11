@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 17:25:47 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/05/07 18:31:50 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/11 21:43:47 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	nullify_cmd(t_minishell *mshell, char **cmd, int i)
 	mshell->exit_code = 0;
 }
 
-static void	handle_redir_input(t_minishell *mshell, char **cmd, int i)
+void	handle_redir_input(t_minishell *mshell, char **cmd, int i)
 {
 	int	fd;
 
@@ -56,10 +56,9 @@ static int	check_line(char **cmd, char *line, int i)
 	return (0);
 }
 
-static void	handle_redir_input_heredoc(t_minishell *mshell, char **cmd, int i)
+void	redir_input_heredoc(t_minishell *mshell, char **cmd, int i, char *l)
 {
 	int		pipefd[2];
-	char	*line;
 
 	if (pipe(pipefd) == -1)
 	{
@@ -70,13 +69,13 @@ static void	handle_redir_input_heredoc(t_minishell *mshell, char **cmd, int i)
 	}
 	while (1)
 	{
-		line = readline("> ");
-		if (!line)
+		l = readline("> ");
+		if (!l)
 			break ;
-		if (check_line(cmd, line, i))
+		if (check_line(cmd, l, i))
 			break ;
-		ft_putendl_fd(line, pipefd[1]);
-		free(line);
+		ft_putendl_fd(l, pipefd[1]);
+		free(l);
 	}
 	close(pipefd[1]);
 	dup2(pipefd[0], STDIN_FILENO);
@@ -86,32 +85,19 @@ static void	handle_redir_input_heredoc(t_minishell *mshell, char **cmd, int i)
 	nullify_cmd(mshell, cmd, i);
 }
 
-int	check_redirections(t_minishell *mshell, char **cmd, int child_pid)
+int	check_redirections(t_minishell *mshell, char **cmd, int j, int output)
 {
-	int	j;
-	int	output;
+	int	input;
 
-	(void)child_pid; // Ei varmaan tarvii koko inttia
-	j = 0;
-	output = 0;
 	while (cmd[j])
 	{
-		if (ft_strncmp(cmd[j], "<", 2) == 0)
+		if (cmd[j] != NULL)
 		{
-			handle_redir_input(mshell, cmd, j);
-			if ((cmd[j] == NULL && cmd[j - 1] == NULL) || (cmd[0] == NULL)
-				|| mshell->exit_code == 1)
+			input = check_input_redirection(mshell, cmd, j);
+			if (input == 1)
 				return (1);
-			continue ;
-		}
-		else if (ft_strncmp(cmd[j], "<<", 3) == 0)
-		{
-			signal_heredoc(); // Lisatty heredoc singnaali kasittely
-			handle_redir_input_heredoc(mshell, cmd, j);
-			if ((cmd[j] == NULL && cmd[j - 1] == NULL) || (cmd[0] == NULL)
-				|| mshell->exit_code == 1)
-				return (1);
-			continue ;
+			else if (input == 2)
+				continue ;
 		}
 		if (cmd[j] != NULL)
 		{

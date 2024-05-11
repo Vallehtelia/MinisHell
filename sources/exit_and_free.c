@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exit_and_free.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/05/11 19:38:54 by vvaalant          #+#    #+#             */
+/*   Updated: 2024/05/11 19:39:05 by vvaalant         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 void	free_env(t_minishell *mshell) // Otin staticin pois.. Katotaan haittaako?
@@ -5,7 +17,7 @@ void	free_env(t_minishell *mshell) // Otin staticin pois.. Katotaan haittaako?
 	int	i;
 
 	i = 0;
-	if(mshell->env)
+	if (mshell->env)
 	{
 		while (mshell->env[i])
 		{

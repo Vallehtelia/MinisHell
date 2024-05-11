@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/05 15:50:13 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/05/07 16:50:27 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/11 21:00:56 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,8 @@ int	check_valid_redir(t_minishell *mshell)
 	int	i;
 	int	x;
 
-	i = 0;
-	while (mshell->cmds[i])
+	i = -1;
+	while (mshell->cmds[++i])
 	{
 		x = 0;
 		while (mshell->cmds[i]->cmd[x])
@@ -52,14 +52,13 @@ int	check_valid_redir(t_minishell *mshell)
 			}
 			x++;
 		}
-		i++;
 	}
 	return (0);
 }
 
 static void	handle_redir_error(t_minishell *mshell, char *cmd)
 {
-	int i;
+	int	i;
 
 	i = ft_strlen(cmd);
 	if (ft_strlen(cmd) > 2 && ft_strncmp(mshell->cmds[0]->cmd[0], "<", 1) == 0)
@@ -84,6 +83,43 @@ static void	handle_redir_error(t_minishell *mshell, char *cmd)
 	mshell->exit_code = 258;
 }
 
+int	handle_export(t_minishell *mshell)
+{
+	int	i;
+	int	l;
+
+	i = 0;
+	while (mshell->cmds[i])
+	{
+		l = 0;
+		while (mshell->cmds[i]->cmd[l])
+		{
+			if (ft_strncmp(mshell->cmds[i]->cmd[l], "export", 7) == 0)
+			{
+				if (mshell->num_of_cmds == 1)
+				{
+					export_env(mshell, mshell->cmds[i]->cmd);
+					return (1);
+				}
+				else
+					return (0);
+			}
+			l++;
+		}
+		i++;
+	}
+	return (0);
+}
+
+int	confirm_redir_chars(char *str)
+{
+	if ((ft_strncmp(str, "<", 1) == 0 || ft_strncmp(str, ">", 1) == 0)
+		&& ft_strlen(str) > 2)
+		return (1);
+	else
+		return (0);
+}
+
 int	check_cmd(t_minishell *mshell)
 {
 	if ((ft_strncmp(mshell->cmds[0]->cmd[0], "cd", 3) == 0))
@@ -91,14 +127,8 @@ int	check_cmd(t_minishell *mshell)
 		change_working_directory(mshell, mshell->cmds[0]->cmd[1]);
 		return (1);
 	}
-	if (ft_strncmp(mshell->cmds[0]->cmd[0], "export", 7) == 0)
-	{
-		if (mshell->num_of_cmds == 1)
-			export_env(mshell, mshell->cmds[0]->cmd);
-		else
-			mshell->exit_code = 1;
+	if (handle_export(mshell))
 		return (1);
-	}
 	else if (ft_strncmp(mshell->cmds[0]->cmd[0], "unset", 6) == 0)
 	{
 		if (mshell->cmds[0]->cmd[1] != NULL)
@@ -110,9 +140,7 @@ int	check_cmd(t_minishell *mshell)
 		if (run_exit(mshell, mshell->cmds[0]->cmd, 0, 0))
 			return (1);
 	}
-	else if ((ft_strncmp(mshell->cmds[0]->cmd[0], "<", 1) == 0
-			|| ft_strncmp(mshell->cmds[0]->cmd[0], ">", 1) == 0)
-		&& ft_strlen(mshell->cmds[0]->cmd[0]) > 2)
+	else if (confirm_redir_chars(mshell->cmds[0]->cmd[0]))
 	{
 		handle_redir_error(mshell, mshell->cmds[0]->cmd[0]);
 		return (1);
@@ -122,7 +150,7 @@ int	check_cmd(t_minishell *mshell)
 
 void	print_shrek(void)
 {
-	printf("\033[2J\033[H"); // clears screen
+	printf("\033[2J\033[H");
 	printf(GR"/* ******************************************************* */\n");
 	printf("/*⢀⡴⠑⡄⠀⠀⠀⠀⠀⠀⠀⣀⣀⣤⣤⣤⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀                           */\n");
 	printf("/*⠸⡇⠀⠿⡀⠀⠀⠀⣀⡴⢿⣿⣿⣿⣿⣿⣿⣿⣷⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀                           */\n");

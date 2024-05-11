@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 15:23:49 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/05/08 18:02:38 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/11 23:20:43 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,117 +170,92 @@ int	builtin_check(t_minishell *mshell, int i)
 	return (0);
 }
 
-// int	change_value(t_minishell *mshell, int i, int l, int cmd_check)
-// {
-// 	int		k;
-// 	int		j;
-// 	char	*temp;
-// 	char	*value;
-// 	char	*temp_two;
-// 	char	*temp_three;
+int	confirm_env_chars(t_minishell *mshell, int i, int l, int k)
+{
+	if (mshell->cmds[i]->cmd[l][k] == '$'
+		&& mshell->cmds[i]->cmd[l][k + 1] != '\0'
+		&& mshell->cmds[i]->cmd[l][k + 1] != ' '
+		&& mshell->cmds[i]->cmd[l][k + 1] != '"')
+		return (1);
+	return (0);
+}
 
-// 	k = 0;
-// 	value = NULL;
-// 	while (mshell->cmds[i]->cmd[l][k])
-// 	{
-// 		if (mshell->cmds[i]->cmd[l][k] == '$'
-// 			&& (mshell->cmds[i]->cmd[l][k + 1] != '\0'
-// 			&& mshell->cmds[i]->cmd[l][k + 1] != ' ')
-// 			&& mshell->cmds[i]->cmd[l][k + 1] != '"')
-// 		{
-// 			j = k;
-// 			while (mshell->cmds[i]->cmd[l][j] && mshell->cmds[i]->cmd[l][j] != ' '
-// 				&& mshell->cmds[i]->cmd[l][j] != '"')
-// 				j++;
-// 			temp = ft_strndup(mshell->cmds[i]->cmd[l] + k, j - k);
-// 			value = get_env_value(mshell->env, temp + 1);
-// 			free(temp);
-// 			temp = ft_strndup(mshell->cmds[i]->cmd[l], k);
-// 			if (value)
-// 			{
-// 				if (cmd_check == 0)
-// 				{
-// 					if (handle_env_var(mshell, value))
-// 					{
-// 						free(temp);
-// 						return (1);
-// 					}
-// 				}
-// 				temp_two = ft_strjoin(temp, value);
-// 				temp_three = ft_strjoin(temp_two, mshell->cmds[i]->cmd[l] + j);
-// 				free(mshell->cmds[i]->cmd[l]);
-// 				mshell->cmds[i]->cmd[l] = temp_three;
-// 				free(temp_two);
-// 			}
-// 			else
-// 			{
-// 				temp_two = ft_strndup(mshell->cmds[i]->cmd[l], k);
-// 				temp_three = ft_strndup(mshell->cmds[i]->cmd[l] + j, ft_strlen(mshell->cmds[i]->cmd[l] - j));
-// 				free(mshell->cmds[i]->cmd[l]);
-// 				mshell->cmds[i]->cmd[l] = ft_strjoin(temp_two, temp_three);
-// 				free(temp_two);
-// 				free(temp_three);
-// 			}
-// 			k = j - 1;
-// 			free(temp);
-// 		}
-// 		k++;
-// 	}
-// 	if (value == NULL && k == 0)
-// 		return (1);
-// 	return (0);
-// }
+int	skip_env_chars(t_minishell *mshell, int i, int l, int j)
+{
+	while (mshell->cmds[i]->cmd[l][j] && mshell->cmds[i]->cmd[l][j] != ' '
+		&& mshell->cmds[i]->cmd[l][j] != '"')
+		j++;
+	return (j);
+}
 
-int change_value(t_minishell *mshell, int i, int l, int cmd_check)
+char	*change_value_value(char *cmd, char *value, int j, int k)
+{
+	char	*temp;
+	char	*temp_two;
+
+	temp = ft_strndup(cmd, k);
+	temp_two = ft_strjoin(temp, value);
+	free(temp);
+	temp = ft_strjoin(temp_two, cmd + j);
+	free(temp_two);
+	return (temp);
+}
+
+char	*change_value_novalue(char *cmd, int j, int k)
+{
+	char	*temp;
+	char	*temp_two;
+	char	*temp_three;
+
+	temp = ft_strndup(cmd, k);
+	temp_two = ft_strndup(cmd + j, strlen(cmd) - j);
+	temp_three = ft_strjoin(temp, temp_two);
+	free(temp);
+	free(temp_two);
+	return (temp_three);
+}
+
+int	handle_cmd_check(t_minishell *mshell, char *value, int cmd_check)
+{
+	if (cmd_check == 0)
+	{
+		if (handle_env_var(mshell, value))
+			return (1);
+	}
+	return (0);
+}
+
+int	change_value(t_minishell *mshell, int i, int l, int cmd_check)
 {
 	int		k;
 	int		j;
 	char	*temp;
 	char	*value;
-	char	*temp_two;
-	char	*temp_three;
 
 	k = 0;
 	value = NULL;
 	while (mshell->cmds[i]->cmd[l][k])
 	{
-		if (mshell->cmds[i]->cmd[l][k] == '$'
-			&& mshell->cmds[i]->cmd[l][k + 1] != '\0'
-			&& mshell->cmds[i]->cmd[l][k + 1] != ' '
-			&& mshell->cmds[i]->cmd[l][k + 1] != '"')
+		if (confirm_env_chars(mshell, i, l, k))
 		{
 			j = k + 1;
-			while (mshell->cmds[i]->cmd[l][j]
-				&& mshell->cmds[i]->cmd[l][j] != ' '
-				&& mshell->cmds[i]->cmd[l][j] != '"')
-				j++;
+			j = skip_env_chars(mshell, i, l, j);
 			temp = ft_strndup(mshell->cmds[i]->cmd[l] + k + 1, j - (k + 1));
 			value = get_env_value(mshell->env, temp);
 			free(temp);
 			if (value)
 			{
-				if (cmd_check == 0)
-				{
-					if (handle_env_var(mshell, value))
-						return (1);
-				}
-				temp = ft_strndup(mshell->cmds[i]->cmd[l], k);
-				temp_two = ft_strjoin(temp, value);
-				temp_three = ft_strjoin(temp_two, mshell->cmds[i]->cmd[l] + j);
+				if (handle_cmd_check(mshell, value, cmd_check))
+					return (1);
+				temp = change_value_value(mshell->cmds[i]->cmd[l], value, j, k);
 				free(mshell->cmds[i]->cmd[l]);
-				mshell->cmds[i]->cmd[l] = temp_three;
-				free(temp);
-				free(temp_two);
+				mshell->cmds[i]->cmd[l] = temp;
 			}
 			else
 			{
-				temp_two = ft_strndup(mshell->cmds[i]->cmd[l], k);
-				temp_three = ft_strndup(mshell->cmds[i]->cmd[l] + j,
-						strlen(mshell->cmds[i]->cmd[l]) - j);
+				temp = change_value_novalue(mshell->cmds[i]->cmd[l], j, k);
 				free(mshell->cmds[i]->cmd[l]);
-				mshell->cmds[i]->cmd[l] = ft_strjoin(temp_two, temp_three);
-				free(temp_two);
-				free(temp_three);
+				mshell->cmds[i]->cmd[l] = temp;
 			}
 			k = j;
 		}
@@ -289,6 +264,57 @@ int change_value(t_minishell *mshell, int i, int l, int cmd_check)
 	return (value == NULL && k == 0);
 }
 
+// int	change_value(t_minishell *mshell, int i, int l, int cmd_check)
+// {
+// 	int		k;
+// 	int		j;
+// 	char	*temp;
+// 	char	*value;
+// 	char	*temp_two;
+
+// 	k = 0;
+// 	value = NULL;
+// 	while (mshell->cmds[i]->cmd[l][k])
+// 	{
+// 		if (confirm_env_chars(mshell, i, l, k))
+// 		{
+// 			j = k + 1;
+// 			while (confirm_env_chars_two(mshell, i, l, j))
+// 				j++;
+// 			temp = ft_strndup(mshell->cmds[i]->cmd[l] + k + 1, j - (k + 1));
+// 			value = get_env_value(mshell->env, temp);
+// 			free(temp);
+// 			if (value)
+// 			{
+// 				if (cmd_check == 0)
+// 				{
+// 					if (handle_env_var(mshell, value))
+// 						return (1);
+// 				}
+// 				temp = ft_strndup(mshell->cmds[i]->cmd[l], k);
+// 				temp_two = ft_strjoin(temp, value);
+// 				free(temp);
+// 				temp = ft_strjoin(temp_two, mshell->cmds[i]->cmd[l] + j);
+// 				free(mshell->cmds[i]->cmd[l]);
+// 				mshell->cmds[i]->cmd[l] = temp;
+// 				free(temp_two);
+// 			}
+// 			else
+// 			{
+// 				temp = ft_strndup(mshell->cmds[i]->cmd[l], k);
+// 				temp_two = ft_strndup(mshell->cmds[i]->cmd[l] + j,
+// 						strlen(mshell->cmds[i]->cmd[l]) - j);
+// 				free(mshell->cmds[i]->cmd[l]);
+// 				mshell->cmds[i]->cmd[l] = ft_strjoin(temp, temp_two);
+// 				free(temp_two);
+// 				free(temp);
+// 			}
+// 			k = j;
+// 		}
+// 		k++;
+// 	}
+// 	return (value == NULL && k == 0);
+// }
 
 int	handle_values(t_minishell *mshell, int i)
 {
@@ -332,36 +358,6 @@ int	handle_values(t_minishell *mshell, int i)
 		return (1);
 	return (0);
 }
-
-// void	remove_quotes(t_minishell *mshell)
-// {
-// 	int		i;
-// 	int		l;
-// 	char	*temp;
-
-// 	i = 0;
-// 	while (mshell->cmds[i])
-// 	{
-// 		l = 0;
-// 		while (mshell->cmds[i]->cmd[l])
-// 		{
-// 			if (mshell->cmds[i]->cmd[l][0] == '\'')
-// 			{
-// 				temp = ft_strtrim(mshell->cmds[i]->cmd[l], "\'");
-// 				free(mshell->cmds[i]->cmd[l]);
-// 				mshell->cmds[i]->cmd[l] = temp;
-// 			}
-// 			else if (mshell->cmds[i]->cmd[l][0] == '"')
-// 			{
-// 				temp = ft_strtrim(mshell->cmds[i]->cmd[l], "\"");
-// 				free(mshell->cmds[i]->cmd[l]);
-// 				mshell->cmds[i]->cmd[l] = temp;
-// 			}
-// 			l++;
-// 		}
-// 		i++;
-// 	}
-// }
 
 void	remove_quotes(char **cmd, int j)
 {
@@ -533,7 +529,7 @@ void	run_commands(t_minishell *mshell, int i, int fd_in)
 				close(pipefd[0]);
 				close(pipefd[1]);
 			}
-			execute_cmd(mshell, mshell->cmds[i]->cmd, mshell->env , child_pid);
+			execute_cmd(mshell, mshell->cmds[i]->cmd, mshell->env);
 		}
 		else
 		{
@@ -599,7 +595,7 @@ int	check_path(t_minishell *mshell, char *cmd)
 	return (0);
 }
 
-void	execute_cmd(t_minishell *mshell, char **cmd, t_env **env, int child_pid)
+void	execute_cmd(t_minishell *mshell, char **cmd, t_env **env)
 {
 	char	*path;
 	char	**env_arr;
@@ -609,7 +605,7 @@ void	execute_cmd(t_minishell *mshell, char **cmd, t_env **env, int child_pid)
 	// 	for (int l = 0; mshell->cmds[i]->cmd[l]; l++)
 	// 		printf("[%i][%i] %s\n", i, l, mshell->cmds[i]->cmd[l]);
 	// }
-	if (check_redirections(mshell, cmd, child_pid))
+	if (check_redirections(mshell, cmd, 0, 0))
 		exit (mshell->exit_code);
 	if (check_builtins(mshell, cmd))
 		exit (mshell->exit_code);

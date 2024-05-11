@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 17:10:07 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/05/07 16:29:21 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/11 21:43:18 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ char	**get_cmd(const char *cmd);
 void	free_commands(t_minishell *mshell);
 
 /* environment init */
-t_env	**parse_env(char **envp, int i, int keylen);
+t_env	**parse_env(char **envp, int i);
 
 /* Builtins */
 int		check_builtins(t_minishell *mshell, char **cmd);
@@ -110,7 +110,7 @@ int		handle_values(t_minishell *mshell, int i);
 
 /* command execution */
 void	run_commands(t_minishell *mshell, int i, int fd_in);
-void	execute_cmd(t_minishell *mshell, char **cmd, t_env **env , int child_pid);
+void	execute_cmd(t_minishell *mshell, char **cmd, t_env **env);
 char	*find_path(char *cmd, t_env **env, int i);
 char	**env_to_char_array(t_env **env);
 char	*get_env_value(t_env **env, char *key);
@@ -125,10 +125,13 @@ bool	check_env_inside_squotes(t_minishell *mshell, char **cmd, int i, int k);
 void	remove_quotes(char **cmd, int j);
 
 /* redirections */
-int		check_redirections(t_minishell *mshell, char **cmd, int child_pid);
+int		check_redirections(t_minishell *mshell, char **cmd, int j, int output);
 int		check_valid_redir(t_minishell *mshell);
+int		check_input_redirection(t_minishell *mshell, char **cmd, int j);
 int		check_output_redirection(t_minishell *mshell, char **cmd, int j);
 void	nullify_cmd(t_minishell *mshell, char **cmd, int i);
+void	redir_input_heredoc(t_minishell *mshell, char **cmd, int i, char *l);
+void	handle_redir_input(t_minishell *mshell, char **cmd, int i);
 
 void	signal_handler(t_minishell *mshell);
 void	handle_sigquit(int sig);
@@ -139,11 +142,11 @@ void	print_shrek(void);
 void	add_env(t_minishell *mshell, char *key, char *value);
 void	free_env(t_minishell *mshell);
 bool	check_if_env_exists(t_env **env, char *key);
-int		set_env_value(t_env **env, char *key, char *value);
+int		set_env_value(t_env **env, char *key, char *value, int i);
 void	print_env(t_minishell *mshell);
 void	delete_env(t_minishell *mshell, char *key);
 void	export_env(t_minishell *mshell, char **cmd);
-char	*clean_value(char *value);
+char	*clean_value(char *value, int i, int x);
 int		parse_quotes(char *string);
 
 /* signals */

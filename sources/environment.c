@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/28 06:11:36 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/05/07 16:07:21 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/11 21:17:26 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,8 @@ static int	env_count(char **envp)
 		i++;
 	return (i);
 }
-bool check_if_env_exists(t_env **env, char *key)
+
+bool	check_if_env_exists(t_env **env, char *key)
 {
 	int	i;
 
@@ -48,38 +49,41 @@ bool check_if_env_exists(t_env **env, char *key)
 	}
 	return (false);
 }
+
 /*
 	Changes value of environment variable.
 */
-int		set_env_value(t_env **env, char *key, char* value)
+int	set_env_value(t_env **env, char *key, char *value, int i)
 {
-	int		i;
 	char	*cleaned_value;
 
-	i = 0;
-	while (env[i])
+	while (env[++i])
 	{
 		if (ft_strncmp(env[i]->key, key, ft_strlen(key) + 1) == 0)
 		{
-			if(ft_strlen(env[i]->value) > 0)
+			if (env[i]->value)
 				free(env[i]->value);
-			env[i]->value = NULL;
-			cleaned_value = clean_value(value);
+			cleaned_value = clean_value(value, 0, 0);
+			if (!cleaned_value)
+				return (1);
 			env[i]->value = ft_strdup(cleaned_value);
+			if (!env[i]->value)
+			{
+				free(cleaned_value);
+				return (1);
+			}
 			if (cleaned_value)
 				free(cleaned_value);
-			if(!env[i]->value)
-				return (1);
 			env[i]->have_value = true;
 			return (0);
 		}
-		i++;
 	}
 	return (1);
 }
-int parse_quotes(char *string)
+
+int	parse_quotes(char *string)
 {
-    int		len;
+	int		len;
 	int		i;
 	char	current_quote;
 
@@ -105,15 +109,11 @@ int parse_quotes(char *string)
 	return (len);
 }
 
-char *clean_value(char *value)
+char	*clean_value(char *value, int i, int x)
 {
-	int i;
-	int x;
-	char *cleaned_value;
-	char current_quote;
+	char	*cleaned_value;
+	char	current_quote;
 
-	i = 0;
-	x = 0;
 	cleaned_value = malloc(sizeof(char) * (parse_quotes(value) + 1));
 	if (!cleaned_value)
 		return (NULL);
@@ -136,7 +136,8 @@ char *clean_value(char *value)
 	cleaned_value[x] = '\0';
 	return (cleaned_value);
 }
-void add_env(t_minishell *mshell, char *key, char *value)
+
+void	add_env(t_minishell *mshell, char *key, char *value)
 {
 	int		i;
 	int		env_count;
@@ -151,7 +152,8 @@ void add_env(t_minishell *mshell, char *key, char *value)
 		return ;
 	while (mshell->env[i])
 	{
-		temp_env_vars[i] = allocate_env(mshell->env[i]->key, mshell->env[i]->value, 1);
+		temp_env_vars[i] = allocate_env(mshell->env[i]->key, \
+		mshell->env[i]->value, 1);
 		i++;
 	}
 	if (ft_strlen(value) == 0)
@@ -166,42 +168,52 @@ void add_env(t_minishell *mshell, char *key, char *value)
 
 void	delete_env(t_minishell *mshell, char *key)
 {
-	int i;
-	int x;
-	int env_count;
-	t_env **temp_env_vars;
+	int		i;
+	int		x;
+	int		env_count;
+	t_env	**te;
 
-	i = 0;
+	i = -1;
 	x = 0;
 	env_count = 0;
-	if(!check_if_env_exists(mshell->env, key))
-		return;
+	if (!check_if_env_exists(mshell->env, key))
+		return ;
 	while (mshell->env[env_count])
 		env_count++;
-	temp_env_vars = malloc(sizeof(t_env *) * (env_count));
-	while (mshell->env[i])
+	te = malloc(sizeof(t_env *) * (env_count));
+	while (mshell->env[++i])
 	{
-		if(ft_strncmp(mshell->env[i]->key, key, ft_strlen(key) + 1) != 0)
+		if (ft_strncmp(mshell->env[i]->key, key, ft_strlen(key) + 1) != 0)
 		{
-			temp_env_vars[x] = allocate_env(mshell->env[i]->key, mshell->env[i]->value, 1);
+			te[x] = allocate_env(mshell->env[i]->key, mshell->env[i]->value, 1);
 			x++;
 		}
-		i++;
 	}
-	temp_env_vars[x] = NULL;
-    free_env(mshell);
+	te[x] = NULL;
+	free_env(mshell);
 	mshell->env = NULL;
-	mshell->env = temp_env_vars;
+	mshell->env = te;
 }
 
+void	parse_env_helper(t_env **env_vars, char *env_entry, char *del_po, int i)
+{
+	char	*key;
+	char	*value;
+	int		keylen;
 
-t_env	**parse_env(char **envp, int i, int keylen)
+	keylen = del_po - env_entry;
+	key = ft_strndup(env_entry, keylen);
+	value = ft_strdup(del_po + 1);
+	env_vars[i] = allocate_env(key, value, 1);
+	free (key);
+	free (value);
+}
+
+t_env	**parse_env(char **envp, int i)
 {
 	t_env	**env_vars;
 	char	*env_entry;
 	char	*del_pos;
-	char	*key;
-	char	*value;
 
 	env_vars = malloc(sizeof(t_env *) * (env_count(envp) + 1));
 	if (!env_vars)
@@ -211,14 +223,7 @@ t_env	**parse_env(char **envp, int i, int keylen)
 		env_entry = envp[i];
 		del_pos = ft_strchr(envp[i], '=');
 		if (del_pos)
-		{
-			keylen = del_pos - env_entry;
-			key = ft_strndup(env_entry, keylen);
-			value = ft_strdup(del_pos + 1);
-			env_vars[i] = allocate_env(key, value, 1);
-			free (key);
-			free (value);
-		}
+			parse_env_helper(env_vars, env_entry, del_pos, i);
 		else
 			env_vars[i] = NULL;
 	}

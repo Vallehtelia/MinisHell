@@ -41,11 +41,31 @@ Evaluationform feiluja:
 ✅- export matti='paras koodari ikina'
 ✅- export testi =arvo
 
-- Single quotes ei pitäis vissiin muuttaa arvoa esim "echo '$USER'" pitäis printtaa "$USER"
+✅- Single quotes ei pitäis vissiin muuttaa arvoa esim "echo '$USER'" pitäis printtaa "$USER"
 	meillä printtaa environment valuen.
 
 - Signaali errorit:
 	✅- "cat | ls" -> "ctrl - \" & "ctrl + c" muuten ok, mutta caret puuttuu
 	✅- "grep oi | ls" -> samat
+!!!	- segfaulttaa jos laittaa pipen ilman mitään perään ja sit painaa ctrl+D
+	esim. "echo hi >>./test_files/invalid_permission |" ja sit ctrl+D
+
 - SHLVL paivittaminen!! (Onko tarpeellinen?????)
 
+- Exitti exittaa monella argumentilla esim.
+	> "exit 123 321" pitäis antaa
+		exit
+		bash: exit: too many arguments
+		bash-3.2$ $?
+		bash: 1: command not found
+	> "exit 1 | exit asdasd | exit 123 321" exit status pitäis olla bash:
+		exit: asdasd: numeric argument required
+		bash: exit: too many arguments
+		bash-3.2$ $?
+		bash: 1: command not found
+
+✅- env ei näytä valiablea jos se on exportattu ilman '=' ihan oikein, mut jos ajaa env uudestaan niin sit se näyttää
+
+- sorttaa export tulokset(ehkä bubble sort)
+
+✅-ei mene pipeen exportin jälkeen esim export | echo hello

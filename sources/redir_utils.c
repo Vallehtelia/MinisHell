@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/14 20:25:08 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/05/07 18:31:40 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/11 21:43:53 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,30 @@ int	check_output_redirection(t_minishell *mshell, char **cmd, int j)
 	else if (ft_strncmp(cmd[j], ">>", 3) == 0)
 	{
 		handle_output_redir_append(mshell, cmd, j);
+		if ((cmd[j] == NULL && cmd[j - 1] == NULL) || (cmd[0] == NULL)
+			|| mshell->exit_code == 1)
+			return (1);
+		else
+			return (2);
+	}
+	return (0);
+}
+
+int	check_input_redirection(t_minishell *mshell, char **cmd, int j)
+{
+	if (ft_strncmp(cmd[j], "<", 2) == 0)
+	{
+		handle_redir_input(mshell, cmd, j);
+		if ((cmd[j] == NULL && cmd[j - 1] == NULL) || (cmd[0] == NULL)
+			|| mshell->exit_code == 1)
+			return (1);
+		else
+			return (2);
+	}
+	else if (ft_strncmp(cmd[j], "<<", 3) == 0)
+	{
+		signal_heredoc();
+		redir_input_heredoc(mshell, cmd, j, NULL);
 		if ((cmd[j] == NULL && cmd[j - 1] == NULL) || (cmd[0] == NULL)
 			|| mshell->exit_code == 1)
 			return (1);
