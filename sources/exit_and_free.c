@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 19:38:54 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/05/11 19:39:05 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/12 02:03:11 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,4 +54,46 @@ void	free_arr(char **arr, int i)
 	}
 	free(arr);
 	arr = NULL;
+}
+
+void	error_str_helper(char *av, char *str, int n)
+{
+	char	*temp;
+
+	if (ft_strncmp(av, "export", 6) == 0)
+		temp = ft_strjoin("`", str);
+	if (n == 3)
+	{
+		ft_putstr_fd(av, 2);
+		ft_putstr_fd(temp, 2);
+		ft_putendl_fd("': not a valid identifier", 2);
+		free(temp);
+		temp = NULL;
+	}
+	else if (n == 4)
+	{
+		ft_putstr_fd("cd: ", 2);
+		ft_putstr_fd(av, 2);
+		ft_putendl_fd(str, 2);
+	}
+	if (temp)
+		free(temp);
+}
+
+void	error_str(t_minishell *mshell, char *av, char *str, int n)
+{
+	ft_putstr_fd("minisHell: ", 2);
+	if (n == 1)
+	{
+		ft_putstr_fd(av, 2);
+		ft_putendl_fd(str, 2);
+	}
+	else if (n == 2)
+	{
+		ft_putstr_fd(av, 2);
+		ft_putendl_fd(str, 2);
+		mshell->exit_code = 126;
+	}
+	else if (n == 3 || n == 4)
+		error_str_helper(av, str, n);
 }

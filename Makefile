@@ -10,7 +10,10 @@ READ_LINE_DIR = /Users/$(USER)/.brew/Cellar/readline/8.2.10/lib
 # source files here
 SRC_FILES = minishell.c valle.c matti.c exit_and_free.c cmd_split.c \
 			environment.c hardcodes.c builtins.c redirections.c \
-			redir_utils.c signal.c
+			redir_utils.c signal.c exitcode.c env_values.c \
+			env_value_utils.c env_value_utils2.c env_value_utils3.c \
+			forks.c cmd_utils.c cmds.c parsing.c parsing_utils.c \
+			exits.c echo.c
 
 SRC = $(addprefix $(SRC_DIR), $(SRC_FILES))
 
