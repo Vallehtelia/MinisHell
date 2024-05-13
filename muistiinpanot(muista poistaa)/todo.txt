@@ -69,3 +69,5 @@ Evaluationform feiluja:
 - sorttaa export tulokset(ehkä bubble sort)
 
 ✅-ei mene pipeen exportin jälkeen esim export | echo hello
+
+- Jos pelkka cat tai grep. Signaalit ei toimi oikein. Pitais olla ctrl c -> caret + enter. ctrl \ caret + Quit: 3

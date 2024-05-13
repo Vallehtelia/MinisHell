@@ -28,6 +28,28 @@ void	caret_switch(int on)
 	tcsetattr(STDIN_FILENO, TCSANOW, &term);
 }
 
+static void	handle_sigint(int sig)
+{
+	(void)sig;
+	ft_putstr_fd("\n", STDOUT_FILENO);
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	rl_redisplay();
+}
+/*
+	Signal handler for basic shell
+	- SIGINT is set to handle_sigint()
+	- SIGQUIT is set to ignore
+*/
+void	signal_basic(void)
+{
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
+	caret_switch(0);
+	signal(SIGINT, handle_sigint);
+	signal(SIGQUIT, SIG_IGN);
+}
+
 /*
 	Signal handler before executing commands
 	- Ignores SIGINT and SIGQUIT
