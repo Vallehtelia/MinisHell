@@ -64,6 +64,7 @@ void	matti_set(t_minishell *mshell)
 {
 	char	temp[1024];
 
+	signal_basic();
 	mshell->prompt_text = NULL;
 	mshell->working_directory = NULL;
 	getcwd(temp, sizeof(temp));

@@ -12,41 +12,45 @@
 
 #include "../includes/minishell.h"
 
-int	global_signal = DEFAULT;
+void	ms_init(int ac, char **av, char **envp, t_minishell *mshell)
+{
+	if (ac != 1 || !av || !envp || !mshell)
+	{
+		printf("Error: Start minisHell with no arguments\n");
+		exit(1);
+	}
+	mshell->env = parse_env(envp, -1);
+	delete_env(mshell, "OLDPWD");
+	// print_shrek();
+}
+
+void	eof_exit(t_minishell *mshell, char *input)
+{
+	(void)mshell;
+	free(input);
+	printf("exit\n");
+	exit(0);
+}
 
 int	main(int ac, char **av, char **envp)
 {
 	char		*input;
 	t_minishell	mshell;
 
-	(void)ac;
-	(void)av;
 	mshell = (t_minishell){};
-
-	// print_shrek();
-	mshell.env = parse_env(envp, -1);
-	delete_env(&mshell, "OLDPWD");
+	ms_init(ac, av, envp, &mshell);
 	while (1)
 	{
-		signal_basic();
 		matti_set(&mshell);
 		input = readline(mshell.prompt_text);
 		if (!input)
-		{
-			printf("exit\n");
-			exit_and_free(&mshell, 0);
-		}
+			eof_exit(&mshell, input);
 		free_workingdir(&mshell);
 		count_pipes(&mshell, input, 0, false);
-		if (mshell.ends_with_pipe == true)
+		if (mshell.ends_or_starts_with_pipe == true)
 		{
-			if(handle_pipe_end(&mshell, input))
-			{
-				add_history(input);
-				mshell.num_of_pipes = 0;
-				free(input);
-				continue ;
-			}
+			handle_pipe_end(&mshell, input);
+			continue ;
 		}
 		else
 			mshell.input_cmd = input;

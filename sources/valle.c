@@ -114,10 +114,12 @@ void	count_pipes(t_minishell *mshell, char *input_cmd, int i, bool in_quote)
 	if (mshell->num_of_pipes > 0)
 	{
 		i--;
+		if (input_cmd[0] == '|')
+			mshell->ends_or_starts_with_pipe = true;
 		while (input_cmd[i] == ' ')
 			i--;
 		if (input_cmd[i] == '|')
-			mshell->ends_with_pipe = true;
+			mshell->ends_or_starts_with_pipe = true;
 	}
 	mshell->num_of_cmds = mshell->num_of_pipes + 1;
 }

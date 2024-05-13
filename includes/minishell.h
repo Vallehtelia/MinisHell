@@ -84,7 +84,7 @@ typedef struct s_minishell
 	//char		*old_pwd;
 	int			num_of_pipes;
 	int			num_of_cmds;
-	bool		ends_with_pipe;
+	bool		ends_or_starts_with_pipe;
 	char		*working_directory;	//current working directory
 }	t_minishell;
 

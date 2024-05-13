@@ -21,12 +21,6 @@ static void	handle_sigint(int sig)
 	rl_redisplay();
 }
 
-static void	handle_sigint_no_pipe_end(int sig)
-{
-	(void)sig;
-	global_signal = SIGINT;
-}
-
 /*
 	Signal handler for basic shell
 	- SIGINT is set to handle_sigint()
@@ -34,17 +28,9 @@ static void	handle_sigint_no_pipe_end(int sig)
 */
 void	signal_basic(void)
 {
-	global_signal = DEFAULT;
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
 	caret_switch(0);
 	signal(SIGINT, handle_sigint);
-	signal(SIGQUIT, SIG_IGN);
-}
-
-void	signal_no_pipe_end(void)
-{
-	caret_switch(0);
-	signal(SIGINT, handle_sigint_no_pipe_end);
 	signal(SIGQUIT, SIG_IGN);
 }
