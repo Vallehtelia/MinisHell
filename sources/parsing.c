@@ -59,25 +59,42 @@ void	remove_quotes_from_cmds(t_minishell *mshell)
 	}
 }
 
-void	handle_pipe_end(t_minishell *mshell, char *input)
+int	pipe_end_return(char *temp, char *input, t_minishell *mshell)
+{
+	if (temp && ft_cmdlen(temp) > 0)
+	{
+		temp = ft_strjoin(" ", temp);
+		input = ft_strjoin(input, temp);
+		mshell->input_cmd = input;
+		return (0);
+	}
+	printf("minisHell: syntax error: unexpected end of file\n");
+	mshell->ends_with_pipe = false;
+	mshell->exit_code = 258;
+	free(temp);
+	return (1);
+}
+
+int	handle_pipe_end(t_minishell *mshell, char *input)
 {
 	char	*temp;
+	int		cmdlen;
 
+	signal_no_pipe_end();
 	temp = NULL;
-	while (temp == NULL)
+	while (temp == NULL && global_signal != SIGINT)
 	{
 		temp = readline("> ");
-		if (ft_cmdlen(temp) == 0)
+		if (!temp || global_signal == SIGINT)
+			break ;
+		cmdlen = ft_cmdlen(temp);
+		if (cmdlen == 0)
 		{
 			free(temp);
 			temp = NULL;
 		}
 	}
-	temp = ft_strjoin(" ", temp);
-	input = ft_strjoin(input, temp);
-	free(temp);
-	mshell->ends_with_pipe = false;
-	mshell->input_cmd = input;
+	return (pipe_end_return(temp, input, mshell));
 }
 
 int	ft_cmdlen(char *str)

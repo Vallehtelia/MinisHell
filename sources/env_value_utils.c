@@ -51,7 +51,7 @@ static t_env_values	*allocate_env_values(int i, int l, int cmd_check)
 	return (env_value);
 }
 
-static int	change_value_helper(t_minishell *mshell, t_env_values *env, char *value)
+int	change_value_helper(t_minishell *mshell, t_env_values *env, char *value)
 {
 	char	*temp;
 

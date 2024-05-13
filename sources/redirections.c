@@ -109,6 +109,5 @@ int	check_redirections(t_minishell *mshell, char **cmd, int j, int output)
 		}
 		j++;
 	}
-	//signal_basic(); // Lisatty heredoc singnaali kasittely
 	return (0);
 }

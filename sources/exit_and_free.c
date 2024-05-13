@@ -12,7 +12,7 @@
 
 #include "../includes/minishell.h"
 
-void	free_env(t_minishell *mshell) // Otin staticin pois.. Katotaan haittaako?
+void	free_env(t_minishell *mshell)
 {
 	int	i;
 
@@ -37,8 +37,6 @@ void	exit_and_free(t_minishell *mshell, int errnum)
 	free_workingdir(mshell);
 	if (mshell->env)
 		free_env(mshell);
-	// if (errnum > 0)
-	// 	ft_printf("ERROR %i\n", errnum);
 	if (mshell->cmds)
 		free_commands(mshell);
 	exit(errnum);

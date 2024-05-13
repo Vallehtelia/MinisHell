@@ -34,15 +34,22 @@ int	main(int ac, char **av, char **envp)
 		if (!input)
 		{
 			printf("exit\n");
-			break ;
+			exit_and_free(&mshell, 0);
 		}
 		free_workingdir(&mshell);
 		count_pipes(&mshell, input, 0, false);
 		if (mshell.ends_with_pipe == true)
-			handle_pipe_end(&mshell, input);
+		{
+			if(handle_pipe_end(&mshell, input))
+			{
+				add_history(input);
+				mshell.num_of_pipes = 0;
+				free(input);
+				continue ;
+			}
+		}
 		else
 			mshell.input_cmd = input;
-		matti(&mshell);
 		valle(&mshell);
 		add_history(mshell.input_cmd);
 		free(input);

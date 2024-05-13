@@ -47,7 +47,7 @@ Evaluationform feiluja:
 - Signaali errorit:
 	✅- "cat | ls" -> "ctrl - \" & "ctrl + c" muuten ok, mutta caret puuttuu
 	✅- "grep oi | ls" -> samat
-!!!	- segfaulttaa jos laittaa pipen ilman mitään perään ja sit painaa ctrl+D
+✅!!!	- segfaulttaa jos laittaa pipen ilman mitään perään ja sit painaa ctrl+D
 	esim. "echo hi >>./test_files/invalid_permission |" ja sit ctrl+D
 
 - SHLVL paivittaminen!! (Onko tarpeellinen?????)

@@ -142,7 +142,7 @@ int			check_exit_code(t_minishell *mshell, int i, int l);
 void		count_pipes(t_minishell *mshell, char *input_cmd, \
 						int i, bool in_quote);
 int			ft_cmdlen(char *str);
-void		handle_pipe_end(t_minishell *mshell, char *input);
+int			handle_pipe_end(t_minishell *mshell, char *input); // muutettu intiks
 bool		check_env_inside_squotes(t_minishell *mshell, char **cmd, \
 									int i, int k);
 void		remove_quotes(char **cmd, int j);
@@ -178,8 +178,11 @@ void		export_env(t_minishell *mshell, char **cmd);
 void		print_env_export(t_minishell *mshell);
 char		*clean_value(char *value, int i, int x);
 int			parse_quotes(char *string);
+void		set_old_pwd(t_minishell *mshell);
+void		set_working_directory(t_minishell *mshell);
 
 /* signals */
+void		caret_switch(int on);
 void		sigquit_handler(int sig);
 int			handle_signal(void);
 void		rl_replace_line(const char *text, int clear_undo);
@@ -188,6 +191,8 @@ void		signal_heredoc(void);
 void		signal_execute(void);
 void		signal_default(void);
 void		signal_in_execve(void);
+void		signal_no_pipe_end(void);
+
 
 
 
