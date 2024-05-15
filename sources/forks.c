@@ -39,6 +39,7 @@ static void	parent_process(t_minishell *mshell, int i, int fd_in, int *pipefd)
 		close(pipefd[1]);
 		run_commands(mshell, i + 1, pipefd[0]);
 	}
+	signal_execute();
 	wait(&status);
 	if (WIFEXITED(status))
 		mshell->exit_code = WEXITSTATUS(status);
@@ -59,9 +60,10 @@ void	run_commands(t_minishell *mshell, int i, int fd_in)
 				return ;
 			}
 		}
-		signal_execute();
 		if (fork() == 0)
+		{
 			child_process(mshell, i, fd_in, pipefd);
+		}
 		else
 		{
 			parent_process(mshell, i, fd_in, pipefd);

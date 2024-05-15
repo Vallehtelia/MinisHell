@@ -108,7 +108,6 @@ void	execute_cmd(t_minishell *mshell, char **cmd, t_env **env)
 		exit (mshell->exit_code);
 	mshell->exit_code = 0;
 	env_arr = env_to_char_array(env);
-	signal_in_execve();
 	if (execve(path, cmd, env_arr) == -1)
 		free_env_arr(mshell, env_arr, path, cmd);
 	exit (mshell->exit_code);

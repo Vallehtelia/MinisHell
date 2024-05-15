@@ -14,13 +14,15 @@
 
 void	sigquit_handler(int sig)
 {
-	(void)sig;
-	//rl_replace_line("", 0);
-	printf("Quit: 3\n");
-	//rl_on_new_line();
-	//rl_redisplay();
+	printf("Quit: %i\n", sig);
 }
-
+static void	handle_sigint_exec(int sig)
+{
+	if (sig == SIGINT)
+	{
+		ft_putstr_fd("\n", STDOUT_FILENO);
+	}
+}
 static void	handle_sigint_heredoc(int sig)
 {
 	if (sig == SIGINT)
@@ -51,6 +53,9 @@ void	signal_heredoc(void)
 void	signal_in_execve(void)
 {
 	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
+	caret_switch(1);
+	signal(SIGINT, handle_sigint_exec);
 	signal(SIGQUIT, sigquit_handler);
 }
 

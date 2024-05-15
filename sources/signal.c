@@ -56,7 +56,9 @@ void	signal_basic(void)
 */
 void	signal_execute(void)
 {
-	caret_switch(1);
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
+	caret_switch(0);
 	signal(SIGINT, SIG_IGN);
 	signal(SIGQUIT, SIG_IGN);
 }
