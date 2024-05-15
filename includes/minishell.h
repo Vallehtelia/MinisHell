@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 17:10:07 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/05/15 19:31:04 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/15 21:37:46 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,7 @@ typedef struct s_minishell
 {
 	t_commands	**cmds;
 	t_env		**env;
+	pid_t		last_pid;
 	char		**av;
 	int			ac;
 	int			exit_code;
@@ -203,5 +204,6 @@ void		signal_execute(void);
 void		signal_default(void);
 void		signal_in_execve(void);
 void		signal_no_pipe_end(void);
+void		handle_sigint(int sig);
 
 #endif

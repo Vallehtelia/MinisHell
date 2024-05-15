@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 13:47:58 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/05/11 20:38:16 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/15 20:50:30 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ void	ms_init(int ac, char **av, char **envp, t_minishell *mshell)
 	}
 	mshell->env = parse_env(envp, -1);
 	delete_env(mshell, "OLDPWD");
+	signal_basic();
 	// print_shrek();
 }
 
