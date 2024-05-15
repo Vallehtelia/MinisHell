@@ -38,7 +38,17 @@ void	cd_have_path(t_minishell *mshell, char *path)
 
 void	cd_no_path(t_minishell *mshell, char *path)
 {
-	path = getenv("HOME");
+	if(check_if_env_exists(mshell->env, "HOME"))
+	{
+		//printf("path: %s\n", path);
+		path = get_env_value(mshell->env, "HOME");
+		//printf("path: %s\n", path);
+	}
+	else
+	{
+		printf("cd: HOME not set\n");
+		return ;
+	}
 	set_old_pwd(mshell);
 	if (!path)
 	{
