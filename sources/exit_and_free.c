@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 19:38:54 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/05/12 02:03:11 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/15 13:55:32 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ void	error_str_helper(char *av, char *str, int n)
 {
 	char	*temp;
 
+	temp = NULL;
 	if (ft_strncmp(av, "export", 6) == 0)
 		temp = ft_strjoin("`", str);
 	if (n == 3)

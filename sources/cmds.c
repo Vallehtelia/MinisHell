@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 01:52:41 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/05/12 02:00:06 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/15 14:16:09 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,13 +55,16 @@ void	free_commands(t_minishell *mshell)
 		while (mshell->cmds[i]->cmd[l])
 		{
 			free(mshell->cmds[i]->cmd[l]);
+			mshell->cmds[i]->cmd[l] = NULL;
 			l++;
 		}
 		free(mshell->cmds[i]->cmd);
 		free(mshell->cmds[i]);
+		mshell->cmds[i] = NULL;
 		i++;
 	}
 	free(mshell->cmds);
+	mshell->cmds = NULL;
 }
 
 static int	check_access(t_minishell *mshell, char *cmd)
