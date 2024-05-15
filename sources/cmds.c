@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 01:52:41 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/05/15 14:16:09 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/15 16:35:55 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,12 +73,17 @@ static int	check_access(t_minishell *mshell, char *cmd)
 	{
 		if (access(cmd, X_OK) == 0)
 			return (0);
-		else
+		else if (open(cmd, O_RDONLY) == -1)
 		{
 			error_str(mshell, cmd, ": Permission denied", 1);
 			mshell->exit_code = 126;
-			return (1);
 		}
+		else
+		{
+			error_str(mshell, cmd, ": command not found", 1);
+			mshell->exit_code = 127;
+		}
+		return (1);
 	}
 	else
 	{

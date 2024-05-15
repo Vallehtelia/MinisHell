@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 02:28:29 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/05/12 02:30:04 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/15 18:57:26 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,11 +67,40 @@ static int	exit_conditions(t_minishell *mshell, char **cmd, int i, int res)
 	return (res);
 }
 
+int	validate_exit(t_minishell *mshell, char **cmd, int i, int j)
+{
+	while (cmd[++i] != NULL)
+	{
+		j = -1;
+		if (i >= 2)
+		{
+			ft_putstr_fd("minishell: exit: too many arguments\n", 2);
+			mshell->exit_code = 1;
+			return (1);
+		}
+		while (cmd[i][++j] != '\0')
+		{
+			if (!ft_isdigit(cmd[i][j]) && cmd[i][j] != '+'
+				&& cmd[i][j] != '-')
+			{
+				ft_putstr_fd("minishell: exit: ", 2);
+				ft_putstr_fd(cmd[i], 2);
+				ft_putstr_fd(": numeric argument required\n", 2);
+				mshell->exit_code = 255;
+				return (1);
+			}
+		}
+	}
+	return (0);
+}
+
 int	run_exit(t_minishell *mshell, char **cmd, int i, int res)
 {
 	int		exited_with;
 	char	*temp;
 
+	if (validate_exit(mshell, cmd, 0, 0))
+		return (1);
 	temp = NULL;
 	if (cmd[1] != NULL)
 	{

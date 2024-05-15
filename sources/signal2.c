@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signal2.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrinkine <mrinkine@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 14:37:42 by mrinkine          #+#    #+#             */
-/*   Updated: 2024/05/13 14:37:45 by mrinkine         ###   ########.fr       */
+/*   Updated: 2024/05/15 17:37:33 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ void	sigquit_handler(int sig)
 {
 	printf("Quit: %i\n", sig);
 }
+
 static void	handle_sigint_exec(int sig)
 {
 	if (sig == SIGINT)
@@ -23,6 +24,7 @@ static void	handle_sigint_exec(int sig)
 		ft_putstr_fd("\n", STDOUT_FILENO);
 	}
 }
+
 static void	handle_sigint_heredoc(int sig)
 {
 	if (sig == SIGINT)
@@ -58,5 +60,3 @@ void	signal_in_execve(void)
 	signal(SIGINT, handle_sigint_exec);
 	signal(SIGQUIT, sigquit_handler);
 }
-
-

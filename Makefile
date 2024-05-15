@@ -13,7 +13,8 @@ SRC_FILES = minishell.c valle.c matti.c exit_and_free.c cmd_split.c \
 			redir_utils.c signal.c signal2.c exitcode.c env_values.c \
 			env_value_utils.c env_value_utils2.c env_value_utils3.c \
 			forks.c cmd_utils.c cmds.c parsing.c parsing_utils.c \
-			exits.c echo.c cd.c
+			exits.c echo.c cd.c hardcode_utils.c environment_utils.c \
+			sorting_export.c
 
 SRC = $(addprefix $(SRC_DIR), $(SRC_FILES))
 

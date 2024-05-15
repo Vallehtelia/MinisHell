@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 02:26:41 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/05/12 02:27:56 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/15 19:47:57 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,32 +47,33 @@ void	print_env(t_minishell *mshell)
 		}
 		i++;
 	}
+	mshell->exit_code = 0;
 }
 
 void	print_env_export(t_minishell *mshell)
 {
-	int		i;
-	char	abc;
+	t_tempsort	*head;
+	t_tempsort	*tmp;
 
-	i = 0;
-	abc = 'A';
-	while (abc <= 'z')
+	head = create_list(mshell);
+	if (!head)
 	{
-		while (mshell->env[i])
-		{
-			if (mshell->env[i]->key[0] == abc)
-			{
-				if (mshell->env[i]->have_value)
-					printf("declare -x %s=\"%s\"\n", \
-					mshell->env[i]->key, mshell->env[i]->value);
-				else
-					printf("declare -x %s\n", mshell->env[i]->key);
-			}
-			i++;
-		}
-		abc++;
-		i = 0;
+		mshell->exit_code = 1;
+		return ;
 	}
+	sort_list(head, NULL, NULL, false);
+	tmp = head;
+	while (head)
+	{
+		if (head->have_value)
+			printf("declare -x %s=\"%s\"\n", head->key, head->value);
+		else
+			printf("declare -x %s\n", head->key);
+		head = head->next;
+	}
+	free_list(tmp);
+	mshell->exit_code = 0;
+	return ;
 }
 
 bool	check_indentifier(char *key)
@@ -80,12 +81,12 @@ bool	check_indentifier(char *key)
 	int	i;
 
 	i = 0;
-	if (!ft_isalpha(key[i]) && key[i] != '_')
+	if (!ft_isalpha(key[i]) && key[i] != '_' && key[i] != '/')
 		return (false);
 	i++;
 	while (key[i])
 	{
-		if (!ft_isalnum(key[i]) && key[i] != '_')
+		if (!ft_isalnum(key[i]) && key[i] != '_' && key[i] != '/')
 			return (false);
 		i++;
 	}

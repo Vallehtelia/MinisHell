@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/05 15:50:13 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/05/15 13:24:25 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/15 18:54:13 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,34 +83,6 @@ static void	handle_redir_error(t_minishell *mshell, char *cmd)
 	mshell->exit_code = 258;
 }
 
-int	handle_export(t_minishell *mshell)
-{
-	int	i;
-	int	l;
-
-	i = 0;
-	while (mshell->cmds[i])
-	{
-		l = 0;
-		while (mshell->cmds[i]->cmd[l])
-		{
-			if (ft_strncmp(mshell->cmds[i]->cmd[l], "export", 7) == 0)
-			{
-				if (mshell->num_of_cmds == 1)
-				{
-					export_env(mshell, mshell->cmds[i]->cmd);
-					return (1);
-				}
-				else
-					return (0);
-			}
-			l++;
-		}
-		i++;
-	}
-	return (0);
-}
-
 int	confirm_redir_chars(char *str)
 {
 	if ((ft_strncmp(str, "<", 1) == 0 || ft_strncmp(str, ">", 1) == 0)
@@ -135,38 +107,10 @@ int	check_cmd(t_minishell *mshell)
 			delete_env(mshell, mshell->cmds[0]->cmd[1]);
 		return (1);
 	}
-	else if (ft_strncmp(mshell->cmds[0]->cmd[0], "exit", 5) == 0)
-	{
-		if (run_exit(mshell, mshell->cmds[0]->cmd, 0, 0))
-			return (1);
-	}
 	else if (confirm_redir_chars(mshell->cmds[0]->cmd[0]))
 	{
 		handle_redir_error(mshell, mshell->cmds[0]->cmd[0]);
 		return (1);
 	}
 	return (0);
-}
-
-void	print_shrek(void)
-{
-	printf("\033[2J\033[H");
-	printf(GR"/* ******************************************************* */\n");
-	printf("/*⢀⡴⠑⡄⠀⠀⠀⠀⠀⠀⠀⣀⣀⣤⣤⣤⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀                           */\n");
-	printf("/*⠸⡇⠀⠿⡀⠀⠀⠀⣀⡴⢿⣿⣿⣿⣿⣿⣿⣿⣷⣦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀                           */\n");
-	printf("/*⠀⠀⠀⠀⠑⢄⣠⠾⠁⣀⣄⡈⠙⣿⣿⣿⣿⣿⣿⣿⣿⣆⠀⠀⠀⠀⠀⠀⠀⠀         :::      :::::::: */\n");
-	printf("/*⠀⠀⠀⠀⢀⡀⠁⠀⠀⠈⠙⠛⠂⠈⣿⣿⣿⣿⣿⠿⡿⢿⣆⠀⠀⠀⠀⠀⠀⠀       :+:      :+:    :+: */\n");
-	printf("/*⠀⠀⠀⢀⡾⣁⣀⠀⠴⠂⠙⣗⡀⠀⢻⣿⣿⠭⢤⣴⣦⣤⣹⠀⠀⠀⢀⢴⣶⣆     +:+ +:+         +:+   */\n");
-	printf("/*⠀⠀⢀⣾⣿⣿⣿⣷⣮⣽⣾⣿⣥⣴⣿⣿⡿⢂⠔⢚⡿⢿⣿⣦⣴⣾⠁⠸⣼⡿   +#+  +:+       +#+      */\n");
-	printf("/*⠀⢀⡞⠁⠙⠻⠿⠟⠉⠀⠛⢹⣿⣿⣿⣿⣿⣌⢤⣼⣿⣾⣿⡟⠉⠀⠀⠀⠀⠀ +#+#+#+#+#+   +#+         */\n");
-	printf("/*⠀⣾⣷⣶⠇⠀⠀⣤⣄⣀⡀⠈⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀      #+#    #+#           */\n");
-	printf("/*⠀⠉⠈⠉⠀⠀⢦⡈⢻⣿⣿⣿⣶⣶⣶⣶⣤⣽⡹⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀     ###   ########.fr     */\n");
-	printf("/*⠀⠀⠀⠀⠀⠀⠀⠉⠲⣽⡻⢿⣿⣿⣿⣿⣿⣿⣷⣜⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀                           */\n");
-	printf("/*⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣷⣶⣮⣭⣽⣿⣿⣿⣿⣿⣿⣿⠀⠀⠀⠀⠀⠀⠀     By: vvaalant          */\n");
-	printf("/*⠀⠀⠀⠀⠀⠀⣀⣀⣈⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠇⠀⠀⠀⠀⠀⠀⠀     By: mrinkine          */\n");
-	printf("/*⠀⠀⠀⠀⠀⠀⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠃⠀⠀⠀⠀⠀⠀⠀⠀     _________             */\n");
-	printf("/*⠀⠀⠀⠀⠀⠀⠀⠹⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠟⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀    |MINISHELL|            */\n");
-	printf("/*⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⠻⠿⠿⠿⠿⠛⠉                 ￣￣￣￣￣            */\n");
-	printf("/* ******************************************************* */\n"DF);
-	return ;
 }

@@ -52,13 +52,13 @@ Evaluationform feiluja:
 
 - SHLVL paivittaminen!! (Onko tarpeellinen?????)
 
-- Exitti exittaa monella argumentilla esim.
-	> "exit 123 321" pitäis antaa
+✅- Exitti exittaa monella argumentilla esim.
+	✅> "exit 123 321" pitäis antaa
 		exit
 		bash: exit: too many arguments
 		bash-3.2$ $?
 		bash: 1: command not found
-	> "exit 1 | exit asdasd | exit 123 321" exit status pitäis olla bash:
+	✅> "exit 1 | exit asdasd | exit 123 321" exit status pitäis olla bash:
 		exit: asdasd: numeric argument required
 		bash: exit: too many arguments
 		bash-3.2$ $?
@@ -66,7 +66,7 @@ Evaluationform feiluja:
 
 ✅- env ei näytä valiablea jos se on exportattu ilman '=' ihan oikein, mut jos ajaa env uudestaan niin sit se näyttää
 
-- sorttaa export tulokset(ehkä bubble sort)
+✅- sorttaa export tulokset(ehkä bubble sort)
 
 ✅-ei mene pipeen exportin jälkeen esim export | echo hello
 

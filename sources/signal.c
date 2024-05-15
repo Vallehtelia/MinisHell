@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signal.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrinkine <mrinkine@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 14:37:28 by mrinkine          #+#    #+#             */
-/*   Updated: 2024/05/13 14:37:31 by mrinkine         ###   ########.fr       */
+/*   Updated: 2024/05/15 17:36:56 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ static void	handle_sigint(int sig)
 	rl_replace_line("", 0);
 	rl_redisplay();
 }
+
 /*
 	Signal handler for basic shell
 	- SIGINT is set to handle_sigint()

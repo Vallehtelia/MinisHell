@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 17:10:07 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/05/12 02:32:04 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/15 19:31:04 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 # include "../libft/inc/libft.h"
 # include "../libft/inc/ft_printf.h"
 # include "../libft/inc/get_next_line.h"
-//# include "/Users/mrinkine/.brew/Cellar/readline/8.2.10/include/readline/readline.h"
 # include <stdlib.h>
 # include <unistd.h>
 # include <stdio.h>
@@ -34,14 +33,11 @@
 # include <stdbool.h>
 # include <termios.h>
 
-extern int	global_signal;
-
 # define GR "\033[0;32m"
 # define CYAN "\033[0;36m"
 # define DF "\033[0m"
 
-# define MAX_ARGS 10
-// Singnal defines
+// Singnal defines //
 # define DEFAULT 0
 # define IN_HEREDOC 666
 # define STOP_HEREDOC 555
@@ -55,6 +51,15 @@ typedef struct s_env_values
 	int	k;
 	int	cmd_chk;
 }	t_env_values;
+
+typedef struct s_tempsort
+{
+	char				*key;
+	char				*value;
+	bool				have_value;
+	struct s_tempsort	*next;
+	struct s_tempsort	*prev;
+}	t_tempsort;
 
 typedef struct s_commands
 {
@@ -88,7 +93,6 @@ typedef struct s_minishell
 	char		*working_directory;	//current working directory
 }	t_minishell;
 
-
 /* Functions here */
 int			main(int ac, char **av, char **envp);
 
@@ -114,6 +118,8 @@ char		*copy_arg(const char *cmd, char **arg_out, int j, char *arg);
 
 /* environment init */
 t_env		**parse_env(char **envp, int i);
+t_env		*allocate_env(char *key, char *value, int parsing);
+int			env_count(char **envp);
 
 /* Builtins */
 int			check_builtins(t_minishell *mshell, char **cmd);
@@ -126,6 +132,10 @@ int			confirm_env_chars(t_minishell *mshell, int i, int l, int k);
 int			skip_env_chars(t_minishell *mshell, int i, int l, int j);
 int			run_exit(t_minishell *mshell, char **cmd, int i, int res);
 int			echo(t_minishell *mshell, char **cmd, int i);
+void		sort_list(t_tempsort *head, char *key, char *value, \
+					bool have_value);
+t_tempsort	*create_list(t_minishell *mshell);
+void		free_list(t_tempsort *head);
 
 /* command execution */
 void		run_commands(t_minishell *mshell, int i, int fd_in);
@@ -142,7 +152,7 @@ int			check_exit_code(t_minishell *mshell, int i, int l);
 void		count_pipes(t_minishell *mshell, char *input_cmd, \
 						int i, bool in_quote);
 int			ft_cmdlen(char *str);
-int			handle_pipe_end(t_minishell *mshell, char *input); // muutettu intiks
+int			handle_pipe_end(t_minishell *mshell, char *input);
 bool		check_env_inside_squotes(t_minishell *mshell, char **cmd, \
 									int i, int k);
 void		remove_quotes(char **cmd, int j);
@@ -157,10 +167,8 @@ void		nullify_cmd(t_minishell *mshell, char **cmd, int i);
 void		redir_input_heredoc(t_minishell *mshell, char **cmd, \
 								int i, char *l);
 void		handle_redir_input(t_minishell *mshell, char **cmd, int i);
-
 void		signal_handler(t_minishell *mshell);
 void		handle_sigquit(int sig);
-
 void		print_shrek(void);
 
 /* matin sekoilua */
@@ -173,6 +181,8 @@ void		delete_env(t_minishell *mshell, char *key);
 int			handle_identifier(t_minishell *mshell, char *key, \
 							char *value, int equals);
 bool		check_indentifier(char *key);
+void		parse_env_helper(t_env **env_vars, char *env_entry, \
+							char *del_po, int i);
 void		export_env_helper(t_minishell *mshell, char **cmd, int i);
 void		export_env(t_minishell *mshell, char **cmd);
 void		print_env_export(t_minishell *mshell);
@@ -180,6 +190,7 @@ char		*clean_value(char *value, int i, int x);
 int			parse_quotes(char *string);
 void		set_old_pwd(t_minishell *mshell);
 void		set_working_directory(t_minishell *mshell);
+int			handle_export(t_minishell *mshell);
 
 /* signals */
 void		caret_switch(int on);
@@ -192,9 +203,5 @@ void		signal_execute(void);
 void		signal_default(void);
 void		signal_in_execve(void);
 void		signal_no_pipe_end(void);
-
-
-
-
 
 #endif

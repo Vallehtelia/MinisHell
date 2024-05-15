@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 17:10:14 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/05/12 02:32:06 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/15 18:52:30 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,16 @@ static void	get_pwd(t_minishell *mshell)
 		free(pwd);
 		mshell->exit_code = 0;
 	}
+}
+
+static int	check_exit(t_minishell *mshell, char **cmd)
+{
+	if (ft_strncmp(cmd[0], "exit", 5) == 0)
+	{
+		if (run_exit(mshell, cmd, 0, 0))
+			return (1);
+	}
+	return (0);
 }
 
 int	check_builtins(t_minishell *mshell, char **cmd)
@@ -54,5 +64,7 @@ int	check_builtins(t_minishell *mshell, char **cmd)
 			print_env_export(mshell);
 		return (1);
 	}
+	else if (check_exit(mshell, cmd))
+		return (1);
 	return (0);
 }

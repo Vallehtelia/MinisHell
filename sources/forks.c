@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 01:49:14 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/05/12 01:50:36 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/15 17:36:13 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,11 +31,15 @@ static void	child_process(t_minishell *mshell, int i, int fd_in, int *pipefd)
 static void	parent_process(t_minishell *mshell, int i, int fd_in, int *pipefd)
 {
 	int	status;
+	int	trash;
 
 	if (fd_in != 0)
 		close(fd_in);
 	if (mshell->cmds[i + 1])
 	{
+		trash = 0;
+		while (trash < 100000)
+			trash++;
 		close(pipefd[1]);
 		run_commands(mshell, i + 1, pipefd[0]);
 	}
