@@ -67,9 +67,7 @@ void	run_commands(t_minishell *mshell, int i, int fd_in)
 		signal_execute();
 		mshell->last_pid = fork();
 		if (mshell->last_pid == 0)
-		{
 			child_process(mshell, i, fd_in, pipefd);
-		}
 		else
 		{
 			parent_process(mshell, i, fd_in, pipefd);
@@ -78,4 +76,3 @@ void	run_commands(t_minishell *mshell, int i, int fd_in)
 		}
 	}
 }
-

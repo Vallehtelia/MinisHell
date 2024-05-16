@@ -44,8 +44,6 @@ static void	handle_sigint(int sig)
 */
 void	signal_basic(void)
 {
-	signal(SIGINT, SIG_DFL);
-	signal(SIGQUIT, SIG_DFL);
 	caret_switch(0);
 	signal(SIGINT, handle_sigint);
 	signal(SIGQUIT, SIG_IGN);
@@ -57,8 +55,6 @@ void	signal_basic(void)
 */
 void	signal_execute(void)
 {
-	signal(SIGINT, SIG_DFL);
-	signal(SIGQUIT, SIG_DFL);
 	caret_switch(0);
 	signal(SIGINT, SIG_IGN);
 	signal(SIGQUIT, SIG_IGN);

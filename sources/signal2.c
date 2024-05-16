@@ -12,11 +12,6 @@
 
 #include "../includes/minishell.h"
 
-void	sigquit_handler(int sig)
-{
-	printf("Quit: %i\n", sig);
-}
-
 static void	handle_sig_exec(int sig)
 {
 	if (sig == SIGINT)
@@ -58,9 +53,7 @@ void	signal_heredoc(void)
 */
 void	signal_in_execve(void)
 {
-	signal(SIGINT, SIG_DFL);
-	signal(SIGQUIT, SIG_DFL);
 	caret_switch(1);
 	signal(SIGINT, handle_sig_exec);
-	signal(SIGQUIT, handle_sig_exec);
+	signal(SIGQUIT, sigquit_handler);
 }
