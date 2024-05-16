@@ -21,7 +21,7 @@ void	ms_init(int ac, char **av, char **envp, t_minishell *mshell)
 	}
 	mshell->env = parse_env(envp, -1);
 	delete_env(mshell, "OLDPWD");
-	signal_basic();
+	//signal_basic();
 	// print_shrek();
 }
 

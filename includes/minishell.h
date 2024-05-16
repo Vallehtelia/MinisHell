@@ -204,6 +204,6 @@ void		signal_execute(void);
 void		signal_default(void);
 void		signal_in_execve(void);
 void		signal_no_pipe_end(void);
-void		handle_sigint(int sig);
+//void		handle_sigint(int sig);
 
 #endif

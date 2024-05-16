@@ -17,11 +17,15 @@ void	sigquit_handler(int sig)
 	printf("Quit: %i\n", sig);
 }
 
-static void	handle_sigint_exec(int sig)
+static void	handle_sig_exec(int sig)
 {
 	if (sig == SIGINT)
 	{
 		ft_putstr_fd("\n", STDOUT_FILENO);
+	}
+	if (sig == SIGQUIT)
+	{
+		ft_putstr_fd("Quit: 3\n", STDOUT_FILENO);
 	}
 }
 
@@ -57,6 +61,6 @@ void	signal_in_execve(void)
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
 	caret_switch(1);
-	signal(SIGINT, handle_sigint_exec);
-	signal(SIGQUIT, sigquit_handler);
+	signal(SIGINT, handle_sig_exec);
+	signal(SIGQUIT, handle_sig_exec);
 }
