@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 02:26:41 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/05/17 12:04:50 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/17 18:52:15 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,7 @@ int	handle_env_var(t_minishell *mshell, char *env)
 	}
 	else
 	{
-		error_str(mshell, env, ": command not found", 1);
-		return (1);
+		return (0);
 	}
 	return (0);
 }
