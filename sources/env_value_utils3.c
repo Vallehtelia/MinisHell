@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 02:26:41 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/05/15 19:47:57 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/17 12:04:50 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,4 +91,19 @@ bool	check_indentifier(char *key)
 		i++;
 	}
 	return (true);
+}
+
+void	export_env_pwd(t_minishell *mshell, char **cmd, int i)
+{
+	char	*key;
+	char	*value;
+
+	key = ft_strdup("PWD");
+	value = getcwd(NULL, 0);
+	if (handle_identifier(mshell, key, value, 1))
+	{
+		error_str(mshell, "export :", cmd[i], 3);
+		mshell->exit_code = 1;
+	}
+	mshell->cd_dot_used = 0;
 }

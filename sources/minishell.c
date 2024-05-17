@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 13:47:58 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/05/15 20:50:30 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/17 12:29:41 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 void	ms_init(int ac, char **av, char **envp, t_minishell *mshell)
 {
+	print_shrek();
+	mshell->free_last_pid = false;
 	if (ac != 1 || !av || !envp || !mshell)
 	{
 		printf("Error: Start minisHell with no arguments\n");
@@ -31,6 +33,22 @@ void	eof_exit(t_minishell *mshell, char *input)
 	exit(0);
 }
 
+static bool	main_loop_helper(t_minishell *mshell, char *input)
+{
+	if (!input)
+		eof_exit(mshell, input);
+	free_workingdir(mshell);
+	count_pipes(mshell, input, 0, false);
+	if (mshell->ends_or_starts_with_pipe == true)
+	{
+		handle_pipe_end(mshell, input);
+		return (true);
+	}
+	else
+		mshell->input_cmd = input;
+	return (false);
+}
+
 int	main(int ac, char **av, char **envp)
 {
 	char		*input;
@@ -40,20 +58,16 @@ int	main(int ac, char **av, char **envp)
 	ms_init(ac, av, envp, &mshell);
 	while (1)
 	{
-		matti_set(&mshell);
+		loop_set(&mshell);
 		input = readline(mshell.prompt_text);
-		if (!input)
-			eof_exit(&mshell, input);
-		free_workingdir(&mshell);
-		count_pipes(&mshell, input, 0, false);
-		if (mshell.ends_or_starts_with_pipe == true)
+		if (main_loop_helper(&mshell, input) == true)
+			continue ;
+		if (ft_strlen(input) == 0)
 		{
-			handle_pipe_end(&mshell, input);
+			free(input);
 			continue ;
 		}
-		else
-			mshell.input_cmd = input;
-		valle(&mshell);
+		loop_exc(&mshell);
 		add_history(mshell.input_cmd);
 		free(input);
 	}

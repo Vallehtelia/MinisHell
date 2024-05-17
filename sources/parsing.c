@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 02:05:32 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/05/12 02:33:04 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/16 22:39:43 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,13 @@ void	remove_quotes_from_cmds(t_minishell *mshell)
 		}
 		i++;
 	}
+	mshell->last_pid = (int *)malloc(sizeof(int) * (mshell->num_of_cmds));
+	if (!mshell->last_pid)
+	{
+		ft_putendl_fd("Error: malloc failed", STDERR_FILENO);
+		exit(1);
+	}
+	mshell->free_last_pid = true;
 }
 
 int	handle_pipe_end(t_minishell *mshell, char *input)

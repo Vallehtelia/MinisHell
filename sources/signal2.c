@@ -6,22 +6,15 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 14:37:42 by mrinkine          #+#    #+#             */
-/*   Updated: 2024/05/15 17:37:33 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/16 18:43:05 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-static void	handle_sig_exec(int sig)
+static void	handle_exec(int sig)
 {
-	if (sig == SIGINT)
-	{
-		ft_putstr_fd("\n", STDOUT_FILENO);
-	}
-	if (sig == SIGQUIT)
-	{
-		ft_putstr_fd("Quit: 3\n", STDOUT_FILENO);
-	}
+	(void)sig;
 }
 
 static void	handle_sigint_heredoc(int sig)
@@ -54,6 +47,6 @@ void	signal_heredoc(void)
 void	signal_in_execve(void)
 {
 	caret_switch(1);
-	signal(SIGINT, handle_sig_exec);
-	signal(SIGQUIT, sigquit_handler);
+	signal(SIGINT, handle_exec);
+	signal(SIGQUIT, handle_exec);
 }

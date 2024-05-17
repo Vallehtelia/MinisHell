@@ -8,7 +8,7 @@ SRC_DIR = ./sources/
 READ_LINE_DIR = /Users/$(USER)/.brew/Cellar/readline/8.2.10/lib
 
 # source files here
-SRC_FILES = minishell.c valle.c matti.c exit_and_free.c cmd_split.c \
+SRC_FILES = minishell.c utils2.c utils1.c exit_and_free.c cmd_split.c \
 			environment.c hardcodes.c builtins.c redirections.c \
 			redir_utils.c signal.c signal2.c exitcode.c env_values.c \
 			env_value_utils.c env_value_utils2.c env_value_utils3.c \

@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 14:37:28 by mrinkine          #+#    #+#             */
-/*   Updated: 2024/05/15 17:36:56 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/16 17:37:42 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ void	signal_basic(void)
 	Signal handler before executing commands
 	- Ignores SIGINT and SIGQUIT
 */
-void	signal_execute(void)
+void	signal_ignore(void)
 {
 	caret_switch(0);
 	signal(SIGINT, SIG_IGN);

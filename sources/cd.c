@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 14:16:29 by mrinkine          #+#    #+#             */
-/*   Updated: 2024/05/15 17:35:44 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/17 12:20:22 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ void	cd_have_path(t_minishell *mshell, char *path)
 			error_str(mshell, path, ": Permission denied", 4);
 		else
 		{
-			set_old_pwd(mshell);
 			if (chdir(path) == -1)
 			{
 				error_str(mshell, path, ": No such file or directory", 4);
@@ -45,6 +44,8 @@ int	cd_no_path(t_minishell *mshell, char *path)
 {
 	int		chdir_ret;
 
+	if (check_if_env_exists(mshell->env, "PWD") == 0)
+		return (0);
 	if ((ft_strncmp(path, get_env_value(mshell->env, "PWD"), \
 		ft_strlen(get_env_value(mshell->env, "PWD"))) == 0)
 		&& (ft_strlen(path) == ft_strlen(get_env_value(mshell->env, "PWD"))))
@@ -97,6 +98,7 @@ void	change_working_directory(t_minishell *mshell, char *path)
 
 	cnp_ret = 0;
 	new_path = NULL;
+	mshell->cd_dot_used = 0;
 	if (!path)
 	{
 		new_path = no_value_helper(mshell);
@@ -106,11 +108,13 @@ void	change_working_directory(t_minishell *mshell, char *path)
 	if (path == NULL)
 		cnp_ret = cd_no_path(mshell, new_path);
 	else if (path)
+	{
+		if (ft_strncmp(".", path, 2) == 0)
+			mshell->cd_dot_used = 1;
 		cd_have_path(mshell, path);
+	}
 	else
 		mshell->exit_code = 0;
 	if (cnp_ret == 0)
-	{
 		set_working_directory(mshell);
-	}
 }

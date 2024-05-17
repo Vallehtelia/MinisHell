@@ -6,13 +6,13 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 01:52:41 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/05/15 16:35:55 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/17 12:28:31 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-void	valle(t_minishell *mshell)
+void	loop_exc(t_minishell *mshell)
 {
 	mshell->num_of_pipes = 0;
 	if (mshell->input_cmd[0] == '\0')
@@ -37,7 +37,7 @@ void	valle(t_minishell *mshell)
 	}
 	if (check_valid_redir(mshell))
 		return ;
-	run_commands(mshell, 0, 0);
+	run_commands(mshell, 0, 0, 0);
 	free_commands(mshell);
 }
 
@@ -65,6 +65,9 @@ void	free_commands(t_minishell *mshell)
 	}
 	free(mshell->cmds);
 	mshell->cmds = NULL;
+	if (mshell->free_last_pid)
+		free(mshell->last_pid);
+	mshell->free_last_pid = false;
 }
 
 static int	check_access(t_minishell *mshell, char *cmd)
@@ -116,7 +119,6 @@ void	execute_cmd(t_minishell *mshell, char **cmd, t_env **env)
 		exit (mshell->exit_code);
 	mshell->exit_code = 0;
 	env_arr = env_to_char_array(env);
-	signal_in_execve();
 	if (execve(path, cmd, env_arr) == -1)
 		free_env_arr(mshell, env_arr, path, cmd);
 	exit (mshell->exit_code);

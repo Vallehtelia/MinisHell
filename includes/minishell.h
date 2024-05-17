@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 17:10:07 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/05/15 21:37:46 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/17 12:29:33 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,21 +27,13 @@
 # include <readline/history.h>
 # include <dirent.h>
 # include <signal.h>
-# include <glob.h>
 # include <errno.h>
 # include <sys/stat.h>
 # include <stdbool.h>
 # include <termios.h>
 
 # define GR "\033[0;32m"
-# define CYAN "\033[0;36m"
 # define DF "\033[0m"
-
-// Singnal defines //
-# define DEFAULT 0
-# define IN_HEREDOC 666
-# define STOP_HEREDOC 555
-# define IN_CMD 66
 
 typedef struct s_env_values
 {
@@ -79,28 +71,28 @@ typedef struct s_minishell
 {
 	t_commands	**cmds;
 	t_env		**env;
-	pid_t		last_pid;
+	pid_t		*last_pid;
 	char		**av;
 	int			ac;
 	int			exit_code;
 	char		*cmd_to_split;
-	char		*input_cmd;		// prompt text
+	char		*input_cmd;
 	char		*prompt_text;
 	char		*redir_output;
-	//char		*old_pwd;
 	int			num_of_pipes;
 	int			num_of_cmds;
 	bool		ends_or_starts_with_pipe;
-	char		*working_directory;	//current working directory
+	char		*working_directory;
+	int			cd_dot_used;
+	bool		free_last_pid;
 }	t_minishell;
 
 /* Functions here */
 int			main(int ac, char **av, char **envp);
 
 // void	useinput(char *str);
-void		matti(t_minishell *mshell);
-void		matti_set(t_minishell *mshell);
-void		valle(t_minishell *mshell);
+void		loop_set(t_minishell *mshell);
+void		loop_exc(t_minishell *mshell);
 
 void		exit_and_free(t_minishell *mshell, int errnum);
 void		free_workingdir(t_minishell *mshell);
@@ -128,6 +120,7 @@ int			run_exit(t_minishell *mshell, char **cmd, int i, int res);
 int			handle_env_var(t_minishell *mshell, char *env);
 int			change_value(t_minishell *mshell, int i, int l, int echo_check);
 int			handle_values(t_minishell *mshell, int i, int l, int cmd_check);
+void		export_env_pwd(t_minishell *mshell, char **cmd, int i);
 char		*change_value_value(char *cmd, char *value, int j, int k);
 int			confirm_env_chars(t_minishell *mshell, int i, int l, int k);
 int			skip_env_chars(t_minishell *mshell, int i, int l, int j);
@@ -139,7 +132,7 @@ t_tempsort	*create_list(t_minishell *mshell);
 void		free_list(t_tempsort *head);
 
 /* command execution */
-void		run_commands(t_minishell *mshell, int i, int fd_in);
+void		run_commands(t_minishell *mshell, int i, int fd_in, int pid_index);
 void		execute_cmd(t_minishell *mshell, char **cmd, t_env **env);
 char		*find_path(char *cmd, t_env **env, int i);
 int			check_path(t_minishell *mshell, char *cmd);
@@ -189,7 +182,6 @@ void		export_env(t_minishell *mshell, char **cmd);
 void		print_env_export(t_minishell *mshell);
 char		*clean_value(char *value, int i, int x);
 int			parse_quotes(char *string);
-void		set_old_pwd(t_minishell *mshell);
 void		set_working_directory(t_minishell *mshell);
 int			handle_export(t_minishell *mshell);
 
@@ -200,10 +192,9 @@ int			handle_signal(void);
 void		rl_replace_line(const char *text, int clear_undo);
 void		signal_basic(void);
 void		signal_heredoc(void);
-void		signal_execute(void);
+void		signal_ignore(void);
 void		signal_default(void);
 void		signal_in_execve(void);
 void		signal_no_pipe_end(void);
-//void		handle_sigint(int sig);
 
 #endif

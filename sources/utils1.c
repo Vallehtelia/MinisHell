@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   matti.c                                            :+:      :+:    :+:   */
+/*   utils1.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mrinkine <mrinkine@student.hive.fi>        +#+  +:+       +#+        */
+/*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 14:09:11 by mrinkine          #+#    #+#             */
-/*   Updated: 2024/05/13 14:09:15 by mrinkine         ###   ########.fr       */
+/*   Updated: 2024/05/17 12:27:15 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,22 +30,6 @@ void	set_working_directory(t_minishell *mshell)
 	}
 }
 
-void	set_old_pwd(t_minishell *mshell)
-{
-	char	*temp;
-
-	if (check_if_env_exists(mshell->env, "OLDPWD"))
-	{
-		set_env_value(mshell->env, "OLDPWD",
-			get_env_value(mshell->env, "PWD"), -1);
-	}
-	else
-	{
-		temp = get_env_value(mshell->env, "PWD");
-		add_env(mshell, "OLDPWD", temp);
-	}
-}
-
 void	free_workingdir(t_minishell *mshell)
 {
 	if (mshell->prompt_text)
@@ -60,7 +44,7 @@ void	free_workingdir(t_minishell *mshell)
 	}
 }
 
-void	matti_set(t_minishell *mshell)
+void	loop_set(t_minishell *mshell)
 {
 	char	temp[1024];
 

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env_value_utils_two.c                              :+:      :+:    :+:   */
+/*   env_value_utils2.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 01:46:10 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/05/12 02:23:15 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/16 19:49:41 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,10 @@ void	export_env(t_minishell *mshell, char **cmd)
 	}
 	while (cmd[i])
 	{
-		export_env_helper(mshell, cmd, i);
+		if (ft_strncmp(cmd[i], "PWD", 4) == 0 && mshell->cd_dot_used == 1)
+			export_env_pwd(mshell, cmd, i);
+		else
+			export_env_helper(mshell, cmd, i);
 		i++;
 	}
 }

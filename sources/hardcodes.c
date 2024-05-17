@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/05 15:50:13 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/05/15 18:54:13 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/16 22:34:26 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,12 @@ int	confirm_redir_chars(char *str)
 
 int	check_cmd(t_minishell *mshell)
 {
+	if (ft_strncmp(mshell->cmds[0]->cmd[0], "exit", 5) == 0
+		&& mshell->num_of_cmds == 1)
+	{
+		if (run_exit(mshell, mshell->cmds[0]->cmd, 0, 0))
+			return (1);
+	}
 	if ((ft_strncmp(mshell->cmds[0]->cmd[0], "cd", 3) == 0))
 	{
 		change_working_directory(mshell, mshell->cmds[0]->cmd[1]);
