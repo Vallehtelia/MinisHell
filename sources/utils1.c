@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 14:09:11 by mrinkine          #+#    #+#             */
-/*   Updated: 2024/05/17 12:27:15 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/17 18:07:27 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,9 +54,9 @@ void	loop_set(t_minishell *mshell)
 	getcwd(temp, sizeof(temp));
 	mshell->working_directory = malloc(ft_strlen(temp) + 1);
 	if (!mshell->working_directory)
-		exit_and_free(mshell, 1);
+		exit_and_free(mshell, 1, 0);
 	ft_strlcpy(mshell->working_directory, temp, ft_strlen(temp) + 1);
 	mshell->prompt_text = ft_strjoin(mshell->working_directory, " >>> ");
 	if (!mshell->prompt_text)
-		exit_and_free(mshell, 1);
+		exit_and_free(mshell, 1, 0);
 }

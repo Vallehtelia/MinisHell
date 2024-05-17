@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 19:38:54 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/05/16 20:50:42 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/17 18:05:33 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,10 @@ void	free_env(t_minishell *mshell)
 	}
 }
 
-void	exit_and_free(t_minishell *mshell, int errnum)
+void	exit_and_free(t_minishell *mshell, int errnum, int print_exit)
 {
+	if (print_exit)
+		ft_putendl_fd("exit", 1);
 	free_workingdir(mshell);
 	if (mshell->env)
 		free_env(mshell);

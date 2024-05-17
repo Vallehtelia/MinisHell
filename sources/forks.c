@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 01:49:14 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/05/17 12:20:29 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/17 16:55:28 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,12 +33,12 @@ static void	signal_check_helper(t_minishell *mshell, int status)
 {
 	if (status == 2)
 	{
-		ft_putstr_fd("\n", STDOUT_FILENO);
+		ft_putstr_fd("^C\n", STDOUT_FILENO);
 		mshell->exit_code = 130;
 	}
 	else if (status == 3)
 	{
-		ft_putstr_fd("Quit: 3\n", STDOUT_FILENO);
+		ft_putstr_fd("^\\Quit: 3\n", STDOUT_FILENO);
 		mshell->exit_code = 131;
 	}
 }
@@ -59,10 +59,10 @@ static void	signal_check(t_minishell *mshell, int status, int i)
 				ft_putstr_fd("^\\", STDOUT_FILENO);
 				mshell->exit_code = 131;
 			}
-			return ;
 		}
+		return ;
 	}
-	if (i == 0)
+	else if (i == 0)
 		signal_check_helper(mshell, status);
 }
 

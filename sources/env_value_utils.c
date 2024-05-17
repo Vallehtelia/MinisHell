@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 01:40:11 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/05/12 01:47:26 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/17 17:44:02 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,10 @@ int	change_value_helper(t_minishell *mshell, t_env_values *env, char *value)
 	if (value)
 	{
 		if (handle_cmd_check(mshell, value, env->cmd_chk))
+		{
+			free(env);
 			return (1);
+		}
 		temp = change_value_value(mshell->cmds[env->i]->cmd[env->l], \
 			value, env->j, env->k);
 		free(mshell->cmds[env->i]->cmd[env->l]);

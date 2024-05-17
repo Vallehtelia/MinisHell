@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 17:10:07 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/05/17 12:29:33 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/17 18:06:09 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ int			main(int ac, char **av, char **envp);
 void		loop_set(t_minishell *mshell);
 void		loop_exc(t_minishell *mshell);
 
-void		exit_and_free(t_minishell *mshell, int errnum);
+void		exit_and_free(t_minishell *mshell, int errnum, int print_exit);
 void		free_workingdir(t_minishell *mshell);
 void		change_working_directory(t_minishell *mshell, char *path);
 void		free_arr(char **arr, int i);

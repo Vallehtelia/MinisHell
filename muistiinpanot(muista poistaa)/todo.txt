@@ -70,9 +70,9 @@ Evaluationform feiluja:
 
 ✅-ei mene pipeen exportin jälkeen esim export | echo hello
 
-- Jos pelkka cat tai grep. Signaalit ei toimi oikein. Pitais olla ctrl c -> caret + enter. ctrl \ caret + Quit: 3
+✅- Jos pelkka cat tai grep. Signaalit ei toimi oikein. Pitais olla ctrl c -> caret + enter. ctrl \ caret + Quit: 3
 
--exit 1 ei toimi
-- leaks export jtn.
+✅-exit 1 tai 255 ei toimi
+✅- leaks export jtn.
 - leakkaa environmentilla
-- cat | cat
+✅- cat | cat

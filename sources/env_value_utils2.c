@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 01:46:10 by vvaalant          #+#    #+#             */
-/*   Updated: 2024/05/16 19:49:41 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/17 17:19:40 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,11 @@ int	handle_identifier(t_minishell *mshell, char *key, char *value, int equals)
 		if (check_if_env_exists(mshell->env, key))
 		{
 			if (equals == 0)
+			{
+				free(key);
+				free(value);
 				return (0);
+			}
 			set_env_value(mshell->env, key, value, -1);
 		}
 		else
@@ -29,7 +33,11 @@ int	handle_identifier(t_minishell *mshell, char *key, char *value, int equals)
 		return (0);
 	}
 	else
+	{
+		free(key);
+		free(value);
 		return (1);
+	}
 	return (0);
 }
 

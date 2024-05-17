@@ -6,7 +6,7 @@
 /*   By: vvaalant <vvaalant@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 14:37:42 by mrinkine          #+#    #+#             */
-/*   Updated: 2024/05/16 18:43:05 by vvaalant         ###   ########.fr       */
+/*   Updated: 2024/05/17 16:55:25 by vvaalant         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ void	signal_heredoc(void)
 */
 void	signal_in_execve(void)
 {
-	caret_switch(1);
+	caret_switch(0);
 	signal(SIGINT, handle_exec);
 	signal(SIGQUIT, handle_exec);
 }
