@@ -32,28 +32,38 @@ Welcome to **Minishell**, a simple yet powerful recreation of a UNIX shell! This
    ```bash
    make
    ./minishell
-## 🛠 Usage
+### 🛠 Usage
 Once you're in the Minishell environment, you can execute commands just like in a standard shell. Here are some examples:
-
+  List files in the current directory
   ```bash
-  # List files in the current directory
   ls -la
+  ```
   
-  # Navigate to a directory
+  Navigate to a directory
+  ```bash
   cd /path/to/directory
+  ```
   
-  # Display environment variables
+  Display environment variables
+  ```bash
   env
+  ```
   
-  # Set a new environment variable
+  Set a new environment variable
+  ```bash
   export MY_VAR="Hello World"
+  ```
   
-  # Use pipes to combine commands
+  Use pipes to combine commands
+  ```bash
   cat file.txt | grep "pattern"
+  ```
   
-  # Redirect output to a file
+  Redirect output to a file
+  ```bash
   echo "Hello" > output.txt
-## 📚 Learning Outcomes
+  ```
+### 📚 Learning Outcomes
 This project reinforced our understanding of:
 - Process creation and management with `fork()`, `execve()`, and `waitpid()`.
 - Building a custom command parser.
@@ -66,16 +76,8 @@ This project reinforced our understanding of:
 - **includes/**: Header files.
 - **Makefile**: Build configuration.
 
-## 🧑‍💻 Authors
-- **Your Name** - [Your GitHub Profile](https://github.com/yourusername)
-- **Collaborator Name** - [Their GitHub Profile](https://github.com/theirusername)
-
-## 📄 License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ## 🙌 Acknowledgments
 - The 42 School for the incredible curriculum.
-- [GNU Bash](https://www.gnu.org/software/bash/) for inspiration.
 
 ---
 
