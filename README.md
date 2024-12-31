@@ -72,7 +72,7 @@ This project reinforced our understanding of:
 - Effective debugging and error handling in C.
 
 ## 🖼 Project Structure
-- **src/**: Contains the source code for Minishell.
+- **sources/**: Contains the source code for Minishell.
 - **includes/**: Header files.
 - **Makefile**: Build configuration.
 
