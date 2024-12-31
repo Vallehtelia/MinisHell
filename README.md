@@ -35,24 +35,24 @@ Welcome to **Minishell**, a simple yet powerful recreation of a UNIX shell! This
 ## 🛠 Usage
 Once you're in the Minishell environment, you can execute commands just like in a standard shell. Here are some examples:
 
-```bash
-# List files in the current directory
-ls -la
-
-# Navigate to a directory
-cd /path/to/directory
-
-# Display environment variables
-env
-
-# Set a new environment variable
-export MY_VAR="Hello World"
-
-# Use pipes to combine commands
-cat file.txt | grep "pattern"
-
-# Redirect output to a file
-echo "Hello" > output.txt
+  ```bash
+  # List files in the current directory
+  ls -la
+  
+  # Navigate to a directory
+  cd /path/to/directory
+  
+  # Display environment variables
+  env
+  
+  # Set a new environment variable
+  export MY_VAR="Hello World"
+  
+  # Use pipes to combine commands
+  cat file.txt | grep "pattern"
+  
+  # Redirect output to a file
+  echo "Hello" > output.txt
 ## 📚 Learning Outcomes
 This project reinforced our understanding of:
 - Process creation and management with `fork()`, `execve()`, and `waitpid()`.
